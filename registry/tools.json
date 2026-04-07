@@ -1,0 +1,3186 @@
+[
+  {
+    "name": "rtk",
+    "display_name": "RTK (Rust Token Killer)",
+    "description": "Token-optimized CLI proxy, 60-90% savings on dev operations",
+    "tier": "recommended",
+    "category": "analytics",
+    "repo": "rtk-ai/rtk",
+    "install_methods": [
+      {"type": "cargo", "command": "cargo install rtk"},
+      {"type": "brew", "command": "brew install rtk-ai/tap/rtk"}
+    ],
+    "remove_hint": "cargo uninstall rtk",
+    "detect": {
+      "command": "rtk --version",
+      "pattern": "rtk\\s+(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {
+      "type": "hook",
+      "hook_event": "PreToolUse",
+      "managed_by": "rtk"
+    },
+    "conflicts_with": [],
+    "min_version": "0.23.0"
+  },
+  {
+    "name": "ccusage",
+    "display_name": "ccusage",
+    "description": "Usage analytics CLI for Claude Code",
+    "tier": "recommended",
+    "category": "analytics",
+    "repo": "ryoppippi/ccusage",
+    "install_methods": [
+      {"type": "cargo", "command": "cargo install ccusage"},
+      {"type": "npm", "command": "npm install -g ccusage"}
+    ],
+    "remove_hint": "cargo uninstall ccusage",
+    "detect": {
+      "command": "ccusage --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "context7",
+    "display_name": "Context7",
+    "description": "Version-specific library docs MCP server",
+    "tier": "recommended",
+    "category": "mcp-server",
+    "repo": "upstash/context7",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'context7' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.context7"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@context7/mcp"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "playwright-mcp",
+    "display_name": "Playwright MCP",
+    "description": "Browser automation via MCP",
+    "tier": "recommended",
+    "category": "mcp-server",
+    "repo": "microsoft/playwright-mcp",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'playwright' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.playwright"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@anthropic/playwright-mcp"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-squad",
+    "display_name": "Claude Squad",
+    "description": "Multi-agent tmux orchestration TUI",
+    "tier": "recommended",
+    "category": "orchestration",
+    "repo": "smtg-ai/claude-squad",
+    "install_methods": [
+      {"type": "go", "command": "go install github.com/smtg-ai/claude-squad@latest"},
+      {"type": "brew", "command": "brew install smtg-ai/tap/claude-squad"}
+    ],
+    "remove_hint": "rm $(which cs)",
+    "detect": {
+      "command": "cs --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "agnix",
+    "display_name": "agnix",
+    "description": "Config linter for Claude Code (385 rules)",
+    "tier": "recommended",
+    "category": "config",
+    "repo": "agent-sh/agnix",
+    "install_methods": [
+      {"type": "npm", "command": "npm i -g @agent-sh/agnix"}
+    ],
+    "remove_hint": "npm uninstall -g @agent-sh/agnix",
+    "detect": {
+      "command": "agnix --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "trail-of-bits",
+    "display_name": "Trail of Bits Security Skills",
+    "description": "Security-focused auditing skills",
+    "tier": "recommended",
+    "category": "security",
+    "repo": "trailofbits/claude-code-security",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install trailofbits-skills"}
+    ],
+    "remove_hint": "claude plugin uninstall trailofbits-skills",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "trailofbits"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-action",
+    "display_name": "Claude Code Action",
+    "description": "GitHub Actions CI/CD for Claude Code",
+    "tier": "recommended",
+    "category": "ci-cd",
+    "repo": "anthropics/claude-code-action",
+    "install_methods": [
+      {"type": "github_action"}
+    ],
+    "remove_hint": "Remove claude.yml from .github/workflows/",
+    "detect": {
+      "command": "test -f .github/workflows/claude.yml && echo found",
+      "pattern": "found"
+    },
+    "integration": {
+      "type": "github_action",
+      "setup_instructions": "Copy workflow template to .github/workflows/claude.yml"
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "repomix",
+    "display_name": "repomix",
+    "description": "Pack your entire codebase into a single AI-friendly file",
+    "tier": "recommended",
+    "category": "context",
+    "repo": "yamadashy/repomix",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g repomix"},
+      {"type": "mcp"}
+    ],
+    "remove_hint": "npm uninstall -g repomix",
+    "detect": {
+      "command": "repomix --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {
+      "type": "standalone",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "repomix", "--mcp"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "superpowers",
+    "display_name": "Superpowers",
+    "description": "Structured dev lifecycle skills",
+    "tier": "recommended",
+    "category": "skills",
+    "repo": "obra/superpowers",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install superpowers"}
+    ],
+    "remove_hint": "claude plugin uninstall superpowers",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "superpowers"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": ["simone"],
+    "min_version": null
+  },
+  {
+    "name": "feature-dev",
+    "display_name": "Feature Dev",
+    "description": "7-phase feature development workflow plugin (89K installs)",
+    "tier": "popular",
+    "category": "skills",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install feature-dev"}
+    ],
+    "remove_hint": "claude plugin uninstall feature-dev",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "feature-dev"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-swarm",
+    "display_name": "Claude Swarm",
+    "description": "Multi-agent swarm orchestration for Claude Code",
+    "tier": "popular",
+    "category": "orchestration",
+    "repo": "parruda/claude-swarm",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-swarm"}
+    ],
+    "remove_hint": "npm uninstall -g claude-swarm",
+    "detect": {
+      "command": "claude-swarm --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "ruflo",
+    "display_name": "Ruflo",
+    "description": "AI-powered workflow orchestration for Claude Code",
+    "tier": "popular",
+    "category": "orchestration",
+    "repo": "ruvnet/ruflo",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g ruflo"}
+    ],
+    "remove_hint": "npm uninstall -g ruflo",
+    "detect": {
+      "command": "ruflo --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "oh-my-claudecode",
+    "display_name": "Oh My Claude Code",
+    "description": "Zsh/bash plugin framework for Claude Code power users",
+    "tier": "popular",
+    "category": "orchestration",
+    "repo": "Yeachan-Heo/oh-my-claudecode",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g oh-my-claudecode"}
+    ],
+    "remove_hint": "npm uninstall -g oh-my-claudecode",
+    "detect": {
+      "command": "oh-my-claudecode --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "shell_plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "auto-claude",
+    "display_name": "Auto Claude",
+    "description": "Automated multi-agent task execution for Claude Code",
+    "tier": "community",
+    "category": "orchestration",
+    "repo": "AndyMik90/Auto-Claude",
+    "install_methods": [
+      {"type": "pip", "command": "pip install auto-claude"}
+    ],
+    "remove_hint": "pip uninstall auto-claude",
+    "detect": {
+      "command": "auto-claude --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "happy-coder",
+    "display_name": "Happy Coder",
+    "description": "Agent loop orchestration helper for Claude Code",
+    "tier": "community",
+    "category": "orchestration",
+    "repo": "slopus/happy",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g happy-coder"}
+    ],
+    "remove_hint": "npm uninstall -g happy-coder",
+    "detect": {
+      "command": "happy-coder --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "tsk",
+    "display_name": "tsk",
+    "description": "Terminal task runner and agent orchestrator",
+    "tier": "community",
+    "category": "orchestration",
+    "repo": "dtormoen/tsk",
+    "install_methods": [
+      {"type": "cargo", "command": "cargo install tsk"}
+    ],
+    "remove_hint": "cargo uninstall tsk",
+    "detect": {
+      "command": "tsk --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "sudocode",
+    "display_name": "Sudocode",
+    "description": "AI-powered code generation and agent orchestration",
+    "tier": "community",
+    "category": "orchestration",
+    "repo": "sudocode-ai/sudocode",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g sudocode"}
+    ],
+    "remove_hint": "npm uninstall -g sudocode",
+    "detect": {
+      "command": "sudocode --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "parallel-code",
+    "display_name": "Parallel Code",
+    "description": "Run multiple Claude Code agents in parallel",
+    "tier": "community",
+    "category": "orchestration",
+    "repo": "johannesjo/parallel-code",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g parallel-code"}
+    ],
+    "remove_hint": "npm uninstall -g parallel-code",
+    "detect": {
+      "command": "parallel-code --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "parallel-worktrees",
+    "display_name": "Parallel Worktrees",
+    "description": "Manage parallel git worktrees for multi-agent Claude Code",
+    "tier": "community",
+    "category": "orchestration",
+    "repo": "SpillwaveSolutions/parallel-worktrees",
+    "install_methods": [
+      {"type": "pip", "command": "pip install parallel-worktrees"}
+    ],
+    "remove_hint": "pip uninstall parallel-worktrees",
+    "detect": {
+      "command": "parallel-worktrees --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-by-agents",
+    "display_name": "Claude Code By Agents",
+    "description": "Multi-agent Claude Code coordination framework",
+    "tier": "community",
+    "category": "orchestration",
+    "repo": "baryhuang/claude-code-by-agents",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-code-by-agents"}
+    ],
+    "remove_hint": "npm uninstall -g claude-code-by-agents",
+    "detect": {
+      "command": "claude-code-by-agents --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "agent-flow",
+    "display_name": "Agent Flow",
+    "description": "Visual agent flow builder for Claude Code",
+    "tier": "community",
+    "category": "orchestration",
+    "repo": "patoles/agent-flow",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g agent-flow"}
+    ],
+    "remove_hint": "npm uninstall -g agent-flow",
+    "detect": {
+      "command": "agent-flow --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-task-master",
+    "display_name": "Claude Task Master",
+    "description": "AI-driven task management and project planning (26K stars)",
+    "tier": "popular",
+    "category": "task-management",
+    "repo": "eyaltoledano/claude-task-master",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-task-master"},
+      {"type": "mcp"}
+    ],
+    "remove_hint": "npm uninstall -g claude-task-master",
+    "detect": {
+      "command": "task-master --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {
+      "type": "standalone",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "claude-task-master"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-pm",
+    "display_name": "Claude Code PM",
+    "description": "Project management plugin for Claude Code",
+    "tier": "popular",
+    "category": "task-management",
+    "repo": "automazeio/ccpm",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install claude-code-pm"}
+    ],
+    "remove_hint": "claude plugin uninstall claude-code-pm",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "claude-code-pm"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "simone",
+    "display_name": "Simone",
+    "description": "Structured project management and milestone tracking for Claude Code",
+    "tier": "popular",
+    "category": "task-management",
+    "repo": "Helmi/claude-simone",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install simone"}
+    ],
+    "remove_hint": "claude plugin uninstall simone",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "simone"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": ["superpowers"],
+    "min_version": null
+  },
+  {
+    "name": "claude-task-runner",
+    "display_name": "Claude Task Runner",
+    "description": "Batch task runner and automation for Claude Code",
+    "tier": "community",
+    "category": "task-management",
+    "repo": "grahama1970/claude-task-runner",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-task-runner"}
+    ],
+    "remove_hint": "npm uninstall -g claude-task-runner",
+    "detect": {
+      "command": "claude-task-runner --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "shrimp-task-manager",
+    "display_name": "Shrimp Task Manager",
+    "description": "MCP-based task management server for Claude Code",
+    "tier": "community",
+    "category": "task-management",
+    "repo": "cjo4m06/mcp-shrimp-task-manager",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'shrimp-task-manager' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.shrimp-task-manager"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@cjo4m06/mcp-shrimp-task-manager"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "scopecraft-command",
+    "display_name": "Scopecraft Command",
+    "description": "Scope-aware task and command management for Claude Code",
+    "tier": "community",
+    "category": "task-management",
+    "repo": "scopecraft/command",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g scopecraft-command"}
+    ],
+    "remove_hint": "npm uninstall -g scopecraft-command",
+    "detect": {
+      "command": "scopecraft --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "steadystart",
+    "display_name": "Steadystart",
+    "description": "Session startup and initialization plugin for Claude Code",
+    "tier": "community",
+    "category": "task-management",
+    "repo": "steadycursor/steadystart",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install steadystart"}
+    ],
+    "remove_hint": "claude plugin uninstall steadystart",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "steadystart"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-mem",
+    "display_name": "Claude Mem",
+    "description": "Persistent memory management plugin for Claude Code (46K stars)",
+    "tier": "popular",
+    "category": "memory",
+    "repo": "thedotmack/claude-mem",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install claude-mem"}
+    ],
+    "remove_hint": "claude plugin uninstall claude-mem",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "claude-mem"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": ["claude-supermemory"],
+    "min_version": null
+  },
+  {
+    "name": "claude-supermemory",
+    "display_name": "Claude Supermemory",
+    "description": "AI-powered persistent memory and knowledge base for Claude Code",
+    "tier": "popular",
+    "category": "memory",
+    "repo": "supermemoryai/claude-supermemory",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-supermemory"}
+    ],
+    "remove_hint": "npm uninstall -g claude-supermemory",
+    "detect": {
+      "command": "claude-supermemory --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": ["claude-mem"],
+    "min_version": null
+  },
+  {
+    "name": "recall",
+    "display_name": "Recall",
+    "description": "MCP-based memory recall and knowledge retrieval for Claude Code",
+    "tier": "popular",
+    "category": "memory",
+    "repo": "zippoxer/recall",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'recall' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.recall"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "recall-mcp"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-memory",
+    "display_name": "Claude Memory",
+    "description": "Python-based persistent memory layer for Claude Code sessions",
+    "tier": "community",
+    "category": "memory",
+    "repo": "codenamev/claude_memory",
+    "install_methods": [
+      {"type": "pip", "command": "pip install claude-memory"}
+    ],
+    "remove_hint": "pip uninstall claude-memory",
+    "detect": {
+      "command": "claude-memory --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "mcp-memory-keeper",
+    "display_name": "MCP Memory Keeper",
+    "description": "Persistent memory and context keeper via MCP",
+    "tier": "community",
+    "category": "memory",
+    "repo": "mkreyman/mcp-memory-keeper",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'mcp-memory-keeper' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.mcp-memory-keeper"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@doggybee/mcp-memory-keeper"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "goodmem",
+    "display_name": "GoodMem",
+    "description": "Official memory management plugin for Claude Code",
+    "tier": "community",
+    "category": "memory",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install GoodMem"}
+    ],
+    "remove_hint": "claude plugin uninstall GoodMem",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "GoodMem"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "remember",
+    "display_name": "Remember",
+    "description": "Official remember/recall plugin for Claude Code sessions",
+    "tier": "community",
+    "category": "memory",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install remember"}
+    ],
+    "remove_hint": "claude plugin uninstall remember",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "remember"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-session-restore",
+    "display_name": "Claude Session Restore",
+    "description": "Restore and resume Claude Code sessions with context",
+    "tier": "community",
+    "category": "memory",
+    "repo": "ZENG3LD/claude-session-restore",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-session-restore"}
+    ],
+    "remove_hint": "npm uninstall -g claude-session-restore",
+    "detect": {
+      "command": "claude-session-restore --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "context-engineering-kit",
+    "display_name": "Context Engineering Kit",
+    "description": "Toolkit for engineering and managing LLM context windows",
+    "tier": "community",
+    "category": "memory",
+    "repo": "NeoLabHQ/context-engineering-kit",
+    "install_methods": [
+      {"type": "pip", "command": "pip install context-engineering-kit"}
+    ],
+    "remove_hint": "pip uninstall context-engineering-kit",
+    "detect": {
+      "command": "cek --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "contextkit",
+    "display_name": "ContextKit",
+    "description": "Context management and packaging toolkit for Claude Code",
+    "tier": "community",
+    "category": "memory",
+    "repo": "FlineDev/ContextKit",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g contextkit"}
+    ],
+    "remove_hint": "npm uninstall -g contextkit",
+    "detect": {
+      "command": "contextkit --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "context-mode",
+    "display_name": "Context Mode",
+    "description": "Context mode switching plugin for Claude Code",
+    "tier": "community",
+    "category": "memory",
+    "repo": "mksglu/claude-context-mode",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install context-mode"}
+    ],
+    "remove_hint": "claude plugin uninstall context-mode",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "context-mode"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "ccflare",
+    "display_name": "ccflare",
+    "description": "Token usage dashboard and analytics for Claude Code",
+    "tier": "popular",
+    "category": "analytics",
+    "repo": "snipeship/ccflare",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g ccflare"}
+    ],
+    "remove_hint": "npm uninstall -g ccflare",
+    "detect": {
+      "command": "ccflare --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "better-ccflare",
+    "display_name": "Better ccflare",
+    "description": "Enhanced token usage dashboard forked from ccflare",
+    "tier": "community",
+    "category": "analytics",
+    "repo": "tombii/better-ccflare",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g better-ccflare"}
+    ],
+    "remove_hint": "npm uninstall -g better-ccflare",
+    "detect": {
+      "command": "better-ccflare --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-usage-monitor",
+    "display_name": "Claude Code Usage Monitor",
+    "description": "Real-time usage monitoring and alerts for Claude Code",
+    "tier": "community",
+    "category": "analytics",
+    "repo": "Maciek-roboblog/Claude-Code-Usage-Monitor",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-code-usage-monitor"}
+    ],
+    "remove_hint": "npm uninstall -g claude-code-usage-monitor",
+    "detect": {
+      "command": "claude-code-usage-monitor --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "myccusage",
+    "display_name": "MyCCUsage",
+    "description": "Personal Claude Code usage tracking and analytics",
+    "tier": "community",
+    "category": "analytics",
+    "repo": "i-richardwang/MyCCusage",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g myccusage"}
+    ],
+    "remove_hint": "npm uninstall -g myccusage",
+    "detect": {
+      "command": "myccusage --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-usage-analyzer",
+    "display_name": "Claude Code Usage Analyzer",
+    "description": "Python-based usage analysis and reporting for Claude Code",
+    "tier": "community",
+    "category": "analytics",
+    "repo": "aarora79/claude-code-usage-analyzer",
+    "install_methods": [
+      {"type": "pip", "command": "pip install claude-code-usage-analyzer"}
+    ],
+    "remove_hint": "pip uninstall claude-code-usage-analyzer",
+    "detect": {
+      "command": "claude-code-usage-analyzer --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "tokscale",
+    "display_name": "Tokscale",
+    "description": "Token scaling and cost estimation CLI for Claude Code",
+    "tier": "community",
+    "category": "analytics",
+    "repo": "junhoyeo/tokscale",
+    "install_methods": [
+      {"type": "cargo", "command": "cargo install tokscale"}
+    ],
+    "remove_hint": "cargo uninstall tokscale",
+    "detect": {
+      "command": "tokscale --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "viberank",
+    "display_name": "Viberank",
+    "description": "Rank and compare Claude Code sessions by productivity metrics",
+    "tier": "community",
+    "category": "analytics",
+    "repo": "sculptdotfun/viberank",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g viberank"}
+    ],
+    "remove_hint": "npm uninstall -g viberank",
+    "detect": {
+      "command": "viberank --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "vibe-log",
+    "display_name": "Vibe Log",
+    "description": "Session activity logging and timeline visualization for Claude Code",
+    "tier": "community",
+    "category": "analytics",
+    "repo": "vibe-log/vibe-log-cli",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g vibe-log"}
+    ],
+    "remove_hint": "npm uninstall -g vibe-log",
+    "detect": {
+      "command": "vibe-log --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "manifest",
+    "display_name": "Manifest",
+    "description": "Project manifest and dependency tracker for Claude Code",
+    "tier": "community",
+    "category": "analytics",
+    "repo": "mnfst/manifest",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g manifest"}
+    ],
+    "remove_hint": "npm uninstall -g manifest",
+    "detect": {
+      "command": "manifest --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "ccrank",
+    "display_name": "CCRank",
+    "description": "Leaderboard and ranking tool for Claude Code productivity",
+    "tier": "community",
+    "category": "analytics",
+    "repo": "ccranking.github.io",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g ccrank"}
+    ],
+    "remove_hint": "npm uninstall -g ccrank",
+    "detect": {
+      "command": "ccrank --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "ccstatusline",
+    "display_name": "CC Statusline",
+    "description": "Shell statusline integration showing Claude Code session info",
+    "tier": "popular",
+    "category": "terminal-ui",
+    "repo": "sirmalloc/ccstatusline",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g ccstatusline"}
+    ],
+    "remove_hint": "npm uninstall -g ccstatusline",
+    "detect": {
+      "command": "ccstatusline --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "shell_plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-powerline",
+    "display_name": "Claude Powerline",
+    "description": "Powerline-style terminal prompt with Claude Code status",
+    "tier": "popular",
+    "category": "terminal-ui",
+    "repo": "Owloops/claude-powerline",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-powerline"}
+    ],
+    "remove_hint": "npm uninstall -g claude-powerline",
+    "detect": {
+      "command": "claude-powerline --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "shell_plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claudia-statusline",
+    "display_name": "Claudia Statusline",
+    "description": "Rust-based statusline component for Claude Code sessions",
+    "tier": "community",
+    "category": "terminal-ui",
+    "repo": "hagan/claudia-statusline",
+    "install_methods": [
+      {"type": "cargo", "command": "cargo install claudia-statusline"}
+    ],
+    "remove_hint": "cargo uninstall claudia-statusline",
+    "detect": {
+      "command": "claudia-statusline --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "shell_plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "ccometixline",
+    "display_name": "CCometixLine",
+    "description": "Rust-based comet-themed statusline for Claude Code",
+    "tier": "community",
+    "category": "terminal-ui",
+    "repo": "Haleclipse/CCometixLine",
+    "install_methods": [
+      {"type": "cargo", "command": "cargo install ccometixline"}
+    ],
+    "remove_hint": "cargo uninstall ccometixline",
+    "detect": {
+      "command": "ccometixline --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "shell_plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "tweakcc",
+    "display_name": "TweakCC",
+    "description": "Terminal UI tweaks and customizations for Claude Code",
+    "tier": "community",
+    "category": "terminal-ui",
+    "repo": "Piebald-AI/tweakcc",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g tweakcc"}
+    ],
+    "remove_hint": "npm uninstall -g tweakcc",
+    "detect": {
+      "command": "tweakcc --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-tmux",
+    "display_name": "Claude Tmux",
+    "description": "Tmux integration and status bar for Claude Code sessions",
+    "tier": "community",
+    "category": "terminal-ui",
+    "repo": "nielsgroen/claude-tmux",
+    "install_methods": [
+      {"type": "pip", "command": "pip install claude-tmux"}
+    ],
+    "remove_hint": "pip uninstall claude-tmux",
+    "detect": {
+      "command": "claude-tmux --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "shell_plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "codeman",
+    "display_name": "Codeman",
+    "description": "TUI dashboard and session manager for Claude Code",
+    "tier": "community",
+    "category": "terminal-ui",
+    "repo": "Ark0N/Codeman",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g codeman"}
+    ],
+    "remove_hint": "npm uninstall -g codeman",
+    "detect": {
+      "command": "codeman --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-nvim",
+    "display_name": "claude-code.nvim",
+    "description": "Neovim plugin for Claude Code integration",
+    "tier": "popular",
+    "category": "ide",
+    "repo": "greggh/claude-code.nvim",
+    "install_methods": [
+      {"type": "manual", "command": null}
+    ],
+    "remove_hint": "Remove plugin from your Neovim plugin manager",
+    "detect": {
+      "command": null,
+      "pattern": null
+    },
+    "integration": {"type": "manual"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-el",
+    "display_name": "claude-code.el",
+    "description": "Emacs package for Claude Code integration",
+    "tier": "community",
+    "category": "ide",
+    "repo": "stevemolitor/claude-code.el",
+    "install_methods": [
+      {"type": "manual", "command": null}
+    ],
+    "remove_hint": "Remove package from your Emacs configuration",
+    "detect": {
+      "command": null,
+      "pattern": null
+    },
+    "integration": {"type": "manual"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-ide-el",
+    "display_name": "claude-code-ide.el",
+    "description": "Enhanced Emacs IDE integration for Claude Code",
+    "tier": "community",
+    "category": "ide",
+    "repo": "manzaltu/claude-code-ide.el",
+    "install_methods": [
+      {"type": "manual", "command": null}
+    ],
+    "remove_hint": "Remove package from your Emacs configuration",
+    "detect": {
+      "command": null,
+      "pattern": null
+    },
+    "integration": {"type": "manual"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-chat-vscode",
+    "display_name": "Claude Code Chat (VS Code)",
+    "description": "VS Code extension for Claude Code chat and assistance",
+    "tier": "community",
+    "category": "ide",
+    "repo": null,
+    "install_methods": [
+      {"type": "manual", "command": null}
+    ],
+    "remove_hint": "Uninstall via VS Code Extensions panel",
+    "detect": {
+      "command": null,
+      "pattern": null
+    },
+    "integration": {"type": "manual"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claudix",
+    "display_name": "Claudix",
+    "description": "IDE enhancement and command palette for Claude Code",
+    "tier": "community",
+    "category": "ide",
+    "repo": "Haleclipse/Claudix",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claudix"}
+    ],
+    "remove_hint": "npm uninstall -g claudix",
+    "detect": {
+      "command": "claudix --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "container-use",
+    "display_name": "Container Use",
+    "description": "Docker container management via MCP for Claude Code (Dagger)",
+    "tier": "popular",
+    "category": "docker",
+    "repo": "dagger/container-use",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'container-use' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.container-use"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@dagger/container-use"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-sandbox",
+    "display_name": "Claude Sandbox",
+    "description": "Sandboxed execution environment for Claude Code",
+    "tier": "community",
+    "category": "docker",
+    "repo": "nkrefman/claude-sandbox",
+    "install_methods": [
+      {"type": "pip", "command": "pip install claude-sandbox"}
+    ],
+    "remove_hint": "pip uninstall claude-sandbox",
+    "detect": {
+      "command": "claude-sandbox --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-sandbox",
+    "display_name": "Claude Code Sandbox",
+    "description": "Docker-based sandboxing for safe Claude Code execution",
+    "tier": "community",
+    "category": "docker",
+    "repo": "textcortex/claude-code-sandbox",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-code-sandbox"}
+    ],
+    "remove_hint": "npm uninstall -g claude-code-sandbox",
+    "detect": {
+      "command": "claude-code-sandbox --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-devcontainer",
+    "display_name": "Claude Code Devcontainer",
+    "description": "Dev container configuration for Claude Code from Trail of Bits",
+    "tier": "community",
+    "category": "docker",
+    "repo": "trailofbits/claude-code-devcontainer",
+    "install_methods": [
+      {"type": "manual", "command": null}
+    ],
+    "remove_hint": "Remove .devcontainer/ from your project",
+    "detect": {
+      "command": null,
+      "pattern": null
+    },
+    "integration": {"type": "manual"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "sbox",
+    "display_name": "sbox",
+    "description": "Rust-based secure sandbox for Claude Code execution",
+    "tier": "community",
+    "category": "docker",
+    "repo": "streamingfast/sbox",
+    "install_methods": [
+      {"type": "cargo", "command": "cargo install sbox"}
+    ],
+    "remove_hint": "cargo uninstall sbox",
+    "detect": {
+      "command": "sbox --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "run-claude-docker",
+    "display_name": "Run Claude Docker",
+    "description": "Docker runner and container management for Claude Code",
+    "tier": "community",
+    "category": "docker",
+    "repo": "icanhasjonas/run-claude-docker",
+    "install_methods": [
+      {"type": "pip", "command": "pip install run-claude-docker"}
+    ],
+    "remove_hint": "pip uninstall run-claude-docker",
+    "detect": {
+      "command": "run-claude-docker --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "viwo-cli",
+    "display_name": "Viwo CLI",
+    "description": "Virtual workspace orchestrator for Claude Code with Docker",
+    "tier": "community",
+    "category": "docker",
+    "repo": "OverseedAI/viwo",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g viwo-cli"}
+    ],
+    "remove_hint": "npm uninstall -g viwo-cli",
+    "detect": {
+      "command": "viwo --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-hooks-mastery",
+    "display_name": "Claude Code Hooks Mastery",
+    "description": "Comprehensive hooks examples and patterns for Claude Code",
+    "tier": "popular",
+    "category": "hooks",
+    "repo": "disler/claude-code-hooks-mastery",
+    "install_methods": [
+      {"type": "manual", "command": null}
+    ],
+    "remove_hint": "Remove hook scripts from ~/.claude/hooks/",
+    "detect": {
+      "command": null,
+      "pattern": null
+    },
+    "integration": {"type": "manual"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-hooks-observability",
+    "display_name": "Claude Code Hooks Observability",
+    "description": "Multi-agent observability hooks for Claude Code",
+    "tier": "community",
+    "category": "hooks",
+    "repo": "disler/claude-code-hooks-multi-agent-observability",
+    "install_methods": [
+      {"type": "manual", "command": null}
+    ],
+    "remove_hint": "Remove hook scripts from your hooks directory",
+    "detect": {
+      "command": null,
+      "pattern": null
+    },
+    "integration": {"type": "manual"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-hooks",
+    "display_name": "Claude Hooks",
+    "description": "Hook management and automation library for Claude Code",
+    "tier": "community",
+    "category": "hooks",
+    "repo": "johnlindquist/claude-hooks",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-hooks"}
+    ],
+    "remove_hint": "npm uninstall -g claude-hooks",
+    "detect": {
+      "command": "claude-hooks --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "hook"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "cc-tools",
+    "display_name": "CC Tools",
+    "description": "Go-based toolkit and utilities for Claude Code hooks",
+    "tier": "community",
+    "category": "hooks",
+    "repo": "Veraticus/cc-tools",
+    "install_methods": [
+      {"type": "go", "command": "go install github.com/Veraticus/cc-tools@latest"}
+    ],
+    "remove_hint": "rm $(which cc-tools)",
+    "detect": {
+      "command": "cc-tools --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "hookify",
+    "display_name": "Hookify",
+    "description": "Official hook creation and management plugin for Claude Code",
+    "tier": "community",
+    "category": "hooks",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install hookify"}
+    ],
+    "remove_hint": "claude plugin uninstall hookify",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "hookify"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-hub",
+    "display_name": "Claude Hub",
+    "description": "GitHub integration hub and webhook handler for Claude Code",
+    "tier": "community",
+    "category": "ci-cd",
+    "repo": "claude-did-this/claude-hub",
+    "install_methods": [
+      {"type": "github_action"}
+    ],
+    "remove_hint": "Remove claude-hub workflow from .github/workflows/",
+    "detect": {
+      "command": null,
+      "pattern": null
+    },
+    "integration": {"type": "github_action"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "cclint",
+    "display_name": "cclint",
+    "description": "Linter for Claude Code configurations and CLAUDE.md files",
+    "tier": "community",
+    "category": "config",
+    "repo": "carlrannaberg/cclint",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g cclint"}
+    ],
+    "remove_hint": "npm uninstall -g cclint",
+    "detect": {
+      "command": "cclint --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-rules-doctor",
+    "display_name": "Claude Rules Doctor",
+    "description": "Diagnose and fix Claude Code rule and config issues",
+    "tier": "community",
+    "category": "config",
+    "repo": "nulone/claude-rules-doctor",
+    "install_methods": [
+      {"type": "pip", "command": "pip install claude-rules-doctor"}
+    ],
+    "remove_hint": "pip uninstall claude-rules-doctor",
+    "detect": {
+      "command": "claude-rules-doctor --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claudectx",
+    "display_name": "Claudectx",
+    "description": "Context switching and environment management for Claude Code",
+    "tier": "community",
+    "category": "config",
+    "repo": "foxj77/claudectx",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claudectx"}
+    ],
+    "remove_hint": "npm uninstall -g claudectx",
+    "detect": {
+      "command": "claudectx --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "rulesync",
+    "display_name": "Rulesync",
+    "description": "Sync and manage Claude Code rules across projects",
+    "tier": "community",
+    "category": "config",
+    "repo": "dyoshikawa/rulesync",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g rulesync"}
+    ],
+    "remove_hint": "npm uninstall -g rulesync",
+    "detect": {
+      "command": "rulesync --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-rules",
+    "display_name": "Claude Rules",
+    "description": "Curated rule sets and configuration plugin for Claude Code",
+    "tier": "community",
+    "category": "config",
+    "repo": "lifedever/claude-rules",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install claude-rules"}
+    ],
+    "remove_hint": "claude plugin uninstall claude-rules",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "claude-rules"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "cchistory",
+    "display_name": "CCHistory",
+    "description": "Browse and search Claude Code session history",
+    "tier": "popular",
+    "category": "session",
+    "repo": "eckardt/cchistory",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g cchistory"}
+    ],
+    "remove_hint": "npm uninstall -g cchistory",
+    "detect": {
+      "command": "cchistory --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "cclogviewer",
+    "display_name": "CCLogViewer",
+    "description": "Log viewer and browser for Claude Code session logs",
+    "tier": "community",
+    "category": "session",
+    "repo": "Brads3290/cclogviewer",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g cclogviewer"}
+    ],
+    "remove_hint": "npm uninstall -g cclogviewer",
+    "detect": {
+      "command": "cclogviewer --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claudex",
+    "display_name": "Claudex",
+    "description": "Session explorer and history manager for Claude Code",
+    "tier": "community",
+    "category": "session",
+    "repo": "kunwar-shah/claudex",
+    "install_methods": [
+      {"type": "pip", "command": "pip install claudex"}
+    ],
+    "remove_hint": "pip uninstall claudex",
+    "detect": {
+      "command": "claudex --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-devtools",
+    "display_name": "Claude DevTools",
+    "description": "Developer tools and diagnostics for Claude Code",
+    "tier": "community",
+    "category": "session",
+    "repo": "matt1398/claude-devtools",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-devtools"}
+    ],
+    "remove_hint": "npm uninstall -g claude-devtools",
+    "detect": {
+      "command": "claude-devtools --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-tools",
+    "display_name": "Claude Code Tools",
+    "description": "Python utilities and helper tools for Claude Code",
+    "tier": "community",
+    "category": "session",
+    "repo": "pchalasani/claude-code-tools",
+    "install_methods": [
+      {"type": "pip", "command": "pip install claude-code-tools"}
+    ],
+    "remove_hint": "pip uninstall claude-code-tools",
+    "detect": {
+      "command": "claude-code-tools --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "ccexp",
+    "display_name": "CCExp",
+    "description": "Claude Code session exporter and report generator",
+    "tier": "community",
+    "category": "session",
+    "repo": "nyatinte/ccexp",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g ccexp"}
+    ],
+    "remove_hint": "npm uninstall -g ccexp",
+    "detect": {
+      "command": "ccexp --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "github-mcp",
+    "display_name": "GitHub MCP",
+    "description": "GitHub API access via MCP - 51 tools for PRs, issues, CI",
+    "tier": "recommended",
+    "category": "mcp-server",
+    "repo": "github/github-mcp-server",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'github' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.github"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@github/github-mcp-server"],
+        "env": {"GITHUB_TOKEN": "${GITHUB_TOKEN}"}
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "sequential-thinking",
+    "display_name": "Sequential Thinking",
+    "description": "MCP server for structured sequential reasoning",
+    "tier": "popular",
+    "category": "mcp-server",
+    "repo": "modelcontextprotocol/servers",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'sequential-thinking' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.sequential-thinking"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "desktop-commander",
+    "display_name": "Desktop Commander",
+    "description": "Desktop automation and window management via MCP",
+    "tier": "popular",
+    "category": "mcp-server",
+    "repo": "wonderwhy-er/DesktopCommanderMCP",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'desktop-commander' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.desktop-commander"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@wonderwhy-er/desktop-commander"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-mcp",
+    "display_name": "Claude Code MCP",
+    "description": "MCP server exposing Claude Code capabilities to other agents",
+    "tier": "community",
+    "category": "mcp-server",
+    "repo": "steipete/claude-code-mcp",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'claude-code-mcp' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.claude-code-mcp"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@steipete/claude-code-mcp"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "filesystem-mcp",
+    "display_name": "Filesystem MCP",
+    "description": "File system access and operations via MCP",
+    "tier": "popular",
+    "category": "mcp-server",
+    "repo": "modelcontextprotocol/servers",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'filesystem' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.filesystem"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-filesystem"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "brave-search",
+    "display_name": "Brave Search MCP",
+    "description": "Brave Search API web search via MCP (requires BRAVE_API_KEY)",
+    "tier": "popular",
+    "category": "mcp-server",
+    "repo": "modelcontextprotocol/servers",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'brave-search' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.brave-search"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+        "env": {"BRAVE_API_KEY": "${BRAVE_API_KEY}"}
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "puppeteer-mcp",
+    "display_name": "Puppeteer MCP",
+    "description": "Browser automation via Puppeteer MCP server",
+    "tier": "popular",
+    "category": "mcp-server",
+    "repo": "modelcontextprotocol/servers",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'puppeteer' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.puppeteer"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+      }
+    },
+    "conflicts_with": ["playwright-mcp"],
+    "min_version": null
+  },
+  {
+    "name": "sqlite-mcp",
+    "display_name": "SQLite MCP",
+    "description": "SQLite database access and query via MCP",
+    "tier": "popular",
+    "category": "mcp-server",
+    "repo": "modelcontextprotocol/servers",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'sqlite' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.sqlite"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-sqlite"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "git-mcp",
+    "display_name": "Git MCP",
+    "description": "Git repository operations via MCP server",
+    "tier": "popular",
+    "category": "mcp-server",
+    "repo": "modelcontextprotocol/servers",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'git' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.git"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-git"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "fetch-mcp",
+    "display_name": "Fetch MCP",
+    "description": "HTTP fetch and web content retrieval via MCP",
+    "tier": "popular",
+    "category": "mcp-server",
+    "repo": "modelcontextprotocol/servers",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'fetch' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.fetch"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-fetch"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-context",
+    "display_name": "Claude Context MCP",
+    "description": "Context management and retrieval MCP server by Zilliz",
+    "tier": "community",
+    "category": "mcp-server",
+    "repo": "zilliztech/claude-context",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'claude-context' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.claude-context"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@zilliztech/claude-context"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "perplexity-mcp",
+    "display_name": "Perplexity MCP",
+    "description": "Perplexity AI search and research via MCP",
+    "tier": "community",
+    "category": "mcp-server",
+    "repo": "perplexityai/modelcontextprotocol",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'perplexity' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.perplexity"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@perplexityai/mcp-server"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "firecrawl-mcp",
+    "display_name": "Firecrawl MCP",
+    "description": "Web scraping and crawling via Firecrawl MCP",
+    "tier": "community",
+    "category": "mcp-server",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install firecrawl-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall firecrawl-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "firecrawl"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "voice-to-claude",
+    "display_name": "Voice to Claude",
+    "description": "Voice input and speech-to-text for Claude Code",
+    "tier": "community",
+    "category": "voice",
+    "repo": "enesbasbug/voice-to-claude",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g voice-to-claude"}
+    ],
+    "remove_hint": "npm uninstall -g voice-to-claude",
+    "detect": {
+      "command": "voice-to-claude --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-stt",
+    "display_name": "Claude STT",
+    "description": "Speech-to-text integration for Claude Code commands",
+    "tier": "community",
+    "category": "voice",
+    "repo": "jarrodwatts/claude-stt",
+    "install_methods": [
+      {"type": "pip", "command": "pip install claude-stt"}
+    ],
+    "remove_hint": "pip uninstall claude-stt",
+    "detect": {
+      "command": "claude-stt --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-voice",
+    "display_name": "Claude Code Voice",
+    "description": "Voice control and audio input for Claude Code sessions",
+    "tier": "community",
+    "category": "voice",
+    "repo": "jdpsc/claude-code-voice",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-code-voice"}
+    ],
+    "remove_hint": "npm uninstall -g claude-code-voice",
+    "detect": {
+      "command": "claude-code-voice --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "listen-claude-code",
+    "display_name": "Listen Claude Code",
+    "description": "Audio listener and transcription for Claude Code",
+    "tier": "community",
+    "category": "voice",
+    "repo": "gmoqa/listen-claude-code",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g listen-claude-code"}
+    ],
+    "remove_hint": "npm uninstall -g listen-claude-code",
+    "detect": {
+      "command": "listen-claude-code --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "voicemode-mcp",
+    "display_name": "VoiceMode MCP",
+    "description": "Voice mode and audio interaction via MCP for Claude Code",
+    "tier": "community",
+    "category": "voice",
+    "repo": "mbailey/voicemode",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'voicemode' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.voicemode"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@mbailey/voicemode-mcp"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "code-review-graph",
+    "display_name": "Code Review Graph",
+    "description": "Knowledge graph for code review context",
+    "tier": "popular",
+    "category": "code-review",
+    "repo": "tirth8205/code-review-graph",
+    "install_methods": [
+      {"type": "pip", "command": "pip install code-review-graph"}
+    ],
+    "remove_hint": "pip uninstall code-review-graph",
+    "detect": {
+      "command": "code-review-graph --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "mcp_server"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "local-review",
+    "display_name": "Local Review",
+    "description": "Official local code review plugin for Claude Code",
+    "tier": "popular",
+    "category": "code-review",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install local-review"}
+    ],
+    "remove_hint": "claude plugin uninstall local-review",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "local-review"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "diffity",
+    "display_name": "Diffity",
+    "description": "Diff visualization and review tool for Claude Code",
+    "tier": "community",
+    "category": "code-review",
+    "repo": "kamranahmedse/diffity",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g diffity"}
+    ],
+    "remove_hint": "npm uninstall -g diffity",
+    "detect": {
+      "command": "diffity --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-review-loop",
+    "display_name": "Claude Review Loop",
+    "description": "Iterative code review loop plugin for Claude Code",
+    "tier": "community",
+    "category": "code-review",
+    "repo": "hamelsmu/claude-review-loop",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install claude-review-loop"}
+    ],
+    "remove_hint": "claude plugin uninstall claude-review-loop",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "claude-review-loop"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "agent-peer-review",
+    "display_name": "Agent Peer Review",
+    "description": "Multi-agent peer review system for Claude Code",
+    "tier": "community",
+    "category": "code-review",
+    "repo": "jcputney/agent-peer-review",
+    "install_methods": [
+      {"type": "pip", "command": "pip install agent-peer-review"}
+    ],
+    "remove_hint": "pip uninstall agent-peer-review",
+    "detect": {
+      "command": "agent-peer-review --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-quality-hook",
+    "display_name": "Claude Code Quality Hook",
+    "description": "Code quality enforcement hook for Claude Code",
+    "tier": "community",
+    "category": "code-review",
+    "repo": "dhofheinz/claude-code-quality-hook",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-code-quality-hook"}
+    ],
+    "remove_hint": "npm uninstall -g claude-code-quality-hook",
+    "detect": {
+      "command": "claude-code-quality-hook --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "hook"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "trail-of-bits-skills",
+    "display_name": "Trail of Bits Security Skills",
+    "description": "Professional security auditing skills from Trail of Bits",
+    "tier": "recommended",
+    "category": "security",
+    "repo": "trailofbits/skills",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install trail-of-bits-skills"}
+    ],
+    "remove_hint": "claude plugin uninstall trail-of-bits-skills",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "trail-of-bits"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "semgrep",
+    "display_name": "Semgrep",
+    "description": "Static analysis and security scanning plugin for Claude Code",
+    "tier": "popular",
+    "category": "security",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install semgrep"}
+    ],
+    "remove_hint": "claude plugin uninstall semgrep",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "semgrep"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "aikido",
+    "display_name": "Aikido Security",
+    "description": "Application security scanning and vulnerability detection plugin",
+    "tier": "community",
+    "category": "security",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install aikido"}
+    ],
+    "remove_hint": "claude plugin uninstall aikido",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "aikido"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "coderabbit",
+    "display_name": "CodeRabbit",
+    "description": "AI-powered code review and security analysis plugin",
+    "tier": "community",
+    "category": "security",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install coderabbit"}
+    ],
+    "remove_hint": "claude plugin uninstall coderabbit",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "coderabbit"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "sonarqube",
+    "display_name": "SonarQube",
+    "description": "Code quality and security analysis plugin for Claude Code",
+    "tier": "community",
+    "category": "security",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install sonarqube"}
+    ],
+    "remove_hint": "claude plugin uninstall sonarqube",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "sonarqube"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "sentry",
+    "display_name": "Sentry",
+    "description": "Error tracking and performance monitoring plugin for Claude Code",
+    "tier": "community",
+    "category": "security",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install sentry"}
+    ],
+    "remove_hint": "claude plugin uninstall sentry",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "sentry"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "endor-labs",
+    "display_name": "Endor Labs",
+    "description": "Software supply chain security and dependency scanning plugin",
+    "tier": "community",
+    "category": "security",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install endor-labs"}
+    ],
+    "remove_hint": "claude plugin uninstall endor-labs",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "endor-labs"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "everything-claude-code",
+    "display_name": "Everything Claude Code",
+    "description": "Comprehensive skills and utilities collection for Claude Code (142K stars)",
+    "tier": "popular",
+    "category": "skills",
+    "repo": "affaan-m/everything-claude-code",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install everything-claude-code"}
+    ],
+    "remove_hint": "claude plugin uninstall everything-claude-code",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "everything-claude-code"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "superclaude",
+    "display_name": "SuperClaude",
+    "description": "Extended Claude Code framework with advanced skills and personas",
+    "tier": "popular",
+    "category": "skills",
+    "repo": "SuperClaude-Org/SuperClaude_Framework",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install superclaude"}
+    ],
+    "remove_hint": "claude plugin uninstall superclaude",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "superclaude"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "compound-engineering",
+    "display_name": "Compound Engineering",
+    "description": "Engineering methodology and skills plugin for Claude Code",
+    "tier": "popular",
+    "category": "skills",
+    "repo": "EveryInc/compound-engineering-plugin",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install compound-engineering"}
+    ],
+    "remove_hint": "claude plugin uninstall compound-engineering",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "compound-engineering"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "anthropics-skills",
+    "display_name": "Anthropic Skills",
+    "description": "Official Anthropic skills collection for Claude Code (111K stars)",
+    "tier": "popular",
+    "category": "skills",
+    "repo": "anthropics/skills",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install anthropics-skills"}
+    ],
+    "remove_hint": "claude plugin uninstall anthropics-skills",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "anthropics-skills"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-codepro",
+    "display_name": "Claude CodePro",
+    "description": "Professional coding skills and patterns plugin for Claude Code",
+    "tier": "community",
+    "category": "skills",
+    "repo": "maxritter/claude-codepro",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install claude-codepro"}
+    ],
+    "remove_hint": "claude plugin uninstall claude-codepro",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "claude-codepro"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claudekit",
+    "display_name": "Claudekit",
+    "description": "Toolkit and helper scripts for Claude Code workflows",
+    "tier": "community",
+    "category": "skills",
+    "repo": "carlrannaberg/claudekit",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claudekit"}
+    ],
+    "remove_hint": "npm uninstall -g claudekit",
+    "detect": {
+      "command": "claudekit --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "cc-devops-skills",
+    "display_name": "CC DevOps Skills",
+    "description": "DevOps skills and automation plugin for Claude Code",
+    "tier": "community",
+    "category": "skills",
+    "repo": "akin-ozer/cc-devops-skills",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install cc-devops-skills"}
+    ],
+    "remove_hint": "claude plugin uninstall cc-devops-skills",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "cc-devops-skills"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "voltagent-subagents",
+    "display_name": "VoltAgent Subagents",
+    "description": "Curated sub-agents collection for Claude Code orchestration",
+    "tier": "community",
+    "category": "skills",
+    "repo": "VoltAgent/awesome-claude-code-subagents",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g voltagent-subagents"}
+    ],
+    "remove_hint": "npm uninstall -g voltagent-subagents",
+    "detect": {
+      "command": "voltagent-subagents --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "antigravity-skills",
+    "display_name": "Antigravity Skills",
+    "description": "Advanced skills framework for Claude Code automation",
+    "tier": "community",
+    "category": "skills",
+    "repo": "sickn33/antigravity-awesome-skills",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install antigravity-skills"}
+    ],
+    "remove_hint": "claude plugin uninstall antigravity-skills",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "antigravity-skills"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "bmad-method",
+    "display_name": "BMAD Method",
+    "description": "BMAD agile development methodology plugin for Claude Code (44K stars)",
+    "tier": "popular",
+    "category": "workflow",
+    "repo": "bmad-code-org/BMAD-METHOD",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install bmad-method"}
+    ],
+    "remove_hint": "claude plugin uninstall bmad-method",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "bmad-method"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "get-shit-done",
+    "display_name": "Get Shit Done",
+    "description": "Productivity-focused workflow methodology plugin (48K stars)",
+    "tier": "popular",
+    "category": "workflow",
+    "repo": "gsd-build/get-shit-done",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install get-shit-done"}
+    ],
+    "remove_hint": "claude plugin uninstall get-shit-done",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "get-shit-done"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "riper-workflow",
+    "display_name": "RIPER Workflow",
+    "description": "RIPER-5 research-implement workflow plugin for Claude Code",
+    "tier": "popular",
+    "category": "workflow",
+    "repo": "tony/claude-code-riper-5",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install riper-workflow"}
+    ],
+    "remove_hint": "claude plugin uninstall riper-workflow",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "riper-workflow"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "planning-with-files",
+    "display_name": "Planning With Files",
+    "description": "File-based planning and specification workflow skill for Claude Code",
+    "tier": "popular",
+    "category": "workflow",
+    "repo": null,
+    "install_methods": [
+      {"type": "manual", "command": null}
+    ],
+    "remove_hint": "Remove PLANNING.md and workflow files from your project",
+    "detect": {
+      "command": null,
+      "pattern": null
+    },
+    "integration": {"type": "manual"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "ab-method",
+    "display_name": "AB Method",
+    "description": "A/B testing methodology plugin for Claude Code development",
+    "tier": "community",
+    "category": "workflow",
+    "repo": "ayoubben18/ab-method",
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install ab-method"}
+    ],
+    "remove_hint": "claude plugin uninstall ab-method",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "ab-method"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "ralph-loop",
+    "display_name": "Ralph Loop",
+    "description": "Official iterative development loop plugin for Claude Code",
+    "tier": "community",
+    "category": "workflow",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install ralph-loop"}
+    ],
+    "remove_hint": "claude plugin uninstall ralph-loop",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "ralph-loop"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "ralph-orchestrator",
+    "display_name": "Ralph Orchestrator",
+    "description": "Multi-agent orchestration with Ralph methodology for Claude Code",
+    "tier": "community",
+    "category": "workflow",
+    "repo": "mikeyobrien/ralph-orchestrator",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g ralph-orchestrator"}
+    ],
+    "remove_hint": "npm uninstall -g ralph-orchestrator",
+    "detect": {
+      "command": "ralph-orchestrator --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "signoz-dashboard",
+    "display_name": "SigNoz Dashboard",
+    "description": "SigNoz observability dashboard template for Claude Code metrics",
+    "tier": "community",
+    "category": "observability",
+    "repo": null,
+    "install_methods": [
+      {"type": "manual", "command": null}
+    ],
+    "remove_hint": "Remove dashboard template from SigNoz",
+    "detect": {
+      "command": null,
+      "pattern": null
+    },
+    "integration": {"type": "manual"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "grafana-plugin",
+    "display_name": "Grafana Plugin",
+    "description": "Grafana dashboard plugin for Claude Code observability",
+    "tier": "community",
+    "category": "observability",
+    "repo": null,
+    "install_methods": [
+      {"type": "manual", "command": null}
+    ],
+    "remove_hint": "Uninstall via Grafana plugin manager",
+    "detect": {
+      "command": null,
+      "pattern": null
+    },
+    "integration": {"type": "manual"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "claude-code-otel",
+    "display_name": "Claude Code OpenTelemetry",
+    "description": "OpenTelemetry instrumentation for Claude Code sessions",
+    "tier": "community",
+    "category": "observability",
+    "repo": "ColeMurray/claude-code-otel",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g claude-code-otel"}
+    ],
+    "remove_hint": "npm uninstall -g claude-code-otel",
+    "detect": {
+      "command": "claude-code-otel --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "hook"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "cc-switch",
+    "display_name": "CC Switch",
+    "description": "Switch between Claude Code sessions and contexts quickly (40K stars)",
+    "tier": "popular",
+    "category": "context",
+    "repo": "farion1231/cc-switch",
+    "install_methods": [
+      {"type": "npm", "command": "npm install -g cc-switch"}
+    ],
+    "remove_hint": "npm uninstall -g cc-switch",
+    "detect": {
+      "command": "cc-switch --version",
+      "pattern": "(\\d+\\.\\d+\\.\\d+)"
+    },
+    "integration": {"type": "standalone"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "figma-mcp",
+    "display_name": "Figma MCP",
+    "description": "Official Figma design data and assets via MCP",
+    "tier": "popular",
+    "category": "integration",
+    "repo": "figma/mcp-server-guide",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'figma' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.figma"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@figma/mcp-server"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "linear-mcp",
+    "display_name": "Linear MCP",
+    "description": "Official Linear issue tracking and project management via MCP",
+    "tier": "popular",
+    "category": "integration",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install linear-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall linear-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "linear-mcp"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "atlassian-mcp",
+    "display_name": "Atlassian MCP",
+    "description": "Official Atlassian Jira and Confluence integration via MCP",
+    "tier": "popular",
+    "category": "integration",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install atlassian-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall atlassian-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "atlassian-mcp"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "slack-mcp",
+    "display_name": "Slack MCP",
+    "description": "Official Slack messaging and channel integration via MCP",
+    "tier": "popular",
+    "category": "integration",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install slack-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall slack-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "slack-mcp"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "notion-mcp",
+    "display_name": "Notion MCP",
+    "description": "Official Notion workspace and database integration via MCP",
+    "tier": "popular",
+    "category": "integration",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install notion-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall notion-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "notion-mcp"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "supabase-mcp",
+    "display_name": "Supabase MCP",
+    "description": "Official Supabase database and auth integration via MCP",
+    "tier": "popular",
+    "category": "integration",
+    "repo": "supabase",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'supabase' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.supabase"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@supabase/mcp-server-supabase"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "firebase-mcp",
+    "display_name": "Firebase MCP",
+    "description": "Official Firebase services integration via MCP",
+    "tier": "popular",
+    "category": "integration",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install firebase-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall firebase-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "firebase-mcp"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "vercel-mcp",
+    "display_name": "Vercel MCP",
+    "description": "Official Vercel deployment and project management via MCP",
+    "tier": "popular",
+    "category": "integration",
+    "repo": "vercel/vercel-deploy-claude-code-plugin",
+    "install_methods": [
+      {"type": "mcp"}
+    ],
+    "remove_hint": "Remove 'vercel' from mcpServers in settings.json",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "mcpServers.vercel"
+    },
+    "integration": {
+      "type": "mcp_server",
+      "mcp_config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@vercel/mcp-server"]
+      }
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "stripe-mcp",
+    "display_name": "Stripe MCP",
+    "description": "Official Stripe payments and billing integration via MCP",
+    "tier": "popular",
+    "category": "integration",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install stripe-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall stripe-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "stripe-mcp"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "posthog-mcp",
+    "display_name": "PostHog MCP",
+    "description": "Official PostHog analytics and feature flags via MCP",
+    "tier": "popular",
+    "category": "integration",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install posthog-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall posthog-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "posthog-mcp"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "neon-mcp",
+    "display_name": "Neon MCP",
+    "description": "Official Neon serverless Postgres integration via MCP",
+    "tier": "community",
+    "category": "integration",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install neon-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall neon-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "neon-mcp"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "railway-mcp",
+    "display_name": "Railway MCP",
+    "description": "Official Railway deployment and infrastructure via MCP",
+    "tier": "community",
+    "category": "integration",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install railway-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall railway-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "railway-mcp"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "terraform-mcp",
+    "display_name": "Terraform MCP",
+    "description": "Official Terraform infrastructure-as-code management via MCP",
+    "tier": "community",
+    "category": "integration",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install terraform-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall terraform-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "terraform-mcp"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "zapier-mcp",
+    "display_name": "Zapier MCP",
+    "description": "Official Zapier automation and workflow integration via MCP",
+    "tier": "community",
+    "category": "integration",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install zapier-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall zapier-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "zapier-mcp"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "brightdata-mcp",
+    "display_name": "Bright Data MCP",
+    "description": "Official Bright Data web scraping and data collection via MCP",
+    "tier": "community",
+    "category": "integration",
+    "repo": null,
+    "install_methods": [
+      {"type": "plugin", "command": "claude plugin install brightdata-mcp"}
+    ],
+    "remove_hint": "claude plugin uninstall brightdata-mcp",
+    "detect": {
+      "command": null,
+      "pattern": null,
+      "settings_json_key": "enabledPlugins",
+      "settings_json_pattern": "brightdata-mcp"
+    },
+    "integration": {"type": "plugin"},
+    "conflicts_with": [],
+    "min_version": null
+  }
+]
