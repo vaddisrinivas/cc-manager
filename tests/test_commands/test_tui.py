@@ -211,8 +211,8 @@ def test_run_static_no_crash(patched_env, capsys):
     from typer.testing import CliRunner
     from cc_manager.commands.tui import app
 
-    runner = CliRunner(mix_stderr=False)
-    result = runner.invoke(app, ["tui"])
+    runner = CliRunner()
+    result = runner.invoke(app, [])
     # Should not have a non-zero exit code from an exception
     assert result.exit_code == 0 or result.exit_code is None or "Error" not in (result.output or "")
 

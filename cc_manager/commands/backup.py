@@ -88,3 +88,7 @@ def backup_restore_cmd(timestamp: str = typer.Argument(..., help="Backup timesta
     console.print()
     success(f"Restored backup: [dim]{timestamp}[/dim]")
     console.print()
+
+
+# Alias for cli.py import
+backup_cmd = backup_create_cmd

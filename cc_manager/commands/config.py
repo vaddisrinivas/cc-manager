@@ -67,3 +67,7 @@ def config_reset_cmd(confirm: bool = typer.Option(False, "--confirm")) -> None:
     from cc_manager.commands.init import DEFAULT_CONFIG
     ctx_mod.CONFIG_PATH.write_text(DEFAULT_CONFIG, encoding="utf-8")
     console.print("[green]Config reset to defaults.[/green]")
+
+
+# Alias for cli.py import
+config_cmd = config_get_cmd
