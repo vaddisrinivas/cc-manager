@@ -217,7 +217,8 @@ def test_step3_toggle_list_installs_selected(step3_env, monkeypatch):
     monkeypatch.setattr(ctx_mod, "load_registry", lambda: two_tools)
     ctx_mod._ctx = None
 
-    monkeypatch.setattr("builtins.input", lambda *a: "")  # Enter = confirm all
+    # Checkbox returns all selected (default behaviour)
+    monkeypatch.setattr("cc_manager.commands.init._checkbox_select", lambda rows, **kw: set(range(len(rows))))
     monkeypatch.setattr("cc_manager.commands.init.run_cmd", lambda cmd, timeout=30: (0, "ok"))
     monkeypatch.setattr("cc_manager.commands.install.run_cmd", lambda cmd, timeout=30: (0, "ok"))
 
@@ -254,11 +255,10 @@ def test_step3_skips_already_installed(step3_env, monkeypatch):
 
 
 def test_step3_user_declines_all(step3_env, monkeypatch):
-    """User toggles off all tools → nothing installed."""
+    """User deselects all tools → nothing installed."""
     monkeypatch.setattr("cc_manager.commands.init._detect_tool", lambda t: None)
-    # Simulate: "1 2" (toggle both off) then "" (confirm)
-    inputs = iter(["1 2", ""])
-    monkeypatch.setattr("builtins.input", lambda *a: next(inputs))
+    # Simulate user deselecting everything (checkbox returns empty set)
+    monkeypatch.setattr("cc_manager.commands.init._checkbox_select", lambda *a, **kw: set())
 
     from cc_manager.commands.init import _step3_install_tools
     result = _step3_install_tools(dry_run=False, minimal=False, yes=False)
@@ -266,9 +266,9 @@ def test_step3_user_declines_all(step3_env, monkeypatch):
 
 
 def test_step3_keyboard_interrupt_during_consent(step3_env, monkeypatch):
-    """Ctrl+C during toggle clears selection → nothing installed."""
+    """Ctrl+C (q) during checkbox clears selection → nothing installed."""
     monkeypatch.setattr("cc_manager.commands.init._detect_tool", lambda t: None)
-    monkeypatch.setattr("builtins.input", lambda *a: (_ for _ in ()).throw(KeyboardInterrupt))
+    monkeypatch.setattr("cc_manager.commands.init._checkbox_select", lambda *a, **kw: set())
 
     two_tools = [
         {"name": "tool-a", "tier": "recommended", "description": "A",

@@ -46,3 +46,12 @@ def status_word(status: str) -> str:
 def tier_label(tier: str) -> str:
     """Return Rich markup label for a tool tier string."""
     return _TIER_LABELS.get(tier, f"[dim]{tier}[/dim]")
+
+
+def health_dot(ok: bool, warn: bool = False) -> str:
+    """Filled dot coloured by health state — for compact status displays."""
+    if ok:
+        return "[bright_green]●[/bright_green]"
+    if warn:
+        return "[yellow]◐[/yellow]"
+    return "[bright_red]●[/bright_red]"

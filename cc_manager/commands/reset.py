@@ -22,9 +22,9 @@ def reset_cmd(
             console.print("Pass --confirm to reset config."); raise typer.Exit(1)
         import cc_manager.settings as s
         s.backup_create()
-        from cc_manager.commands.init import DEFAULT_CONFIG
+        from cc_manager.config import cfg
         import cc_manager.context as ctx_mod
-        ctx_mod.CONFIG_PATH.write_text(DEFAULT_CONFIG, encoding="utf-8")
+        ctx_mod.CONFIG_PATH.write_text(cfg.to_toml(), encoding="utf-8")
         console.print("[green]Config reset.[/green]"); return
 
     if all_:

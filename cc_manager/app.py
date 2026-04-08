@@ -4,7 +4,7 @@ from __future__ import annotations
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, ScrollableContainer
-from textual.widgets import Footer, Static
+from textual.widgets import Footer
 
 from cc_manager import __version__
 from cc_manager.dashboard_data import DashboardData
@@ -111,7 +111,7 @@ class CCManagerApp(App):
         try:
             from cc_manager.dashboard_data import build_data
             self._data = build_data()
-        except Exception:
+        except Exception as exc:
             self._data = DashboardData(
                 version=__version__, timestamp="error", status="DEGRADED",
                 sessions=[], total_input=0, total_output=0, total_cost=0.0,
@@ -120,6 +120,7 @@ class CCManagerApp(App):
                 health_checks=[], cc_hooks=0, settings_ok=False,
                 recs=[], available=[], events=[],
             )
+            self.notify(f"data error: {exc}", severity="error")
         self._push_data()
 
     def _push_data(self) -> None:

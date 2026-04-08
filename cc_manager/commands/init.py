@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import shutil
+import sys
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -18,6 +19,114 @@ import cc_manager.settings as settings_mod
 from cc_manager.config import HOOK_EVENTS, MODULES, cfg
 from cc_manager.context import get_ctx, run_cmd
 from cc_manager.display import console, dim_info, header, success
+
+
+# ── Interactive checkbox ───────────────────────────────────────────────────────
+
+_ESC   = "\x1b"
+_HIDE  = "\x1b[?25l"
+_SHOW  = "\x1b[?25h"
+_CLR   = "\x1b[2K\r"
+_GREEN = "\x1b[92m"
+_DIM   = "\x1b[2m"
+_BOLD  = "\x1b[1;97m"
+_CYAN  = "\x1b[96m"
+_RST   = "\x1b[0m"
+_UP    = lambda n: f"\x1b[{n}A" if n > 0 else ""
+
+
+def _checkbox_select(
+    rows: list[tuple[str, str]],  # (label, hint) pairs
+    title: str = "",
+    default_on: bool = True,
+    visible: int = 18,
+) -> set[int]:
+    """
+    Arrow-key navigable checkbox prompt.
+    Returns set of selected indices, or full set on non-TTY / import error.
+    Keys: ↑↓ move · space toggle · a all/none · enter confirm · q/^C cancel
+    """
+    if not sys.stdin.isatty():
+        return set(range(len(rows))) if default_on else set()
+
+    try:
+        import tty, termios  # noqa: F401
+    except ImportError:
+        return set(range(len(rows))) if default_on else set()
+
+    import tty, termios  # noqa: F811
+
+    N = len(rows)
+    selected: set[int] = set(range(N)) if default_on else set()
+    cursor = 0
+    scroll = 0
+    visible = min(visible, N)
+    rendered = 0
+
+    def _render() -> None:
+        nonlocal rendered
+        lines: list[str] = []
+        if title:
+            lines.append(f"  {_DIM}{title}{_RST}")
+        for i in range(scroll, scroll + visible):
+            if i >= N:
+                lines.append("")
+                continue
+            label, hint = rows[i]
+            check = f"{_GREEN}[✓]{_RST}" if i in selected else f"{_DIM}[ ]{_RST}"
+            ptr   = f"{_CYAN}›{_RST}" if i == cursor else " "
+            name  = f"{_BOLD}{label:<18}{_RST}" if i == cursor else f"{label:<18}"
+            hint_ = f"{_DIM}{hint}{_RST}"
+            lines.append(f"  {ptr} {check} {name} {hint_}")
+        if N > visible:
+            shown_end = scroll + visible
+            lines.append(f"  {_DIM}── {scroll + 1}–{min(shown_end, N)} of {N}  (↑↓ scroll){_RST}")
+        lines.append(f"\n  {_DIM}↑↓ move · space toggle · a all/none · enter confirm{_RST}")
+        buf = ""
+        if rendered:
+            buf += _UP(rendered)
+        for ln in lines:
+            buf += _CLR + ln + "\n"
+        rendered = len(lines)
+        sys.stdout.write(buf)
+        sys.stdout.flush()
+
+    sys.stdout.write(_HIDE + "\n")
+    sys.stdout.flush()
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+
+    try:
+        tty.setcbreak(fd)
+        _render()
+        while True:
+            ch = sys.stdin.read(1)
+            if ch in ("\r", "\n"):
+                break
+            if ch == " ":
+                selected.symmetric_difference_update({cursor})
+            elif ch in ("a", "A"):
+                selected = set(range(N)) if len(selected) != N else set()
+            elif ch in ("q", "\x03"):
+                selected = set()
+                break
+            elif ch == _ESC:
+                seq = sys.stdin.read(2)
+                if seq == "[A":  # up
+                    cursor = max(0, cursor - 1)
+                    if cursor < scroll:
+                        scroll = cursor
+                elif seq == "[B":  # down
+                    cursor = min(N - 1, cursor + 1)
+                    if cursor >= scroll + visible:
+                        scroll = cursor - visible + 1
+            _render()
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
+        sys.stdout.write(_SHOW)
+        sys.stdout.flush()
+
+    return selected
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -159,32 +268,12 @@ def _step3_install_tools(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
         for t in approved:
             console.print(f"  [bright_green]✓[/bright_green]  {t['name']}")
     else:
-        # Toggle list — all ON by default, user types numbers to toggle off
-        selected = {i for i in range(len(installable))}
-        while True:
-            console.print()
-            for i, t in enumerate(installable):
-                name = t["name"]
-                method = (t.get("install_methods") or [{}])[0].get("type", "manual")
-                mark = "[bright_green][✓][/bright_green]" if i in selected else "[dim][ ][/dim]"
-                console.print(f"  {mark} [bright_cyan]{i + 1}[/bright_cyan]  [bright_white]{name:<18}[/bright_white] [dim]{method}[/dim]")
-            console.print()
-            console.print("  [dim]Toggle by number (e.g. 2 5), Enter to confirm:[/dim]", end=" ")
-            try:
-                raw = input().strip()
-            except (KeyboardInterrupt, EOFError):
-                selected.clear()
-                break
-            if not raw:
-                break
-            for tok in raw.replace(",", " ").split():
-                try:
-                    idx = int(tok) - 1
-                    if 0 <= idx < len(installable):
-                        selected.symmetric_difference_update({idx})
-                except ValueError:
-                    pass
-        approved = [installable[i] for i in sorted(selected)]
+        rows = [
+            (t["name"], (t.get("install_methods") or [{}])[0].get("type", "manual"))
+            for t in installable
+        ]
+        idxs = _checkbox_select(rows, title="Space to toggle · Enter to install selected")
+        approved = [installable[i] for i in sorted(idxs)]
 
     if not approved:
         dim_info("Nothing selected.")
@@ -257,33 +346,12 @@ def _step4_modules(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
             console.print(f"  [bright_green][✓][/bright_green] [bright_white]{name:<10}[/bright_white]  [dim]— {desc}[/dim]")
         return [name for name, _ in MODULES]
 
-    # Show numbered list — all ON by default, user types numbers to toggle off
-    selected = {i for i in range(len(MODULES))}
-    while True:
-        console.print()
-        for i, (name, desc) in enumerate(MODULES):
-            mark = "[bright_green][✓][/bright_green]" if i in selected else "[dim][ ][/dim]"
-            console.print(f"  {mark} [bright_cyan]{i + 1}[/bright_cyan]  [bright_white]{name:<10}[/bright_white]  [dim]— {desc}[/dim]")
-        console.print()
-        console.print("  [dim]Toggle by number (e.g. 2 4), Enter to confirm:[/dim]", end=" ")
-        try:
-            raw = input().strip()
-        except (KeyboardInterrupt, EOFError):
-            break
-        if not raw:
-            break
-        for tok in raw.replace(",", " ").split():
-            try:
-                idx = int(tok) - 1
-                if 0 <= idx < len(MODULES):
-                    selected.symmetric_difference_update({idx})
-            except ValueError:
-                pass
-
-    enabled = [MODULES[i][0] for i in sorted(selected)]
+    rows = [(name, desc) for name, desc in MODULES]
+    idxs = _checkbox_select(rows, title="Space to toggle · Enter to enable selected")
+    enabled = [MODULES[i][0] for i in sorted(idxs)]
     console.print()
     for i, (name, desc) in enumerate(MODULES):
-        mark = "[bright_green][✓][/bright_green]" if i in selected else "[dim][ ][/dim]"
+        mark = "[bright_green][✓][/bright_green]" if i in idxs else "[dim][ ][/dim]"
         console.print(f"  {mark} [bright_white]{name:<10}[/bright_white]  [dim]— {desc}[/dim]")
     return enabled
 
@@ -321,8 +389,40 @@ def _step5_config(dry_run: bool, manager_dir: Path, config_path: Path) -> dict:
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 
+_BANNER = """\
+  ██████╗ ██████╗    ███╗   ███╗ █████╗ ███╗  ██╗ █████╗  ██████╗ ███████╗██████╗
+ ██╔════╝██╔════╝    ████╗ ████║██╔══██╗████╗ ██║██╔══██╗██╔════╝██╔════╝██╔══██╗
+ ██║     ██║         ██╔████╔██║███████║██╔██╗██║███████║██║  ███╗█████╗  ██████╔╝
+ ██║     ██║         ██║╚██╔╝██║██╔══██║██║╚████║██╔══██║██║   ██║██╔══╝  ██╔══██╗
+ ╚██████╗╚██████╗    ██║ ╚═╝ ██║██║  ██║██║ ╚███║██║  ██║╚██████╔╝███████╗██║  ██║
+  ╚═════╝ ╚═════╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚══╝╚═╝  ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═╝"""
+
+
+def _print_banner() -> None:
+    import time
+    from rich.live import Live
+    from rich.text import Text
+    lines = _BANNER.splitlines()
+    with Live(Text(""), refresh_per_second=30, console=console) as live:
+        for i, line in enumerate(lines):
+            live.update(Text("\n".join(lines[:i + 1]), style="bold bright_cyan"))
+            time.sleep(0.04)
+    console.print()
+    msg = "  Initializing cc-manager..."
+    with Live(Text(""), refresh_per_second=60, console=console) as live:
+        buf = ""
+        for ch in msg:
+            buf += ch
+            live.update(Text(buf, style="bright_cyan"))
+            time.sleep(0.025)
+    console.print()
+
+
 def run_init(dry_run: bool = False, minimal: bool = False, yes: bool = False) -> None:
-    header("cc-manager init")
+    if not dry_run:
+        _print_banner()
+    else:
+        header("cc-manager init")
     if dry_run:
         console.print(Panel("[bold yellow]DRY RUN — nothing will be written[/bold yellow]", border_style="yellow"))
 

@@ -73,6 +73,9 @@ def install_tool(
         cmd = method.get("command")
         if not cmd:
             raise InstallError(f"No command for method type '{method_type}'.")
+        # Make cargo installs idempotent (cached binaries won't cause re-install failures)
+        if method_type == "cargo" and "--force" not in cmd:
+            cmd = cmd + " --force"
         with console.status(f"[bright_cyan]◆ Installing {name}...[/bright_cyan]", spinner="dots12"):
             rc, output = run_cmd(cmd)
         if rc != 0:

@@ -229,6 +229,20 @@ def get_ctx() -> Context:
     return _ctx
 
 
+def get_week_stats(store, days: int = 7) -> tuple[list[dict], float, int, int]:
+    """Return (recent_sessions, week_cost, session_count, total_tokens) for the last N days.
+
+    Single store query used by both `ccm` dashboard and `ccm status` so we don't
+    read the events file twice.
+    """
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    recent = store.query(event="session_end", since=cutoff, limit=1000)
+    week_cost = sum(r.get("cost_usd", 0.0) for r in recent)
+    week_sessions = len(recent)
+    week_tokens = sum(r.get("input_tokens", 0) + r.get("output_tokens", 0) for r in recent)
+    return recent, week_cost, week_sessions, week_tokens
+
+
 def set_ctx(ctx: Context) -> None:
     """Set the module-level context (used by tests)."""
     global _ctx

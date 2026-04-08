@@ -38,13 +38,17 @@ class Store:
         if not self.path.exists():
             return []
         records = []
+        skipped = 0
         for line in self.path.read_text(encoding="utf-8").splitlines():
             line = line.strip()
             if line:
                 try:
                     records.append(json.loads(line))
                 except json.JSONDecodeError:
-                    pass
+                    skipped += 1
+        if skipped:
+            import sys
+            sys.stderr.write(f"[cc-manager] store: skipped {skipped} corrupted line(s) in {self.path}\n")
         return records
 
     def query(

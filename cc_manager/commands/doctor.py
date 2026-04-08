@@ -24,6 +24,14 @@ from cc_manager.context import dot_get
 
 app = typer.Typer()
 
+# Exact command to fix each named check failure
+_DOCTOR_FIXES: dict[str, str] = {
+    "python_version":  "brew install python@3.12",
+    "config_valid":    "ccm reset --config --confirm",
+    "store_writable":  "mkdir -p ~/.cc-manager/store",
+    "hooks_registered": "ccm init",
+}
+
 
 def run_checks() -> dict[str, dict]:
     """Run all doctor checks. Returns dict of check_name -> {status, message}."""
@@ -181,5 +189,25 @@ def doctor_cmd() -> None:
     )
     console.print()
 
-    if n_fail:
+    failures = [k for k, v in results.items() if v["status"] == "fail"]
+    if failures:
+        fix_lines = []
+        for check in failures:
+            fix = _DOCTOR_FIXES.get(check)
+            if check.startswith("tool:"):
+                tool_name = check[5:]
+                fix = f"ccm uninstall {tool_name} && ccm install {tool_name}"
+            if fix:
+                fix_lines.append(f"  [dim]{check.replace('tool:', '').replace('_', ' ')}:[/dim]  [bright_cyan]{fix}[/bright_cyan]")
+        if fix_lines:
+            console.print(
+                Panel(
+                    "\n".join(fix_lines),
+                    title="[bold bright_red]◆ FIX SUGGESTIONS[/bold bright_red]",
+                    border_style="bright_red",
+                    box=box.SIMPLE_HEAVY,
+                    padding=(0, 1),
+                )
+            )
+            console.print()
         raise typer.Exit(1)

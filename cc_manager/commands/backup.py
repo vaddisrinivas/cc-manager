@@ -7,7 +7,7 @@ from rich.padding import Padding
 from rich.rule import Rule
 
 import cc_manager.settings as settings_mod
-from cc_manager.display import console, success, error, info
+from cc_manager.display import console, success, info
 
 app = typer.Typer()
 

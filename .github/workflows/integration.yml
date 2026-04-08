@@ -28,6 +28,9 @@ jobs:
       - name: pytest
         run: python -m pytest tests/ -q --tb=short
 
+      - name: Validate registry schema
+        run: python3 scripts/validate_registry.py
+
   # ── 2. TUI headless tests (Textual pilot, no TTY) ────────────────────────────
   tui:
     name: TUI Headless Tests
@@ -44,7 +47,7 @@ jobs:
       - name: Install
         run: |
           pip install -e ".[dev]"
-          pip install anyio pytest-asyncio
+          pip install anyio pytest-asyncio pytest-timeout
 
       - name: Bootstrap Claude env
         run: |

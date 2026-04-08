@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import sys
 import threading
+from pathlib import Path
 from typing import Any
 
 from cc_manager.handlers import Handler
@@ -45,6 +46,20 @@ def _load_handler(event_name: str) -> Handler | None:
 # Dispatch
 # ---------------------------------------------------------------------------
 
+_ERRORS_LOG = Path.home() / ".cc-manager" / "store" / "errors.log"
+
+
+def _log_error(msg: str) -> None:
+    try:
+        _ERRORS_LOG.parent.mkdir(parents=True, exist_ok=True)
+        with open(_ERRORS_LOG, "a") as f:
+            from datetime import datetime, timezone
+            ts = datetime.now(timezone.utc).isoformat()
+            f.write(f"{ts} {msg}\n")
+    except Exception:
+        pass
+
+
 def _run_with_timeout(fn, args: tuple, timeout_s: float) -> dict:
     result: dict = {}
 
@@ -53,8 +68,8 @@ def _run_with_timeout(fn, args: tuple, timeout_s: float) -> dict:
             r = fn(*args)
             if isinstance(r, dict):
                 result.update(r)
-        except Exception:
-            pass
+        except Exception as exc:
+            _log_error(f"handler {fn.__name__!r} raised: {exc}")
 
     t = threading.Thread(target=target, daemon=True)
     t.start()
@@ -72,7 +87,8 @@ def dispatch(event_name: str, payload: dict) -> dict:
         ctx = get_ctx()
         result = _run_with_timeout(handler.fn, (payload, ctx), handler.timeout_ms / 1000.0)
         return result or {}
-    except Exception:
+    except Exception as exc:
+        _log_error(f"dispatch {event_name!r} failed: {exc}")
         return {}
 
 

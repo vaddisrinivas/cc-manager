@@ -4,8 +4,6 @@ import time
 from typing import Optional
 import typer
 from rich.rule import Rule
-from rich.text import Text
-from rich.columns import Columns
 
 from cc_manager.context import get_ctx, parse_duration
 from cc_manager.display import console
