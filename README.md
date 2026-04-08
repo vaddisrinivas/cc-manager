@@ -28,7 +28,7 @@ It is a standalone CLI, not a plugin. It configures Claude Code and stays out of
 
 ```bash
 # Install
-pip install git+https://github.com/vaddisrinivas/cc-manager.git
+uv tool install git+https://github.com/vaddisrinivas/cc-manager.git
 
 # Interactive setup (detects env, installs tools, wires hooks)
 ccm init
@@ -190,7 +190,7 @@ cc-manager registers slash commands usable inside Claude Code sessions:
 ```bash
 git clone https://github.com/vaddisrinivas/cc-manager
 cd cc-manager
-pip install -e ".[dev]"
+uv sync --dev
 pytest tests/ -q          # 148 tests
 ```
 

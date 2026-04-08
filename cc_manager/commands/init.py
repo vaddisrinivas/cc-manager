@@ -160,7 +160,7 @@ def _step3_install_tools(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
             if yes:
                 approved.append(t)
                 console.print(f"  [bright_green]✓[/bright_green]  {name:<18}  [dim]{cmd_hint}[/dim]")
-            elif _prompt_yes(f"  Install [bright_white]{name}[/bright_white]  [dim]({cmd_hint})[/dim]?"):
+            elif _prompt_yes(f"  Install {name} ({cmd_hint})?"):
                 approved.append(t)
             else:
                 console.print(f"  [dim]  {name} — skipped[/dim]")
@@ -234,7 +234,7 @@ def _step4_modules(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
     _step(4, 5, "Enabling modules")
     enabled = []
     for name, desc in MODULES:
-        if minimal or yes or _prompt_yes(f"  Enable [bright_white]{name}[/bright_white] — {desc}?"):
+        if minimal or yes or _prompt_yes(f"  Enable {name} — {desc}?"):
             marker = "[bright_green][✓][/bright_green]"
             enabled.append(name)
         else:
