@@ -1114,5 +1114,59 @@
     },
     "conflicts_with": [],
     "min_version": null
+  },
+  {
+    "name": "cli-anything",
+    "display_name": "CLI-Anything",
+    "description": "Make any software agent-native \u2014 wraps CLI tools so AI agents can drive them directly",
+    "tier": "recommended",
+    "category": "orchestration",
+    "repo": "HKUDS/CLI-Anything",
+    "git_url": "https://github.com/HKUDS/CLI-Anything",
+    "readme_url": "https://github.com/HKUDS/CLI-Anything#readme",
+    "install_methods": [
+      {
+        "type": "pip",
+        "command": "pip install cli-anything"
+      }
+    ],
+    "remove_hint": "pip uninstall cli-anything",
+    "detect": {
+      "command": "cli-anything --version",
+      "pattern": null,
+      "plugin_name": null
+    },
+    "integration": {
+      "type": "standalone"
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "notebooklm-mcp",
+    "display_name": "NotebookLM MCP",
+    "description": "Programmatic access to Google NotebookLM \u2014 create notebooks, add sources, generate podcasts, query across notebooks via MCP",
+    "tier": "popular",
+    "category": "mcp-server",
+    "repo": "jacob-bd/notebooklm-mcp-cli",
+    "git_url": "https://github.com/jacob-bd/notebooklm-mcp-cli",
+    "readme_url": "https://github.com/jacob-bd/notebooklm-mcp-cli#readme",
+    "install_methods": [
+      {
+        "type": "pip",
+        "command": "uv tool install notebooklm-mcp-cli"
+      }
+    ],
+    "remove_hint": "uv tool uninstall notebooklm-mcp-cli",
+    "detect": {
+      "command": "notebooklm --version",
+      "pattern": null,
+      "plugin_name": null
+    },
+    "integration": {
+      "type": "mcp"
+    },
+    "conflicts_with": [],
+    "min_version": null
   }
 ]
