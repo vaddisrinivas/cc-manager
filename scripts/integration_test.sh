@@ -323,9 +323,9 @@ else fail "no backup files found"; fi
 # ══════════════════════════════════════════════════════════════════════════════
 section "17. ccm config round-trip"
 
-assert_exit0 "config set" ccm config set analytics.enabled false
-assert_exit0 "config get" ccm config get analytics.enabled
-run ccm config get analytics.enabled || true
+assert_exit0 "config set" ccm config-set analytics.enabled false
+assert_exit0 "config get" ccm config analytics.enabled
+run ccm config analytics.enabled || true
 assert_output "config get returns set value" "false"
 
 # ══════════════════════════════════════════════════════════════════════════════
