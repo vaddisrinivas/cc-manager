@@ -56,14 +56,52 @@ def run_cmd(cmd: str, timeout: int = 30) -> tuple[int, str]:
         return 1, str(e)
 
 
+def _parse_registry(raw: str) -> tuple[list, list]:
+    """Parse registry JSON — supports both flat list and {profiles, tools} formats.
+    Returns (tools, profiles)."""
+    data = json.loads(raw)
+    if isinstance(data, list):
+        return data, []
+    return data.get("tools", []), data.get("profiles", [])
+
+
 def load_registry() -> list:
-    """Load bundled registry/tools.json via importlib.resources."""
+    """Load bundled registry/tools.json. Returns tools list."""
+    tools, _ = _load_registry_raw()
+    return tools
+
+
+def load_profiles() -> list:
+    """Load profiles: bundled registry profiles merged with local overrides.
+
+    Local file: ~/.cc-manager/registry/profiles.json  (list of profile objects)
+    Local profiles with the same name override bundled ones.
+    Local-only profiles are appended at the end.
+    This file survives ccm updates — it is never overwritten by the tool.
+    """
+    _, bundled = _load_registry_raw()
+    local_path = MANAGER_DIR / "registry" / "profiles.json"
+    if not local_path.exists():
+        return bundled
+    try:
+        local = json.loads(local_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return bundled
+    # merge: local overrides bundled by name, extras appended
+    merged = {p["name"]: p for p in bundled}
+    for p in local:
+        if isinstance(p, dict) and p.get("name"):
+            merged[p["name"]] = p
+    return list(merged.values())
+
+
+def _load_registry_raw() -> tuple[list, list]:
+    """Load registry from disk/package, returning (tools, profiles)."""
     try:
         import importlib.resources as pkg_resources
         try:
             ref = pkg_resources.files("registry").joinpath("tools.json")
-            data = ref.read_text(encoding="utf-8")
-            return json.loads(data)
+            return _parse_registry(ref.read_text(encoding="utf-8"))
         except (TypeError, AttributeError, ModuleNotFoundError):
             pass
     except Exception:
@@ -75,8 +113,8 @@ def load_registry() -> list:
     ]
     for candidate in candidates:
         if candidate.exists():
-            return json.loads(candidate.read_text(encoding="utf-8"))
-    return []
+            return _parse_registry(candidate.read_text(encoding="utf-8"))
+    return [], []
 
 
 def _load_settings() -> dict:

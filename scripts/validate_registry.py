@@ -172,9 +172,35 @@ def validate_tool(t: dict, errs: Errors) -> None:
     # Duplicate-name check happens at top level
 
 
+# ── Profile validation ────────────────────────────────────────────────────────
+
+def validate_profiles(profiles: list, tool_names: set[str], errs: Errors) -> None:
+    seen: set[str] = set()
+    for p in profiles:
+        if not isinstance(p, dict):
+            errs.error("<profile>", "root", "each profile must be a JSON object")
+            continue
+        name = p.get("name")
+        if not name:
+            errs.error("<profile>", "name", "missing required field")
+            continue
+        if name in seen:
+            errs.error(name, "name", "duplicate profile name")
+        seen.add(name)
+        if not p.get("description"):
+            errs.warn(name, "description", "missing description")
+        tools = p.get("tools")
+        if not isinstance(tools, list) or not tools:
+            errs.error(name, "tools", "must be a non-empty list")
+            continue
+        for t in tools:
+            if t not in tool_names:
+                errs.error(name, "tools", f"'{t}' not found in tools list")
+
+
 # ── Top-level validation ──────────────────────────────────────────────────────
 
-def validate(tools: list, errs: Errors) -> None:
+def validate(tools: list, errs: Errors, profiles: list | None = None) -> None:
     if not isinstance(tools, list):
         print("ERROR: root must be a JSON array")
         sys.exit(1)
@@ -190,6 +216,9 @@ def validate(tools: list, errs: Errors) -> None:
         elif name:
             seen_names.add(name)
         validate_tool(t, errs)
+
+    if profiles:
+        validate_profiles(profiles, seen_names, errs)
 
 
 # ── Auto-fix ──────────────────────────────────────────────────────────────────
@@ -235,22 +264,30 @@ def main() -> None:
         sys.exit(1)
 
     try:
-        tools = json.loads(path.read_text())
+        data = json.loads(path.read_text())
     except json.JSONDecodeError as e:
         print(f"ERROR: invalid JSON: {e}")
         sys.exit(1)
 
+    # Support both flat list and {profiles, tools} formats
+    if isinstance(data, list):
+        tools, profiles = data, []
+    else:
+        tools = data.get("tools", [])
+        profiles = data.get("profiles", [])
+
     if args.fix:
         n = autofix(tools)
-        path.write_text(json.dumps(tools, indent=2) + "\n")
+        out = {"profiles": profiles, "tools": tools} if profiles else tools
+        path.write_text(json.dumps(out, indent=2) + "\n")
         print(f"Auto-fixed {n} normalizable issues in {path}")
 
     errs = Errors()
-    validate(tools, errs)
+    validate(tools, errs, profiles=profiles)
     errs.report(verbose=args.verbose)
 
     if errs.ok:
-        print(f"\n  OK — {len(tools)} entries valid")
+        print(f"\n  OK — {len(tools)} tools, {len(profiles)} profiles")
         sys.exit(0)
     else:
         sys.exit(1)
