@@ -154,23 +154,40 @@ def _step3_install_tools(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
         dim_info(f"[DRY RUN] would install: {', '.join(t['name'] for t in installable)}")
         return []
 
-    approved: list[dict] = []
-    console.print("  [dim]Select tools to install:[/dim]\n")
-    try:
-        for t in installable:
-            name = t["name"]
-            cmd_hint = (t.get("install_methods") or [{}])[0].get("command") or "manual"
-            if yes:
-                approved.append(t)
-                console.print(f"  [bright_green]✓[/bright_green]  {name:<18}  [dim]{cmd_hint}[/dim]")
-            elif _prompt_yes(f"  Install [bright_white]{name}[/bright_white] [dim]({cmd_hint})[/dim]", "?"):
-                approved.append(t)
-            else:
-                console.print(f"  [dim]  {name} — skipped[/dim]")
-    except (KeyboardInterrupt, typer.Abort):
-        console.print("\n  [yellow]⚠[/yellow]  Cancelled.")
+    if yes:
+        approved = list(installable)
+        for t in approved:
+            console.print(f"  [bright_green]✓[/bright_green]  {t['name']}")
+    else:
+        # Toggle list — all ON by default, user types numbers to toggle off
+        selected = {i for i in range(len(installable))}
+        while True:
+            console.print()
+            for i, t in enumerate(installable):
+                name = t["name"]
+                method = (t.get("install_methods") or [{}])[0].get("type", "manual")
+                mark = "[bright_green][✓][/bright_green]" if i in selected else "[dim][ ][/dim]"
+                console.print(f"  {mark} [bright_cyan]{i + 1}[/bright_cyan]  [bright_white]{name:<18}[/bright_white] [dim]{method}[/dim]")
+            console.print()
+            console.print("  [dim]Toggle by number (e.g. 2 5), Enter to confirm:[/dim]", end=" ")
+            try:
+                raw = input().strip()
+            except (KeyboardInterrupt, EOFError):
+                selected.clear()
+                break
+            if not raw:
+                break
+            for tok in raw.replace(",", " ").split():
+                try:
+                    idx = int(tok) - 1
+                    if 0 <= idx < len(installable):
+                        selected.symmetric_difference_update({idx})
+                except ValueError:
+                    pass
+        approved = [installable[i] for i in sorted(selected)]
 
     if not approved:
+        dim_info("Nothing selected.")
         return []
 
     results: dict[str, tuple[bool, str]] = {}

@@ -203,11 +203,10 @@ def test_step3_yes_installs_all(step3_env, monkeypatch):
     assert len(installed_calls) >= 1
 
 
-def test_step3_collects_all_consent_before_installing(step3_env, monkeypatch):
-    """All y/n prompts are shown before any install command runs."""
+def test_step3_toggle_list_installs_selected(step3_env, monkeypatch):
+    """Toggle list confirms all by default (Enter) → both tools installed."""
     monkeypatch.setattr("cc_manager.commands.init._detect_tool", lambda t: None)
 
-    # Two tools to install
     two_tools = [
         {"name": "tool-a", "tier": "recommended", "description": "A",
          "install_methods": [{"type": "cargo", "command": "echo a"}], "category": "test"},
@@ -216,34 +215,16 @@ def test_step3_collects_all_consent_before_installing(step3_env, monkeypatch):
     ]
     import cc_manager.context as ctx_mod
     monkeypatch.setattr(ctx_mod, "load_registry", lambda: two_tools)
-    ctx_mod._ctx = None  # reset singleton
+    ctx_mod._ctx = None
 
-    event_log: list[str] = []
-
-    def fake_prompt_yes(msg, default=True):
-        event_log.append(f"prompt:{msg.split()[2]}")  # capture tool name
-        return True
-
-    def fake_run_cmd(cmd, timeout=30):
-        event_log.append(f"install:{cmd}")
-        return 0, "ok"
-
-    monkeypatch.setattr("cc_manager.commands.init._prompt_yes", fake_prompt_yes)
-    monkeypatch.setattr("cc_manager.commands.init.run_cmd", fake_run_cmd)
-    monkeypatch.setattr("cc_manager.commands.install.run_cmd", fake_run_cmd)
+    monkeypatch.setattr("builtins.input", lambda *a: "")  # Enter = confirm all
+    monkeypatch.setattr("cc_manager.commands.init.run_cmd", lambda cmd, timeout=30: (0, "ok"))
+    monkeypatch.setattr("cc_manager.commands.install.run_cmd", lambda cmd, timeout=30: (0, "ok"))
 
     from cc_manager.commands.init import _step3_install_tools
-    _step3_install_tools(dry_run=False, minimal=False, yes=False)
-
-    # All prompts must appear before any install
-    prompt_indices = [i for i, e in enumerate(event_log) if e.startswith("prompt:")]
-    install_indices = [i for i, e in enumerate(event_log) if e.startswith("install:")]
-    assert prompt_indices, "expected at least one prompt"
-    assert install_indices, "expected at least one install"
-    assert max(prompt_indices) < min(install_indices), (
-        "Installs started before all consent collected. "
-        f"prompts at {prompt_indices}, installs at {install_indices}"
-    )
+    result = _step3_install_tools(dry_run=False, minimal=False, yes=False)
+    assert "tool-a" in result
+    assert "tool-b" in result
 
 
 def test_step3_skips_already_installed(step3_env, monkeypatch):
@@ -272,10 +253,12 @@ def test_step3_skips_already_installed(step3_env, monkeypatch):
     assert not prompt_calls, "should not prompt for already-installed tools"
 
 
-def test_step3_user_declines_tool(step3_env, monkeypatch):
-    """When user says no to a tool it is not installed."""
+def test_step3_user_declines_all(step3_env, monkeypatch):
+    """User toggles off all tools → nothing installed."""
     monkeypatch.setattr("cc_manager.commands.init._detect_tool", lambda t: None)
-    monkeypatch.setattr("cc_manager.commands.init._prompt_yes", lambda *a, **kw: False)
+    # Simulate: "1 2" (toggle both off) then "" (confirm)
+    inputs = iter(["1 2", ""])
+    monkeypatch.setattr("builtins.input", lambda *a: next(inputs))
 
     from cc_manager.commands.init import _step3_install_tools
     result = _step3_install_tools(dry_run=False, minimal=False, yes=False)
@@ -283,20 +266,10 @@ def test_step3_user_declines_tool(step3_env, monkeypatch):
 
 
 def test_step3_keyboard_interrupt_during_consent(step3_env, monkeypatch):
-    """Ctrl+C during consent stops prompting and installs only approved tools."""
+    """Ctrl+C during toggle clears selection → nothing installed."""
     monkeypatch.setattr("cc_manager.commands.init._detect_tool", lambda t: None)
+    monkeypatch.setattr("builtins.input", lambda *a: (_ for _ in ()).throw(KeyboardInterrupt))
 
-    call_count = [0]
-
-    def prompt_raises_on_second(msg, default=True):
-        call_count[0] += 1
-        if call_count[0] >= 2:
-            raise KeyboardInterrupt
-        return True
-
-    monkeypatch.setattr("cc_manager.commands.init._prompt_yes", prompt_raises_on_second)
-
-    # Two tools so interrupt fires on second
     two_tools = [
         {"name": "tool-a", "tier": "recommended", "description": "A",
          "install_methods": [{"type": "mcp", "mcp_config": {"command": "node", "args": []}}],
@@ -309,14 +282,9 @@ def test_step3_keyboard_interrupt_during_consent(step3_env, monkeypatch):
     monkeypatch.setattr(ctx_mod, "load_registry", lambda: two_tools)
     ctx_mod._ctx = None
 
-    import cc_manager.settings as smod
-    monkeypatch.setattr(smod, "merge_mcp", lambda name, cfg: None)
-
     from cc_manager.commands.init import _step3_install_tools
     result = _step3_install_tools(dry_run=False, minimal=False, yes=False)
-
-    # tool-a was approved before interrupt; tool-b was not
-    assert "tool-b" not in result
+    assert result == []
 
 
 def test_step3_keyboard_interrupt_during_install(step3_env, monkeypatch):
