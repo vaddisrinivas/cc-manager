@@ -235,14 +235,39 @@ def _step3_install_tools(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
 
 def _step4_modules(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
     _step(4, 5, "Enabling modules")
-    enabled = []
-    for name, desc in MODULES:
-        if minimal or yes or _prompt_yes(f"  Enable [bright_white]{name}[/bright_white] — {desc}", "?"):
-            marker = "[bright_green][✓][/bright_green]"
-            enabled.append(name)
-        else:
-            marker = "[dim][ ][/dim]"
-        console.print(f"  {marker} [bright_white]{name:<10}[/bright_white]  [dim]— {desc}[/dim]")
+    if minimal or yes:
+        for name, desc in MODULES:
+            console.print(f"  [bright_green][✓][/bright_green] [bright_white]{name:<10}[/bright_white]  [dim]— {desc}[/dim]")
+        return [name for name, _ in MODULES]
+
+    # Show numbered list — all ON by default, user types numbers to toggle off
+    selected = {i for i in range(len(MODULES))}
+    while True:
+        console.print()
+        for i, (name, desc) in enumerate(MODULES):
+            mark = "[bright_green][✓][/bright_green]" if i in selected else "[dim][ ][/dim]"
+            console.print(f"  {mark} [bright_cyan]{i + 1}[/bright_cyan]  [bright_white]{name:<10}[/bright_white]  [dim]— {desc}[/dim]")
+        console.print()
+        console.print("  [dim]Toggle by number (e.g. 2 4), Enter to confirm:[/dim]", end=" ")
+        try:
+            raw = input().strip()
+        except (KeyboardInterrupt, EOFError):
+            break
+        if not raw:
+            break
+        for tok in raw.replace(",", " ").split():
+            try:
+                idx = int(tok) - 1
+                if 0 <= idx < len(MODULES):
+                    selected.symmetric_difference_update({idx})
+            except ValueError:
+                pass
+
+    enabled = [MODULES[i][0] for i in sorted(selected)]
+    console.print()
+    for i, (name, desc) in enumerate(MODULES):
+        mark = "[bright_green][✓][/bright_green]" if i in selected else "[dim][ ][/dim]"
+        console.print(f"  {mark} [bright_white]{name:<10}[/bright_white]  [dim]— {desc}[/dim]")
     return enabled
 
 
