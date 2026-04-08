@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nodejs \
     npm \
     ca-certificates \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Rust (cargo) — non-interactive, minimal profile
@@ -20,7 +21,7 @@ WORKDIR /app
 COPY . /app
 RUN pip install --no-cache-dir -e ".[dev]"
 # anyio is needed by pytest-asyncio when running Textual pilot tests
-RUN pip install --no-cache-dir anyio pytest-asyncio
+RUN pip install --no-cache-dir anyio pytest-asyncio pytest-timeout
 
 # ── Bootstrap a minimal Claude Code environment ───────────────────────────────
 # ccm reads ~/.claude/settings.json on every run; create a clean default.

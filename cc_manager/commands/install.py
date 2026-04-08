@@ -76,8 +76,10 @@ def install_tool(
         # Make cargo installs idempotent (cached binaries won't cause re-install failures)
         if method_type == "cargo" and "--force" not in cmd:
             cmd = cmd + " --force"
+        # cargo compile can take several minutes; pip/npm are also slow on first run
+        _timeout = 600 if method_type == "cargo" else 120
         with console.status(f"[bright_cyan]◆ Installing {name}...[/bright_cyan]", spinner="dots12"):
-            rc, output = run_cmd(cmd)
+            rc, output = run_cmd(cmd, timeout=_timeout)
         if rc != 0:
             raise InstallError(f"Install command failed (rc={rc}): {output}")
         ctx.record_installed(name, method_type)
