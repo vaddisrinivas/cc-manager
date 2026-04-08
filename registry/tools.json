@@ -1087,5 +1087,32 @@
     },
     "conflicts_with": [],
     "min_version": null
+  },
+  {
+    "name": "graphify",
+    "display_name": "Graphify",
+    "description": "Transform code, docs, and images into queryable knowledge graphs \u2014 AST + semantic extraction, interactive HTML visualization",
+    "tier": "recommended",
+    "category": "context",
+    "repo": "safishamsi/graphify",
+    "git_url": "https://github.com/safishamsi/graphify",
+    "readme_url": "https://github.com/safishamsi/graphify#readme",
+    "install_methods": [
+      {
+        "type": "pip",
+        "command": "pip install graphifyy && graphify install"
+      }
+    ],
+    "remove_hint": "pip uninstall graphifyy",
+    "detect": {
+      "command": "graphify --version",
+      "pattern": null,
+      "plugin_name": null
+    },
+    "integration": {
+      "type": "skill"
+    },
+    "conflicts_with": [],
+    "min_version": null
   }
 ]
