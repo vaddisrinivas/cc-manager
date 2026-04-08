@@ -1168,5 +1168,59 @@
     },
     "conflicts_with": [],
     "min_version": null
+  },
+  {
+    "name": "gogcli",
+    "display_name": "GoGCLI",
+    "description": "Google Suite CLI \u2014 Gmail, GCal, GDrive, GContacts from the terminal, usable by AI agents",
+    "tier": "popular",
+    "category": "mcp-server",
+    "repo": "steipete/gogcli",
+    "git_url": "https://github.com/steipete/gogcli",
+    "readme_url": "https://github.com/steipete/gogcli#readme",
+    "install_methods": [
+      {
+        "type": "npm",
+        "command": "npm install -g gogcli"
+      }
+    ],
+    "remove_hint": "npm uninstall -g gogcli",
+    "detect": {
+      "command": "gogcli --version",
+      "pattern": null,
+      "plugin_name": null
+    },
+    "integration": {
+      "type": "mcp"
+    },
+    "conflicts_with": [],
+    "min_version": null
+  },
+  {
+    "name": "memos",
+    "display_name": "MemOS",
+    "description": "Memory operating system for AI agents \u2014 persistent cross-task memory, 43% accuracy improvement, saves 35% memory tokens",
+    "tier": "popular",
+    "category": "memory",
+    "repo": "MemTensor/MemOS",
+    "git_url": "https://github.com/MemTensor/MemOS",
+    "readme_url": "https://github.com/MemTensor/MemOS#readme",
+    "install_methods": [
+      {
+        "type": "pip",
+        "command": "pip install memos-ai"
+      }
+    ],
+    "remove_hint": "pip uninstall memos-ai",
+    "detect": {
+      "command": "memos --version",
+      "pattern": null,
+      "plugin_name": null
+    },
+    "integration": {
+      "type": "standalone"
+    },
+    "conflicts_with": [],
+    "min_version": null
   }
 ]

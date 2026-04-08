@@ -67,37 +67,16 @@ def list_cmd(
 
     console.print()
 
-    tbl = Table(
-        title="[bold]◉ TOOL REGISTRY[/bold]",
-        title_style="bold bright_cyan",
-        show_edge=True,
-        box=box.SIMPLE_HEAVY,
-        border_style="cyan",
-        header_style="bold bright_cyan",
-        row_styles=["", "dim"],
-        padding=(0, 1),
-    )
-    tbl.add_column("NAME", style="magenta", min_width=20, no_wrap=True)
-    tbl.add_column("STATUS", min_width=12)
-    tbl.add_column("TIER", min_width=20)
-    tbl.add_column("CATEGORY", style="dim", min_width=14)
-    tbl.add_column("DESCRIPTION", min_width=40)
-
     for tool in tools:
         if tool.get("installed"):
-            name_cell = f"[bright_green]✓[/bright_green]  [bright_white]{tool['name']}[/bright_white]"
-            status_cell = "[bright_green]installed[/bright_green]"
+            mark = "[bright_green]✓[/bright_green]"
+            name = f"[bright_white]{tool['name']}[/bright_white]"
         else:
-            name_cell = f"[dim]○[/dim]  {tool['name']}"
-            status_cell = "[dim]available[/dim]"
+            mark = "[dim]○[/dim]"
+            name = f"{tool['name']}"
+        tier = tier_label(tool.get("tier", ""))
+        cat = f"[dim]{tool.get('category', '')}[/dim]"
+        console.print(f"  {mark} {name:<24} {tier:<28} {cat}")
 
-        tbl.add_row(
-            name_cell,
-            status_cell,
-            tier_label(tool.get("tier", "")),
-            tool.get("category", ""),
-            tool.get("description", "")[:60],
-        )
-
-    console.print(Padding(tbl, (0, 1)))
+    console.print(f"\n  [dim]{len(tools)} tools[/dim]")
     console.print()
