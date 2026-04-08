@@ -35,14 +35,20 @@ _RST   = "\x1b[0m"
 _UP    = lambda n: f"\x1b[{n}A" if n > 0 else ""
 
 
+_YELLOW = "\x1b[93m"
+_RED    = "\x1b[91m"
+
+
 def _checkbox_select(
     rows: list[tuple[str, str]],  # (label, hint) pairs
     title: str = "",
     default_on: bool = True,
     visible: int = 18,
+    conflicts: dict[int, list[str]] | None = None,  # idx → list of conflicting names
+    badges: dict[int, str] | None = None,            # idx → badge like "🔑 GITHUB_TOKEN"
 ) -> set[int]:
     """
-    Arrow-key navigable checkbox prompt.
+    Arrow-key navigable checkbox prompt with conflict warnings and badges.
     Returns set of selected indices, or full set on non-TTY / import error.
     Keys: ↑↓ move · space toggle · a all/none · enter confirm · q/^C cancel
     """
@@ -56,12 +62,22 @@ def _checkbox_select(
 
     import tty, termios  # noqa: F811
 
+    conflicts = conflicts or {}
+    badges = badges or {}
     N = len(rows)
     selected: set[int] = set(range(N)) if default_on else set()
     cursor = 0
     scroll = 0
     visible = min(visible, N)
     rendered = 0
+
+    # Build name→index lookup for conflict resolution
+    name_to_idx: dict[str, int] = {rows[i][0]: i for i in range(N)}
+
+    def _active_conflicts(idx: int) -> list[str]:
+        """Return names of selected tools that conflict with rows[idx]."""
+        conf_names = conflicts.get(idx, [])
+        return [cn for cn in conf_names if name_to_idx.get(cn, -1) in selected]
 
     def _render() -> None:
         nonlocal rendered
@@ -77,11 +93,24 @@ def _checkbox_select(
             ptr   = f"{_CYAN}›{_RST}" if i == cursor else " "
             name  = f"{_BOLD}{label:<18}{_RST}" if i == cursor else f"{label:<18}"
             hint_ = f"{_DIM}{hint}{_RST}"
-            lines.append(f"  {ptr} {check} {name} {hint_}")
+            line  = f"  {ptr} {check} {name} {hint_}"
+
+            # Show badge (API key needed)
+            badge = badges.get(i, "")
+            if badge:
+                line += f"  {_YELLOW}⚙ {badge}{_RST}"
+
+            # Show conflict warning if this AND a conflicting tool are both selected
+            if i in selected:
+                active = _active_conflicts(i)
+                if active:
+                    line += f"  {_RED}⚠ overlaps {', '.join(active[:2])}{_RST}"
+
+            lines.append(line)
         if N > visible:
             shown_end = scroll + visible
             lines.append(f"  {_DIM}── {scroll + 1}–{min(shown_end, N)} of {N}  (↑↓ scroll){_RST}")
-        lines.append("")  # blank spacer — counts as one terminal line
+        lines.append("")  # blank spacer
         lines.append(f"  {_DIM}↑↓ move · space toggle · a all/none · enter confirm{_RST}")
         buf = ""
         if rendered:
@@ -273,7 +302,21 @@ def _step3_install_tools(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
             (t["name"], (t.get("install_methods") or [{}])[0].get("type", "manual"))
             for t in installable
         ]
-        idxs = _checkbox_select(rows, title="Space to toggle · Enter to install selected")
+        # Build conflict map and badge map for the checkbox
+        name_to_row_idx = {t["name"]: i for i, t in enumerate(installable)}
+        conflicts_map: dict[int, list[str]] = {}
+        badges_map: dict[int, str] = {}
+        for i, t in enumerate(installable):
+            cw = t.get("conflicts_with", [])
+            if cw:
+                conflicts_map[i] = [c for c in cw if c in name_to_row_idx]
+            api_key = t.get("needs_api_key", "")
+            if api_key:
+                badges_map[i] = api_key
+        idxs = _checkbox_select(
+            rows, title="Space to toggle · Enter to install selected",
+            conflicts=conflicts_map, badges=badges_map,
+        )
         approved = [installable[i] for i in sorted(idxs)]
 
     if not approved:

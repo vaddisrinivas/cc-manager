@@ -121,6 +121,16 @@ def list_cmd(
             name_styled = f"[bright_white]{name}[/bright_white]" if is_inst else f"[dim]{name}[/dim]"
             cat = f"[dim]{tool.get('category', '')}[/dim]"
             spark = spark_cache.get(name, _DIM_DASH_8) if is_inst else _DIM_DASH_8
+
+            # Badges: API key, overlap group
+            extra = ""
+            api_key = tool.get("needs_api_key", "")
+            if api_key:
+                extra += f"  [yellow]⚙ {api_key}[/yellow]"
+            group = tool.get("overlap_group", "")
+            if group:
+                extra += f"  [dim italic]({group})[/dim italic]"
+
             hint = ""
             if not is_inst:
                 methods = tool.get("install_methods", [])
@@ -128,7 +138,7 @@ def list_cmd(
                     cmd = methods[0].get("command", "")
                     if cmd:
                         hint = f"  [dim]→ {cmd[:42]}[/dim]"
-            console.print(f"  {mark} {name_styled:<32} {cat:<24} {spark}{hint}")
+            console.print(f"  {mark} {name_styled:<32} {cat:<24} {spark}{hint}{extra}")
         console.print()
 
     installed_count = sum(1 for t in tools if t.get("installed"))

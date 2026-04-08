@@ -2,176 +2,134 @@
   "profiles": [
     {
       "name": "recommended",
-      "description": "Curated starter set — works out of the box, no API keys needed",
+      "description": "Must-have tools for most Claude Code developers",
       "tools": [
-        "caveman",
-        "cc-retrospect",
-        "cc-sentinel",
-        "ccusage",
-        "claude-squad",
-        "claudekit",
-        "repomix",
         "rtk",
+        "cc-sentinel",
+        "cc-later",
+        "ccusage",
+        "context7",
+        "playwright-mcp",
+        "claude-squad",
+        "claude-code-action",
+        "repomix",
+        "github-mcp",
+        "superclaude",
+        "claudekit",
+        "caveman",
+        "chrome-devtools-mcp",
         "serena",
-        "superclaude"
-      ],
-      "builtin": true
+        "wcgw",
+        "cc-retrospect",
+        "cc-budget",
+        "graphify",
+        "cli-anything",
+        "mcp-brave-search"
+      ]
     },
     {
       "name": "minimal",
-      "description": "Bare essentials — token optimization + analytics only",
+      "description": "Core MCP servers only — no extra tooling",
       "tools": [
-        "rtk",
-        "ccusage"
-      ],
-      "builtin": true
+        "mcp-filesystem",
+        "mcp-memory",
+        "mcp-fetch",
+        "mcp-git",
+        "mcp-time",
+        "azure-devops-mcp"
+      ]
     },
     {
-      "name": "browsing",
-      "description": "Browser automation MCP servers — pick one",
+      "name": "ai-augmented",
+      "description": "AI-native coding tools: context, search, memory, automation",
       "tools": [
-        "browserbase-mcp",
-        "chrome-devtools-mcp",
-        "mcp-puppeteer",
-        "playwright-mcp",
-        "stagehand-mcp"
-      ],
-      "builtin": true
-    },
-    {
-      "name": "search",
-      "description": "Web search MCP servers — Brave, Tavily, Exa, Perplexity",
-      "tools": [
-        "exa-mcp",
-        "firecrawl-mcp-server",
+        "context7",
+        "repomix",
         "mcp-brave-search",
-        "mcp-omnisearch",
-        "perplexity-mcp",
-        "tavily-mcp",
-        "tavily-mcp-server"
-      ],
-      "builtin": true
-    },
-    {
-      "name": "data",
-      "description": "Database MCP servers — Postgres, SQLite, MongoDB, Redis, etc.",
-      "tools": [
-        "airtable-mcp",
-        "bigquery-mcp",
-        "ccusage",
-        "couchbase-mcp",
-        "dbhub-mcp",
-        "duckdb-mcp",
-        "fathom-analytics-mcp",
-        "ga4-mcp",
-        "mcp-amazon-dynamodb",
-        "mcp-aws-cost",
-        "mcp-postgres",
-        "mcp-redshift",
-        "mcp-sqlite",
-        "milvus-mcp",
-        "mongodb-lens",
-        "mongodb-mcp",
-        "mysql-mcp",
-        "neo4j-mcp",
-        "neon-mcp",
-        "nocodb-mcp",
-        "posthog-mcp",
-        "qdrant-mcp",
-        "redis-mcp",
-        "rtk",
-        "snowflake-mcp",
-        "supabase-mcp",
-        "tidb-mcp",
-        "tinybird-mcp",
-        "upstash-mcp"
-      ],
-      "builtin": true
-    },
-    {
-      "name": "cloud",
-      "description": "Cloud provider MCP servers — AWS, GCP, Azure, Cloudflare, Vercel",
-      "tools": [
-        "aws-bedrock-mcp",
-        "aws-cdk-mcp",
-        "aws-cloudwatch-mcp",
-        "aws-mcp",
-        "aws-s3-tables-mcp",
-        "azure-devops-mcp",
-        "azure-mcp",
-        "cloudflare-mcp",
-        "digitalocean-mcp",
-        "gcp-mcp",
-        "google-cloud-run-mcp",
-        "hostinger-mcp",
-        "mcp-amazon-eks",
-        "mcp-amazon-sns-sqs",
-        "mcp-aws-cloudformation",
-        "minio-mcp",
-        "mk8s-mcp",
-        "netlify-mcp",
-        "pinata-mcp",
-        "pulumi-mcp",
-        "vercel-mcp"
-      ],
-      "builtin": true
+        "graphify",
+        "serena",
+        "cli-anything",
+        "superclaude",
+        "claudekit",
+        "caveman",
+        "chrome-devtools-mcp"
+      ]
     },
     {
       "name": "security",
-      "description": "Security audit tools — Semgrep, Trail of Bits, OSV",
+      "description": "Security auditing and vulnerability scanning tools",
       "tools": [
-        "hashicorp-vault-mcp",
-        "mcp-aws-iam",
-        "netwrix-mcp",
-        "osv-mcp",
-        "semgrep",
-        "semgrep-mcp",
         "trail-of-bits",
-        "trail-of-bits-security"
-      ],
-      "builtin": true
+        "semgrep",
+        "trail-of-bits-security",
+        "mcp-aws-iam",
+        "hashicorp-vault-mcp",
+        "semgrep-mcp",
+        "osv-mcp",
+        "netwrix-mcp"
+      ]
     },
     {
-      "name": "productivity",
-      "description": "Productivity MCP servers — Notion, Slack, Linear, Todoist, etc.",
+      "name": "data",
+      "description": "Database and analytics tools",
       "tools": [
-        "atlassian-mcp",
-        "clickup-mcp",
-        "discord-mcp",
-        "excel-mcp",
-        "geekbot-mcp",
-        "gmail-mcp",
-        "google-calendar-mcp",
-        "google-workspace-mcp",
-        "jira-mcp",
-        "linear-mcp",
-        "logseq-mcp",
-        "mailgun-mcp",
-        "mattermost-mcp",
-        "mcp-atlassian",
-        "mcp-box",
-        "mcp-gdrive",
-        "mcp-line",
-        "mcp-ntfy",
-        "ms365-mcp",
-        "notion-mcp",
-        "ntfy-mcp",
-        "obsidian-mcp",
-        "readwise-mcp",
-        "resend-mcp",
-        "sendgrid-mcp",
-        "slack-mcp",
-        "taskade-mcp",
-        "telegram-mcp",
-        "tldv-mcp",
-        "todoist-full-mcp",
-        "todoist-mcp",
-        "trello-mcp",
-        "twilio-mcp",
-        "whatsapp-mcp",
-        "zoom-mcp"
-      ],
-      "builtin": true
+        "rtk",
+        "ccusage",
+        "mcp-postgres",
+        "mcp-sqlite",
+        "supabase-mcp",
+        "neon-mcp",
+        "redis-mcp",
+        "mongodb-mcp",
+        "mysql-mcp",
+        "duckdb-mcp",
+        "bigquery-mcp",
+        "qdrant-mcp",
+        "airtable-mcp",
+        "snowflake-mcp",
+        "upstash-mcp",
+        "neo4j-mcp",
+        "milvus-mcp",
+        "tidb-mcp",
+        "couchbase-mcp",
+        "dbhub-mcp",
+        "mongodb-lens",
+        "mcp-amazon-dynamodb",
+        "mcp-aws-cost",
+        "mcp-redshift",
+        "ga4-mcp",
+        "posthog-mcp",
+        "fathom-analytics-mcp",
+        "nocodb-mcp",
+        "tinybird-mcp"
+      ]
+    },
+    {
+      "name": "cloud",
+      "description": "Cloud provider MCP servers (AWS, GCP, Azure, Cloudflare)",
+      "tools": [
+        "cloudflare-mcp",
+        "azure-mcp",
+        "aws-mcp",
+        "aws-cdk-mcp",
+        "aws-bedrock-mcp",
+        "aws-cloudwatch-mcp",
+        "aws-s3-tables-mcp",
+        "vercel-mcp",
+        "mcp-amazon-sns-sqs",
+        "mcp-amazon-eks",
+        "mcp-aws-cloudformation",
+        "azure-devops-mcp",
+        "netlify-mcp",
+        "digitalocean-mcp",
+        "pulumi-mcp",
+        "gcp-mcp",
+        "pinata-mcp",
+        "minio-mcp",
+        "google-cloud-run-mcp",
+        "hostinger-mcp",
+        "mk8s-mcp"
+      ]
     }
   ],
   "tools": [
@@ -340,6 +298,90 @@
       "overlap_group": "Session Analytics"
     },
     {
+      "name": "context7",
+      "display_name": "Context7",
+      "description": "Version-specific library docs MCP server",
+      "tier": "recommended",
+      "category": "mcp-server",
+      "repo": "upstash/context7",
+      "git_url": "https://github.com/upstash/context7",
+      "readme_url": "https://github.com/upstash/context7#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @upstash/context7-mcp@latest"
+        }
+      ],
+      "remove_hint": "Remove 'context7' from mcpServers in settings.json",
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.context7"
+      },
+      "integration": {
+        "type": "mcp_server",
+        "mcp_config": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "@upstash/context7-mcp@latest"
+          ]
+        }
+      },
+      "conflicts_with": [],
+      "min_version": null,
+      "owner_type": "vendor",
+      "official": true,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08"
+    },
+    {
+      "name": "playwright-mcp",
+      "display_name": "Playwright MCP",
+      "description": "Browser automation via MCP",
+      "tier": "recommended",
+      "category": "mcp-server",
+      "repo": "microsoft/playwright-mcp",
+      "git_url": "https://github.com/microsoft/playwright-mcp",
+      "readme_url": "https://github.com/microsoft/playwright-mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @playwright/mcp@latest"
+        }
+      ],
+      "remove_hint": "Remove 'playwright' from mcpServers in settings.json",
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.playwright"
+      },
+      "integration": {
+        "type": "mcp_server",
+        "mcp_config": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "@playwright/mcp@latest"
+          ]
+        }
+      },
+      "conflicts_with": [
+        "browserbase-mcp",
+        "chrome-devtools-mcp",
+        "mcp-puppeteer",
+        "stagehand-mcp"
+      ],
+      "min_version": null,
+      "owner_type": "vendor",
+      "official": true,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "overlap_group": "Browser Automation"
+    },
+    {
       "name": "claude-squad",
       "display_name": "Claude Squad",
       "description": "Multi-agent tmux orchestration TUI",
@@ -415,7 +457,7 @@
       "name": "claude-code-action",
       "display_name": "Claude Code Action",
       "description": "GitHub Actions CI/CD for Claude Code",
-      "tier": "useful",
+      "tier": "recommended",
       "category": "ci-cd",
       "repo": "anthropics/claude-code-action",
       "git_url": "https://github.com/anthropics/claude-code-action",
@@ -599,6 +641,48 @@
       "overlap_group": "Memory & Context"
     },
     {
+      "name": "container-use",
+      "display_name": "Container Use",
+      "description": "Docker container management via MCP for Claude Code (Dagger)",
+      "tier": "popular",
+      "category": "docker",
+      "repo": "dagger/container-use",
+      "git_url": "https://github.com/dagger/container-use",
+      "readme_url": "https://github.com/dagger/container-use#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @dagger/container-use"
+        }
+      ],
+      "remove_hint": "Remove 'container-use' from mcpServers in settings.json",
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.container-use"
+      },
+      "integration": {
+        "type": "mcp_server",
+        "mcp_config": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "@dagger/container-use"
+          ]
+        }
+      },
+      "conflicts_with": [
+        "docker-mcp"
+      ],
+      "min_version": null,
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "overlap_group": "Container Management"
+    },
+    {
       "name": "claude-devtools",
       "display_name": "Claude DevTools",
       "description": "Developer tools and diagnostics for Claude Code",
@@ -620,6 +704,130 @@
       },
       "integration": {
         "type": "standalone"
+      },
+      "conflicts_with": [],
+      "min_version": null,
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08"
+    },
+    {
+      "name": "github-mcp",
+      "display_name": "GitHub MCP",
+      "description": "GitHub API access via MCP - 51 tools for PRs, issues, CI",
+      "tier": "useful",
+      "category": "mcp-server",
+      "repo": "github/github-mcp-server",
+      "git_url": "https://github.com/github/github-mcp-server",
+      "readme_url": "https://github.com/github/github-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @github/github-mcp-server"
+        }
+      ],
+      "remove_hint": "Remove 'github' from mcpServers in settings.json",
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.github"
+      },
+      "integration": {
+        "type": "mcp_server",
+        "mcp_config": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "@github/github-mcp-server"
+          ],
+          "env": {
+            "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+          }
+        }
+      },
+      "conflicts_with": [],
+      "min_version": null,
+      "owner_type": "vendor",
+      "official": true,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "safety": {
+        "needs_api_keys": true
+      },
+      "needs_api_key": "GITHUB_TOKEN"
+    },
+    {
+      "name": "sequential-thinking",
+      "display_name": "Sequential Thinking",
+      "description": "MCP server for structured sequential reasoning",
+      "tier": "popular",
+      "category": "mcp-server",
+      "repo": "modelcontextprotocol/servers",
+      "git_url": "https://github.com/modelcontextprotocol/servers",
+      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @modelcontextprotocol/server-sequential-thinking"
+        }
+      ],
+      "remove_hint": "Remove 'sequential-thinking' from mcpServers in settings.json",
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.sequential-thinking"
+      },
+      "integration": {
+        "type": "mcp_server",
+        "mcp_config": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "@modelcontextprotocol/server-sequential-thinking"
+          ]
+        }
+      },
+      "conflicts_with": [],
+      "min_version": null,
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08"
+    },
+    {
+      "name": "desktop-commander",
+      "display_name": "Desktop Commander",
+      "description": "Desktop automation and window management via MCP",
+      "tier": "popular",
+      "category": "mcp-server",
+      "repo": "wonderwhy-er/DesktopCommanderMCP",
+      "git_url": "https://github.com/wonderwhy-er/DesktopCommanderMCP",
+      "readme_url": "https://github.com/wonderwhy-er/DesktopCommanderMCP#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @wonderwhy-er/desktop-commander"
+        }
+      ],
+      "remove_hint": "Remove 'desktop-commander' from mcpServers in settings.json",
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.desktop-commander"
+      },
+      "integration": {
+        "type": "mcp_server",
+        "mcp_config": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "@wonderwhy-er/desktop-commander"
+          ]
+        }
       },
       "conflicts_with": [],
       "min_version": null,
@@ -766,7 +974,7 @@
       "name": "caveman",
       "display_name": "Caveman",
       "description": "Reduces Claude output tokens ~75% by switching to terse caveman-speak — preserves technical accuracy, strips filler",
-      "tier": "recommended",
+      "tier": "useful",
       "category": "token-optimization",
       "repo": "JuliusBrussee/caveman",
       "git_url": "https://github.com/JuliusBrussee/caveman",
@@ -797,10 +1005,135 @@
       "overlap_group": "Token Optimization"
     },
     {
+      "name": "chrome-devtools-mcp",
+      "display_name": "Chrome DevTools MCP",
+      "description": "Official Google Chrome DevTools MCP — lets AI agents control and inspect a live Chrome tab",
+      "tier": "useful",
+      "category": "mcp-server",
+      "repo": "ChromeDevTools/chrome-devtools-mcp",
+      "git_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "readme_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @google/chrome-devtools-mcp"
+        }
+      ],
+      "remove_hint": "Remove 'chrome-devtools' from mcpServers in settings.json",
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.chrome-devtools"
+      },
+      "integration": {
+        "type": "mcp_server",
+        "mcp_config": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "-y",
+            "@google/chrome-devtools-mcp"
+          ]
+        }
+      },
+      "conflicts_with": [
+        "browserbase-mcp",
+        "mcp-puppeteer",
+        "playwright-mcp",
+        "stagehand-mcp"
+      ],
+      "min_version": null,
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "overlap_group": "Browser Automation"
+    },
+    {
+      "name": "serena",
+      "display_name": "Serena",
+      "description": "Semantic code editing at symbol level via language server — faster and more precise than file-based edits",
+      "tier": "recommended",
+      "category": "mcp-server",
+      "repo": "oraios/serena",
+      "git_url": "https://github.com/oraios/serena",
+      "readme_url": "https://github.com/oraios/serena#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx serena"
+        }
+      ],
+      "remove_hint": "pip uninstall serena",
+      "detect": {
+        "command": "serena --version",
+        "pattern": null,
+        "settings_json_key": "mcpServers.serena"
+      },
+      "integration": {
+        "type": "mcp_server",
+        "mcp_config": {
+          "type": "stdio",
+          "command": "uvx",
+          "args": [
+            "serena"
+          ]
+        }
+      },
+      "conflicts_with": [],
+      "min_version": null,
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08"
+    },
+    {
+      "name": "wcgw",
+      "display_name": "WCGW Shell Agent",
+      "description": "Fully interactive shell + file read/write/edit MCP tools — extremely powerful, use with caution",
+      "tier": "useful",
+      "category": "mcp-server",
+      "repo": "rusiaaman/wcgw",
+      "git_url": "https://github.com/rusiaaman/wcgw",
+      "readme_url": "https://github.com/rusiaaman/wcgw#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx wcgw@latest"
+        }
+      ],
+      "remove_hint": "pip uninstall wcgw",
+      "detect": {
+        "command": "wcgw --version",
+        "pattern": null,
+        "settings_json_key": "mcpServers.wcgw"
+      },
+      "integration": {
+        "type": "mcp_server",
+        "mcp_config": {
+          "type": "stdio",
+          "command": "uvx",
+          "args": [
+            "wcgw@latest"
+          ]
+        }
+      },
+      "conflicts_with": [],
+      "min_version": null,
+      "audience": "advanced",
+      "safety": {
+        "dangerous_shell": true,
+        "writes_files": true
+      },
+      "owner_type": "vendor",
+      "official": true,
+      "last_verified_at": "2026-04-08"
+    },
+    {
       "name": "cc-retrospect",
       "display_name": "CC Retrospect",
       "description": "Post-session analytics and waste interception — cost breakdown, habit patterns, frustration signals, week-over-week compare, and real-time pre-tool hints",
-      "tier": "recommended",
+      "tier": "useful",
       "category": "session",
       "repo": "vaddisrinivas/cc-retrospect",
       "git_url": "https://github.com/vaddisrinivas/cc-retrospect",
@@ -1294,6 +1627,71 @@
       "overlap_group": "Memory & Context"
     },
     {
+      "name": "mcp-filesystem",
+      "display_name": "Filesystem MCP",
+      "description": "Secure file operations with configurable access controls for local file system.",
+      "tier": "core",
+      "category": "devtools",
+      "repo": "modelcontextprotocol/servers",
+      "git_url": "https://github.com/modelcontextprotocol/servers",
+      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @modelcontextprotocol/server-filesystem"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-filesystem"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "mcp-memory",
+      "display_name": "Memory MCP",
+      "description": "Knowledge graph-based persistent memory system for LLMs.",
+      "tier": "core",
+      "category": "mcp-server",
+      "repo": "modelcontextprotocol/servers",
+      "git_url": "https://github.com/modelcontextprotocol/servers",
+      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @modelcontextprotocol/server-memory"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-memory"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [
+        "cc-memory",
+        "claude-mem",
+        "memos"
+      ],
+      "overlap_group": "Memory & Context"
+    },
+    {
       "name": "mcp-fetch",
       "display_name": "Fetch MCP",
       "description": "Web content fetching and conversion for efficient LLM usage.",
@@ -1372,6 +1770,111 @@
       "conflicts_with": []
     },
     {
+      "name": "mcp-brave-search",
+      "display_name": "Brave Search MCP",
+      "description": "Privacy-focused web and local search using Brave's Search API.",
+      "tier": "useful",
+      "category": "search",
+      "repo": "modelcontextprotocol/servers",
+      "git_url": "https://github.com/modelcontextprotocol/servers",
+      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @modelcontextprotocol/server-brave-search"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-brave-search"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [
+        "exa-mcp",
+        "firecrawl-mcp-server",
+        "mcp-omnisearch",
+        "perplexity-mcp",
+        "tavily-mcp",
+        "tavily-mcp-server"
+      ],
+      "overlap_group": "Web Search",
+      "needs_api_key": "BRAVE_API_KEY"
+    },
+    {
+      "name": "mcp-puppeteer",
+      "display_name": "Puppeteer MCP",
+      "description": "Browser automation via Puppeteer for web interaction and screenshots.",
+      "tier": "useful",
+      "category": "devtools",
+      "repo": "modelcontextprotocol/servers",
+      "git_url": "https://github.com/modelcontextprotocol/servers",
+      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @modelcontextprotocol/server-puppeteer"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-puppeteer"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [
+        "browserbase-mcp",
+        "chrome-devtools-mcp",
+        "playwright-mcp",
+        "stagehand-mcp"
+      ],
+      "overlap_group": "Browser Automation"
+    },
+    {
+      "name": "mcp-postgres",
+      "display_name": "PostgreSQL MCP",
+      "description": "PostgreSQL database schema inspection and read-only query execution.",
+      "tier": "useful",
+      "category": "database",
+      "repo": "modelcontextprotocol/servers",
+      "git_url": "https://github.com/modelcontextprotocol/servers",
+      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @modelcontextprotocol/server-postgres"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-postgres"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "mcp-sqlite",
       "display_name": "SQLite MCP",
       "description": "SQLite database operations with built-in query and analysis features.",
@@ -1398,6 +1901,67 @@
       "conflicts_with": []
     },
     {
+      "name": "mcp-gitlab",
+      "display_name": "GitLab MCP",
+      "description": "GitLab platform integration for projects, merge requests, and CI/CD.",
+      "tier": "useful",
+      "category": "devtools",
+      "repo": "modelcontextprotocol/servers",
+      "git_url": "https://github.com/modelcontextprotocol/servers",
+      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @modelcontextprotocol/server-gitlab"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-gitlab"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "mcp-gdrive",
+      "display_name": "Google Drive MCP",
+      "description": "Google Drive file access, search, and management via MCP.",
+      "tier": "useful",
+      "category": "productivity",
+      "repo": "modelcontextprotocol/servers",
+      "git_url": "https://github.com/modelcontextprotocol/servers",
+      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @modelcontextprotocol/server-gdrive"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-gdrive"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [],
+      "needs_api_key": "GOOGLE_OAUTH"
+    },
+    {
       "name": "mcp-sentry",
       "display_name": "Sentry MCP",
       "description": "Error tracking and performance monitoring via Sentry's API.",
@@ -1422,6 +1986,67 @@
       "audience": "everyone",
       "last_verified_at": "2026-04-08",
       "conflicts_with": []
+    },
+    {
+      "name": "mcp-everything",
+      "display_name": "Everything MCP",
+      "description": "Reference and test MCP server demonstrating all MCP features (prompts, resources, tools).",
+      "tier": "experimental",
+      "category": "mcp-server",
+      "repo": "modelcontextprotocol/servers",
+      "git_url": "https://github.com/modelcontextprotocol/servers",
+      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @modelcontextprotocol/server-everything"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-everything"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "cloudflare-mcp",
+      "display_name": "Cloudflare MCP",
+      "description": "Deploy, configure, and interrogate resources on the Cloudflare platform via MCP.",
+      "tier": "useful",
+      "category": "cloud",
+      "repo": "cloudflare/mcp-server-cloudflare",
+      "git_url": "https://github.com/cloudflare/mcp-server-cloudflare",
+      "readme_url": "https://github.com/cloudflare/mcp-server-cloudflare#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @cloudflare/mcp-server-cloudflare"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.cloudflare-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "vendor",
+      "official": true,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [],
+      "needs_api_key": "CLOUDFLARE_API_TOKEN"
     },
     {
       "name": "azure-mcp",
@@ -1502,6 +2127,68 @@
       "conflicts_with": []
     },
     {
+      "name": "stripe-mcp",
+      "display_name": "Stripe MCP",
+      "description": "Official Stripe MCP server for payment processing, customers, and subscriptions.",
+      "tier": "useful",
+      "category": "mcp-server",
+      "repo": "stripe/agent-toolkit",
+      "git_url": "https://github.com/stripe/agent-toolkit",
+      "readme_url": "https://github.com/stripe/agent-toolkit#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @stripe/mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.stripe-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "vendor",
+      "official": true,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [],
+      "needs_api_key": "STRIPE_API_KEY"
+    },
+    {
+      "name": "supabase-mcp",
+      "display_name": "Supabase MCP",
+      "description": "Connect Supabase to AI assistants for database, auth, and edge function management.",
+      "tier": "useful",
+      "category": "database",
+      "repo": "supabase-community/supabase-mcp",
+      "git_url": "https://github.com/supabase-community/supabase-mcp",
+      "readme_url": "https://github.com/supabase-community/supabase-mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @supabase/mcp-server-supabase"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.supabase-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [],
+      "needs_api_key": "SUPABASE_URL + SUPABASE_KEY"
+    },
+    {
       "name": "neon-mcp",
       "display_name": "Neon MCP",
       "description": "MCP server for interacting with Neon serverless Postgres via natural language.",
@@ -1529,6 +2216,37 @@
       "needs_api_key": "NEON_API_KEY"
     },
     {
+      "name": "notion-mcp",
+      "display_name": "Notion MCP",
+      "description": "Official Notion MCP server for reading and writing Notion pages and databases.",
+      "tier": "useful",
+      "category": "productivity",
+      "repo": "makenotion/notion-mcp-server",
+      "git_url": "https://github.com/makenotion/notion-mcp-server",
+      "readme_url": "https://github.com/makenotion/notion-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @notionhq/notion-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.notion-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [],
+      "needs_api_key": "NOTION_API_KEY"
+    },
+    {
       "name": "atlassian-mcp",
       "display_name": "Atlassian MCP",
       "description": "Official Atlassian MCP server for Jira and Confluence integration.",
@@ -1553,6 +2271,68 @@
       "audience": "everyone",
       "last_verified_at": "2026-04-08",
       "conflicts_with": []
+    },
+    {
+      "name": "slack-mcp",
+      "display_name": "Slack MCP",
+      "description": "Powerful Slack MCP server with stdio/SSE transports, DMs, channels, and history.",
+      "tier": "useful",
+      "category": "communication",
+      "repo": "korotovsky/slack-mcp-server",
+      "git_url": "https://github.com/korotovsky/slack-mcp-server",
+      "readme_url": "https://github.com/korotovsky/slack-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y slack-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.slack-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [],
+      "needs_api_key": "SLACK_BOT_TOKEN"
+    },
+    {
+      "name": "linear-mcp",
+      "display_name": "Linear MCP",
+      "description": "Linear issue tracking integration via MCP for AI-powered project management.",
+      "tier": "useful",
+      "category": "productivity",
+      "repo": "jerhadf/linear-mcp-server",
+      "git_url": "https://github.com/jerhadf/linear-mcp-server",
+      "readme_url": "https://github.com/jerhadf/linear-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y linear-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.linear-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [],
+      "needs_api_key": "LINEAR_API_KEY"
     },
     {
       "name": "figma-mcp",
@@ -1663,6 +2443,37 @@
       "needs_api_key": "REDIS_URL"
     },
     {
+      "name": "mongodb-mcp",
+      "display_name": "MongoDB MCP",
+      "description": "Query and analyze MongoDB collections via MCP with schema inspection.",
+      "tier": "useful",
+      "category": "database",
+      "repo": "kiliczsh/mcp-mongo-server",
+      "git_url": "https://github.com/kiliczsh/mcp-mongo-server",
+      "readme_url": "https://github.com/kiliczsh/mcp-mongo-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y mcp-mongo-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mongodb-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [],
+      "needs_api_key": "MONGODB_URI"
+    },
+    {
       "name": "mysql-mcp",
       "display_name": "MySQL MCP",
       "description": "MySQL database MCP server with schema inspection and configurable access controls.",
@@ -1768,6 +2579,36 @@
       "conflicts_with": []
     },
     {
+      "name": "airtable-mcp",
+      "display_name": "Airtable MCP",
+      "description": "Read and write Airtable database access with schema inspection via MCP.",
+      "tier": "useful",
+      "category": "database",
+      "repo": "domdomegg/airtable-mcp-server",
+      "git_url": "https://github.com/domdomegg/airtable-mcp-server",
+      "readme_url": "https://github.com/domdomegg/airtable-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y airtable-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.airtable-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "snowflake-mcp",
       "display_name": "Snowflake MCP",
       "description": "Snowflake data warehouse integration with read/write access and insight tracking.",
@@ -1794,6 +2635,158 @@
       "conflicts_with": []
     },
     {
+      "name": "tavily-mcp",
+      "display_name": "Tavily Search MCP",
+      "description": "AI-powered web search and extract via Tavily's search API optimized for LLMs.",
+      "tier": "useful",
+      "category": "search",
+      "repo": "tavily-ai/tavily-mcp",
+      "git_url": "https://github.com/tavily-ai/tavily-mcp",
+      "readme_url": "https://github.com/tavily-ai/tavily-mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @tavily/mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.tavily-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "safety": {
+        "needs_api_keys": true
+      },
+      "conflicts_with": [
+        "exa-mcp",
+        "firecrawl-mcp-server",
+        "mcp-brave-search",
+        "mcp-omnisearch",
+        "perplexity-mcp",
+        "tavily-mcp-server"
+      ],
+      "overlap_group": "Web Search",
+      "needs_api_key": "TAVILY_API_KEY"
+    },
+    {
+      "name": "exa-mcp",
+      "display_name": "Exa MCP",
+      "description": "Exa neural search engine MCP server combining embeddings and traditional search for LLMs.",
+      "tier": "useful",
+      "category": "search",
+      "repo": "exa-labs/exa-mcp-server",
+      "git_url": "https://github.com/exa-labs/exa-mcp-server",
+      "readme_url": "https://github.com/exa-labs/exa-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y exa-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.exa-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "safety": {
+        "needs_api_keys": true
+      },
+      "conflicts_with": [
+        "firecrawl-mcp-server",
+        "mcp-brave-search",
+        "mcp-omnisearch",
+        "perplexity-mcp",
+        "tavily-mcp",
+        "tavily-mcp-server"
+      ],
+      "overlap_group": "Web Search",
+      "needs_api_key": "EXA_API_KEY"
+    },
+    {
+      "name": "docker-mcp",
+      "display_name": "Docker MCP",
+      "description": "Container and compose stack management via MCP with secure sandboxing.",
+      "tier": "useful",
+      "category": "devtools",
+      "repo": "QuantGeekDev/docker-mcp",
+      "git_url": "https://github.com/QuantGeekDev/docker-mcp",
+      "readme_url": "https://github.com/QuantGeekDev/docker-mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y docker-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.docker-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [
+        "container-use"
+      ],
+      "overlap_group": "Container Management"
+    },
+    {
+      "name": "e2b-mcp",
+      "display_name": "E2B Code Sandbox MCP",
+      "description": "Secure cloud development sandboxes for AI agents to run code safely.",
+      "tier": "useful",
+      "category": "devtools",
+      "repo": "e2b-dev/mcp-server",
+      "git_url": "https://github.com/e2b-dev/mcp-server",
+      "readme_url": "https://github.com/e2b-dev/mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @e2b/mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.e2b-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [
+        "mcp-code-sandbox",
+        "microsandbox-mcp"
+      ],
+      "overlap_group": "Sandboxed Execution",
+      "needs_api_key": "E2B_API_KEY"
+    },
+    {
       "name": "jupyter-mcp",
       "display_name": "Jupyter MCP",
       "description": "MCP server for real-time AI connection to Jupyter Notebook execution.",
@@ -1818,6 +2811,67 @@
       "audience": "everyone",
       "last_verified_at": "2026-04-08",
       "conflicts_with": []
+    },
+    {
+      "name": "upstash-mcp",
+      "display_name": "Upstash MCP",
+      "description": "Serverless Redis and Kafka management via Upstash MCP server.",
+      "tier": "useful",
+      "category": "database",
+      "repo": "upstash/mcp-server",
+      "git_url": "https://github.com/upstash/mcp-server",
+      "readme_url": "https://github.com/upstash/mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @upstash/mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.upstash-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "vendor",
+      "official": true,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "twilio-mcp",
+      "display_name": "Twilio MCP",
+      "description": "Official Twilio MCP server exposing 1400+ API endpoints for SMS, voice, and communication.",
+      "tier": "useful",
+      "category": "communication",
+      "repo": "twilio-labs/mcp",
+      "git_url": "https://github.com/twilio-labs/mcp",
+      "readme_url": "https://github.com/twilio-labs/mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @twilio-labs/mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.twilio-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [],
+      "needs_api_key": "TWILIO_AUTH_TOKEN"
     },
     {
       "name": "telegram-mcp",
@@ -1871,6 +2925,36 @@
       "last_verified_at": "2026-04-08",
       "conflicts_with": [],
       "needs_api_key": "GOOGLE_OAUTH"
+    },
+    {
+      "name": "ms365-mcp",
+      "display_name": "Microsoft 365 MCP",
+      "description": "Connect to the full Microsoft 365 suite including Office, Outlook, and Excel via Graph API.",
+      "tier": "useful",
+      "category": "productivity",
+      "repo": "softeria/ms-365-mcp-server",
+      "git_url": "https://github.com/softeria/ms-365-mcp-server",
+      "readme_url": "https://github.com/softeria/ms-365-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y ms-365-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.ms365-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
     },
     {
       "name": "aws-cdk-mcp",
@@ -1970,6 +3054,140 @@
         "pattern": null
       },
       "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "browserbase-mcp",
+      "display_name": "Browserbase MCP",
+      "description": "Cloud browser automation via Browserbase for web interactions and scraping.",
+      "tier": "useful",
+      "category": "devtools",
+      "repo": "browserbase/mcp-server-browserbase",
+      "git_url": "https://github.com/browserbase/mcp-server-browserbase",
+      "readme_url": "https://github.com/browserbase/mcp-server-browserbase#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @browserbasehq/mcp-browserbase"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.browserbase-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "vendor",
+      "official": true,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [
+        "chrome-devtools-mcp",
+        "mcp-puppeteer",
+        "playwright-mcp",
+        "stagehand-mcp"
+      ],
+      "overlap_group": "Browser Automation",
+      "needs_api_key": "BROWSERBASE_API_KEY"
+    },
+    {
+      "name": "stagehand-mcp",
+      "display_name": "Stagehand MCP",
+      "description": "AI browser automation framework by Browserbase for natural language web control.",
+      "tier": "useful",
+      "category": "devtools",
+      "repo": "browserbase/stagehand",
+      "git_url": "https://github.com/browserbase/stagehand",
+      "readme_url": "https://github.com/browserbase/stagehand#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @browserbasehq/stagehand-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.stagehand-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "vendor",
+      "official": true,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [
+        "browserbase-mcp",
+        "chrome-devtools-mcp",
+        "mcp-puppeteer",
+        "playwright-mcp"
+      ],
+      "overlap_group": "Browser Automation",
+      "needs_api_key": "BROWSERBASE_API_KEY"
+    },
+    {
+      "name": "replicate-mcp",
+      "display_name": "Replicate MCP",
+      "description": "Run AI image generation and ML models on Replicate via MCP.",
+      "tier": "useful",
+      "category": "mcp-server",
+      "repo": "replicate/replicate-mcp",
+      "git_url": "https://github.com/replicate/replicate-mcp",
+      "readme_url": "https://github.com/replicate/replicate-mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y replicate-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.replicate-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "shopify-mcp",
+      "display_name": "Shopify Dev MCP",
+      "description": "Shopify developer documentation and API interaction MCP server.",
+      "tier": "useful",
+      "category": "mcp-server",
+      "repo": "DanielNordahl/dev-shopify-mcp",
+      "git_url": "https://github.com/DanielNordahl/dev-shopify-mcp",
+      "readme_url": "https://github.com/DanielNordahl/dev-shopify-mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @shopify/dev-mcp@latest"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.shopify-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
       "owner_type": "community",
       "official": false,
       "audience": "everyone",
@@ -2133,6 +3351,37 @@
       "conflicts_with": []
     },
     {
+      "name": "datadog-mcp",
+      "display_name": "Datadog MCP",
+      "description": "Datadog monitoring and observability MCP server for metrics, logs, and dashboards.",
+      "tier": "useful",
+      "category": "devtools",
+      "repo": "shelfio/datadog-mcp",
+      "git_url": "https://github.com/shelfio/datadog-mcp",
+      "readme_url": "https://github.com/shelfio/datadog-mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @shelfio/datadog-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.datadog-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [],
+      "needs_api_key": "DD_API_KEY"
+    },
+    {
       "name": "prometheus-mcp",
       "display_name": "Prometheus MCP",
       "description": "Query and analyze Prometheus metrics via MCP for AI-powered observability.",
@@ -2157,6 +3406,41 @@
       "audience": "everyone",
       "last_verified_at": "2026-04-08",
       "conflicts_with": []
+    },
+    {
+      "name": "google-maps-mcp",
+      "display_name": "Google Maps MCP",
+      "description": "Google Maps API MCP server for geocoding, directions, and places search.",
+      "tier": "useful",
+      "category": "mcp-server",
+      "repo": "modelcontextprotocol/servers",
+      "git_url": "https://github.com/modelcontextprotocol/servers",
+      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @modelcontextprotocol/server-google-maps"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.google-maps-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [
+        "mapbox-mcp",
+        "openstreetmap-mcp",
+        "osm-mcp"
+      ],
+      "overlap_group": "Maps & Geo"
     },
     {
       "name": "osm-mcp",
@@ -2188,6 +3472,109 @@
         "openstreetmap-mcp"
       ],
       "overlap_group": "Maps & Geo"
+    },
+    {
+      "name": "mcp-omnisearch",
+      "display_name": "MCP Omnisearch",
+      "description": "Unified MCP search combining Tavily, Brave, Kagi, Exa, Firecrawl, and GitHub through one interface.",
+      "tier": "useful",
+      "category": "search",
+      "repo": "spences10/mcp-omnisearch",
+      "git_url": "https://github.com/spences10/mcp-omnisearch",
+      "readme_url": "https://github.com/spences10/mcp-omnisearch#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y mcp-omnisearch"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-omnisearch"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "safety": {
+        "needs_api_keys": true
+      },
+      "conflicts_with": [
+        "exa-mcp",
+        "firecrawl-mcp-server",
+        "mcp-brave-search",
+        "perplexity-mcp",
+        "tavily-mcp",
+        "tavily-mcp-server"
+      ],
+      "overlap_group": "Web Search",
+      "needs_api_key": "multiple API keys"
+    },
+    {
+      "name": "dbhub-mcp",
+      "display_name": "DBHub MCP",
+      "description": "Zero-dependency token-efficient database MCP for Postgres, MySQL, SQLite, MariaDB.",
+      "tier": "useful",
+      "category": "database",
+      "repo": "bytebase/dbhub",
+      "git_url": "https://github.com/bytebase/dbhub",
+      "readme_url": "https://github.com/bytebase/dbhub#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y dbhub"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.dbhub-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "mongodb-lens",
+      "display_name": "MongoDB Lens MCP",
+      "description": "Full-featured MongoDB MCP server with comprehensive collection and aggregation tooling.",
+      "tier": "useful",
+      "category": "database",
+      "repo": "furey/mongodb-lens",
+      "git_url": "https://github.com/furey/mongodb-lens",
+      "readme_url": "https://github.com/furey/mongodb-lens#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y mongodb-lens"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mongodb-lens"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [],
+      "needs_api_key": "MONGODB_URI"
     },
     {
       "name": "mcp-filesystem-server",
@@ -2242,6 +3629,66 @@
       "conflicts_with": []
     },
     {
+      "name": "mcp-everything-search",
+      "display_name": "Everything Search MCP",
+      "description": "Lightning-fast Windows file search powered by Everything SDK via MCP.",
+      "tier": "useful",
+      "category": "devtools",
+      "repo": "mamertofabian/mcp-everything-search",
+      "git_url": "https://github.com/mamertofabian/mcp-everything-search",
+      "readme_url": "https://github.com/mamertofabian/mcp-everything-search#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y mcp-everything-search"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-everything-search"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "computer-use-mcp",
+      "display_name": "Computer Use MCP",
+      "description": "Give AI models control of your computer via Anthropic's computer use API.",
+      "tier": "experimental",
+      "category": "devtools",
+      "repo": "domdomegg/computer-use-mcp",
+      "git_url": "https://github.com/domdomegg/computer-use-mcp",
+      "readme_url": "https://github.com/domdomegg/computer-use-mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y computer-use-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.computer-use-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "reddit-mcp",
       "display_name": "Reddit MCP",
       "description": "Browse Reddit posts, search subreddits, and analyze user activity via MCP.",
@@ -2261,6 +3708,36 @@
         "pattern": null
       },
       "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "sendgrid-mcp",
+      "display_name": "SendGrid MCP",
+      "description": "SendGrid email marketing API MCP for managing contacts, templates, and campaigns.",
+      "tier": "useful",
+      "category": "communication",
+      "repo": "Garoth/sendgrid-mcp",
+      "git_url": "https://github.com/Garoth/sendgrid-mcp",
+      "readme_url": "https://github.com/Garoth/sendgrid-mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y sendgrid-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.sendgrid-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
       "owner_type": "community",
       "official": false,
       "audience": "everyone",
@@ -2299,6 +3776,126 @@
       "overlap_group": "Security Audit"
     },
     {
+      "name": "mcp-buildkite",
+      "display_name": "Buildkite MCP",
+      "description": "Manage Buildkite pipelines, builds, and CI/CD workflows via MCP.",
+      "tier": "useful",
+      "category": "devtools",
+      "repo": "buildkite/buildkite-mcp-server",
+      "git_url": "https://github.com/buildkite/buildkite-mcp-server",
+      "readme_url": "https://github.com/buildkite/buildkite-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @buildkite/mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-buildkite"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "mcp-line",
+      "display_name": "LINE Messaging MCP",
+      "description": "Official LINE Messaging API MCP server for integrating AI agents with LINE.",
+      "tier": "useful",
+      "category": "communication",
+      "repo": "line/line-bot-mcp-server",
+      "git_url": "https://github.com/line/line-bot-mcp-server",
+      "readme_url": "https://github.com/line/line-bot-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y line-bot-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-line"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "mcp-algolia",
+      "display_name": "Algolia MCP",
+      "description": "Algolia search index provisioning and querying via MCP.",
+      "tier": "useful",
+      "category": "search",
+      "repo": "algolia/mcp-node",
+      "git_url": "https://github.com/algolia/mcp-node",
+      "readme_url": "https://github.com/algolia/mcp-node#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @algolia/mcp-node"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-algolia"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "vercel-mcp",
+      "display_name": "Vercel MCP",
+      "description": "Vercel deployment and project management MCP server.",
+      "tier": "useful",
+      "category": "cloud",
+      "repo": "vercel/mcp-server",
+      "git_url": "https://github.com/vercel/mcp-server",
+      "readme_url": "https://github.com/vercel/mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y @vercel/mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.vercel-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "vendor",
+      "official": true,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "mcp-codemcp",
       "display_name": "CodeMCP",
       "description": "Coding assistant MCP for Claude Desktop with full project editing capabilities.",
@@ -2318,6 +3915,66 @@
         "pattern": null
       },
       "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "n8n-mcp",
+      "display_name": "n8n MCP",
+      "description": "MCP server for building n8n automation workflows via Claude Desktop/Code.",
+      "tier": "useful",
+      "category": "orchestration",
+      "repo": "czlonkowski/n8n-mcp",
+      "git_url": "https://github.com/czlonkowski/n8n-mcp",
+      "readme_url": "https://github.com/czlonkowski/n8n-mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y n8n-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.n8n-mcp"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "mcp-ntfy",
+      "display_name": "ntfy MCP",
+      "description": "Send and fetch ntfy push notifications from AI agents to self-hosted ntfy servers.",
+      "tier": "experimental",
+      "category": "communication",
+      "repo": "gitmotion/ntfy-me-mcp",
+      "git_url": "https://github.com/gitmotion/ntfy-me-mcp",
+      "readme_url": "https://github.com/gitmotion/ntfy-me-mcp#readme",
+      "install_methods": [
+        {
+          "type": "mcp",
+          "command": "npx -y ntfy-me-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-ntfy"
+      },
+      "integration": {
+        "type": "mcp",
+        "managed_by": "claude-settings"
+      },
       "owner_type": "community",
       "official": false,
       "audience": "everyone",
@@ -2533,2360 +4190,6 @@
       "conflicts_with": []
     },
     {
-      "name": "mcp-pandas",
-      "display_name": "Pandas MCP Server",
-      "description": "Pandas data processing MCP server for LLM-powered DataFrame analysis.",
-      "tier": "experimental",
-      "category": "data-science",
-      "repo": "marlonluo2018/pandas-mcp-server",
-      "git_url": "https://github.com/marlonluo2018/pandas-mcp-server",
-      "readme_url": "https://github.com/marlonluo2018/pandas-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "manual",
-          "command": "uvx pandas-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": "pandas --version",
-        "pattern": null
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "mcp-redshift",
-      "display_name": "Amazon Redshift MCP",
-      "description": "Amazon Redshift data warehouse MCP server for analytics queries.",
-      "tier": "useful",
-      "category": "database",
-      "repo": "awslabs/mcp",
-      "git_url": "https://github.com/awslabs/mcp",
-      "readme_url": "https://github.com/awslabs/mcp#readme",
-      "install_methods": [
-        {
-          "type": "manual",
-          "command": "uvx awslabs.redshift-mcp-server@latest"
-        }
-      ],
-      "detect": {
-        "command": "redshift --version",
-        "pattern": null
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "mcp-pandoc",
-      "display_name": "Pandoc MCP",
-      "description": "Document format conversion between Markdown, DOCX, PDF, HTML using Pandoc.",
-      "tier": "useful",
-      "category": "file-conversion",
-      "repo": "vivekVells/mcp-pandoc",
-      "git_url": "https://github.com/vivekVells/mcp-pandoc",
-      "readme_url": "https://github.com/vivekVells/mcp-pandoc#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx mcp-pandoc"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-pandoc"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "office-word-mcp",
-      "display_name": "Office Word MCP",
-      "description": "Create, read, and manipulate Microsoft Word documents through a standardized MCP interface.",
-      "tier": "useful",
-      "category": "file-conversion",
-      "repo": "GongRzhe/Office-Word-MCP-Server",
-      "git_url": "https://github.com/GongRzhe/Office-Word-MCP-Server",
-      "readme_url": "https://github.com/GongRzhe/Office-Word-MCP-Server#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx office-word-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.office-word-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "mcp-documents-reader",
-      "display_name": "Documents Reader MCP",
-      "description": "Read multiple document types including DOCX, PDF, Excel, and TXT via MCP.",
-      "tier": "useful",
-      "category": "file-conversion",
-      "repo": "xt765/mcp_documents_reader",
-      "git_url": "https://github.com/xt765/mcp_documents_reader",
-      "readme_url": "https://github.com/xt765/mcp_documents_reader#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx mcp-documents-reader"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-documents-reader"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "image-gen-mcp",
-      "display_name": "Image Gen MCP (Stable Diffusion WebUI)",
-      "description": "Text-to-image generation using a local Stable Diffusion WebUI API (AUTOMATIC1111/ForgeUI).",
-      "tier": "useful",
-      "category": "image-generation",
-      "repo": "Ichigo3766/image-gen-mcp",
-      "git_url": "https://github.com/Ichigo3766/image-gen-mcp",
-      "readme_url": "https://github.com/Ichigo3766/image-gen-mcp#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx image-gen-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.image-gen-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "mcp-code-sandbox",
-      "display_name": "Code Sandbox MCP",
-      "description": "Lightweight MCP server providing sandboxed code execution for AI agents.",
-      "tier": "useful",
-      "category": "code-execution",
-      "repo": "chrishayuk/mcp-code-sandbox",
-      "git_url": "https://github.com/chrishayuk/mcp-code-sandbox",
-      "readme_url": "https://github.com/chrishayuk/mcp-code-sandbox#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx mcp-code-sandbox"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-code-sandbox"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [
-        "e2b-mcp",
-        "microsandbox-mcp"
-      ],
-      "overlap_group": "Sandboxed Execution"
-    },
-    {
-      "name": "ical-mcp",
-      "display_name": "iCal MCP (macOS Calendar)",
-      "description": "Interact with macOS Calendar app through natural language via MCP.",
-      "tier": "useful",
-      "category": "calendar",
-      "repo": "Omar-V2/mcp-ical",
-      "git_url": "https://github.com/Omar-V2/mcp-ical",
-      "readme_url": "https://github.com/Omar-V2/mcp-ical#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx mcp-ical"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.ical-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "openstreetmap-mcp",
-      "display_name": "OpenStreetMap MCP",
-      "description": "Location-based services and geospatial data queries via OpenStreetMap APIs.",
-      "tier": "useful",
-      "category": "maps",
-      "repo": "jagan-shanmugam/open-streetmap-mcp",
-      "git_url": "https://github.com/jagan-shanmugam/open-streetmap-mcp",
-      "readme_url": "https://github.com/jagan-shanmugam/open-streetmap-mcp#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx open-streetmap-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.openstreetmap-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [
-        "google-maps-mcp",
-        "mapbox-mcp",
-        "osm-mcp"
-      ],
-      "overlap_group": "Maps & Geo"
-    },
-    {
-      "name": "mailchimp-mcp",
-      "display_name": "Mailchimp MCP",
-      "description": "Manage Mailchimp campaigns, lists, templates, automations, and reports via MCP.",
-      "tier": "useful",
-      "category": "email-marketing",
-      "repo": "LokiMCPUniverse/mailchimp-mcp-server",
-      "git_url": "https://github.com/LokiMCPUniverse/mailchimp-mcp-server",
-      "readme_url": "https://github.com/LokiMCPUniverse/mailchimp-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx mailchimp-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mailchimp-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "aws-ses-mcp",
-      "display_name": "AWS SES MCP",
-      "description": "Send HTML and plain text emails with CC, BCC, and reply-to via AWS Simple Email Service.",
-      "tier": "useful",
-      "category": "email",
-      "repo": "omd01/aws-ses-mcp",
-      "git_url": "https://github.com/omd01/aws-ses-mcp",
-      "readme_url": "https://github.com/omd01/aws-ses-mcp#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx aws-ses-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.aws-ses-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "vegalite-mcp",
-      "display_name": "Vega-Lite MCP",
-      "description": "Generate data visualizations and charts using the Vega-Lite specification.",
-      "tier": "useful",
-      "category": "visualization",
-      "repo": "isaacwasserman/mcp-vegalite-server",
-      "git_url": "https://github.com/isaacwasserman/mcp-vegalite-server",
-      "readme_url": "https://github.com/isaacwasserman/mcp-vegalite-server#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx mcp-vegalite-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.vegalite-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "facebook-ads-mcp",
-      "display_name": "Facebook Ads MCP",
-      "description": "Programmatic access to Facebook Ads API for campaign management and analytics.",
-      "tier": "useful",
-      "category": "advertising",
-      "repo": "gomarble-ai/facebook-ads-mcp-server",
-      "git_url": "https://github.com/gomarble-ai/facebook-ads-mcp-server",
-      "readme_url": "https://github.com/gomarble-ai/facebook-ads-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx facebook-ads-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.facebook-ads-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "google-ads-mcp",
-      "display_name": "Google Ads MCP",
-      "description": "Programmatic access to Google Ads API for campaign management and reporting.",
-      "tier": "useful",
-      "category": "advertising",
-      "repo": "gomarble-ai/google-ads-mcp-server",
-      "git_url": "https://github.com/gomarble-ai/google-ads-mcp-server",
-      "readme_url": "https://github.com/gomarble-ai/google-ads-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx google-ads-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.google-ads-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "videodb-mcp",
-      "display_name": "VideoDB MCP",
-      "description": "Serverless video database with AI tagging, transcription, and workflow automation.",
-      "tier": "useful",
-      "category": "video",
-      "repo": "video-db/agent-toolkit",
-      "git_url": "https://github.com/video-db/agent-toolkit",
-      "readme_url": "https://github.com/video-db/agent-toolkit#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx videodb-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.videodb-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "arxiv-mcp",
-      "display_name": "ArXiv MCP",
-      "description": "Search and retrieve academic research papers from the ArXiv preprint server.",
-      "tier": "useful",
-      "category": "research",
-      "repo": "blazickjp/arxiv-mcp-server",
-      "git_url": "https://github.com/blazickjp/arxiv-mcp-server",
-      "readme_url": "https://github.com/blazickjp/arxiv-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx arxiv-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.arxiv-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "signoz-mcp",
-      "display_name": "SigNoz MCP",
-      "description": "Comprehensive integration with SigNoz observability APIs for logs, traces, and metrics.",
-      "tier": "useful",
-      "category": "monitoring",
-      "repo": "DrDroidLab/signoz-mcp-server",
-      "git_url": "https://github.com/DrDroidLab/signoz-mcp-server",
-      "readme_url": "https://github.com/DrDroidLab/signoz-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx signoz-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.signoz-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "maven-tools-mcp",
-      "display_name": "Maven Tools MCP",
-      "description": "Maven Central dependency intelligence for searching and resolving Java packages.",
-      "tier": "useful",
-      "category": "package-management",
-      "repo": "arvindand/maven-tools-mcp",
-      "git_url": "https://github.com/arvindand/maven-tools-mcp",
-      "readme_url": "https://github.com/arvindand/maven-tools-mcp#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx maven-tools-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.maven-tools-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "zenml-mcp",
-      "display_name": "ZenML MLOps MCP",
-      "description": "Interact with ZenML MLOps and LLMOps pipelines for machine learning workflows.",
-      "tier": "useful",
-      "category": "ai-tools",
-      "repo": "zenml-io/mcp-zenml",
-      "git_url": "https://github.com/zenml-io/mcp-zenml",
-      "readme_url": "https://github.com/zenml-io/mcp-zenml#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx mcp-zenml"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.zenml-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "qgis-mcp",
-      "display_name": "QGIS Desktop MCP",
-      "description": "Control QGIS Desktop GIS software for spatial analysis and map creation.",
-      "tier": "experimental",
-      "category": "maps",
-      "repo": "jjsantos01/qgis_mcp",
-      "git_url": "https://github.com/jjsantos01/qgis_mcp",
-      "readme_url": "https://github.com/jjsantos01/qgis_mcp#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx qgis-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.qgis-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "ebook-mcp",
-      "display_name": "eBook MCP",
-      "description": "Interact with and extract content from PDF and EPUB ebook files.",
-      "tier": "useful",
-      "category": "books",
-      "repo": "onebirdrocks/ebook-mcp",
-      "git_url": "https://github.com/onebirdrocks/ebook-mcp",
-      "readme_url": "https://github.com/onebirdrocks/ebook-mcp#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx ebook-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.ebook-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "chronulus-mcp",
-      "display_name": "Chronulus Forecasting MCP",
-      "description": "Multimodal AI forecasting and prediction models via Chronulus AI.",
-      "tier": "experimental",
-      "category": "ai-tools",
-      "repo": "ChronulusAI/chronulus-mcp",
-      "git_url": "https://github.com/ChronulusAI/chronulus-mcp",
-      "readme_url": "https://github.com/ChronulusAI/chronulus-mcp#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx chronulus-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.chronulus-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "netwrix-mcp",
-      "display_name": "Netwrix Access Analyzer MCP",
-      "description": "Analyze user access and permissions data via Netwrix Access Analyzer.",
-      "tier": "useful",
-      "category": "security",
-      "repo": "netwrix/mcp-server-naa",
-      "git_url": "https://github.com/netwrix/mcp-server-naa",
-      "readme_url": "https://github.com/netwrix/mcp-server-naa#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx netwrix-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.netwrix-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "advanced",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "llm-context-mcp",
-      "display_name": "LLM Context MCP",
-      "description": "Share code context with LLMs via MCP or clipboard with smart filtering.",
-      "tier": "useful",
-      "category": "development",
-      "repo": "cyberchitta/llm-context.py",
-      "git_url": "https://github.com/cyberchitta/llm-context.py",
-      "readme_url": "https://github.com/cyberchitta/llm-context.py#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx llm-context"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.llm-context-mcp"
-      },
-      "integration": {},
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "context7",
-      "display_name": "Context7",
-      "description": "Version-specific library docs MCP server",
-      "tier": "useful",
-      "category": "mcp-server",
-      "repo": "upstash/context7",
-      "git_url": "https://github.com/upstash/context7",
-      "readme_url": "https://github.com/upstash/context7#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @upstash/context7-mcp@latest"
-        }
-      ],
-      "remove_hint": "Remove 'context7' from mcpServers in settings.json",
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.context7"
-      },
-      "integration": {
-        "type": "mcp_server",
-        "mcp_config": {
-          "type": "stdio",
-          "command": "npx",
-          "args": [
-            "-y",
-            "@upstash/context7-mcp@latest"
-          ]
-        }
-      },
-      "conflicts_with": [],
-      "min_version": null,
-      "owner_type": "vendor",
-      "official": true,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08"
-    },
-    {
-      "name": "playwright-mcp",
-      "display_name": "Playwright MCP",
-      "description": "Browser automation via MCP",
-      "tier": "useful",
-      "category": "mcp-server",
-      "repo": "microsoft/playwright-mcp",
-      "git_url": "https://github.com/microsoft/playwright-mcp",
-      "readme_url": "https://github.com/microsoft/playwright-mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @playwright/mcp@latest"
-        }
-      ],
-      "remove_hint": "Remove 'playwright' from mcpServers in settings.json",
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.playwright"
-      },
-      "integration": {
-        "type": "mcp_server",
-        "mcp_config": {
-          "type": "stdio",
-          "command": "npx",
-          "args": [
-            "-y",
-            "@playwright/mcp@latest"
-          ]
-        }
-      },
-      "conflicts_with": [
-        "browserbase-mcp",
-        "chrome-devtools-mcp",
-        "mcp-puppeteer",
-        "stagehand-mcp"
-      ],
-      "min_version": null,
-      "owner_type": "vendor",
-      "official": true,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "overlap_group": "Browser Automation"
-    },
-    {
-      "name": "container-use",
-      "display_name": "Container Use",
-      "description": "Docker container management via MCP for Claude Code (Dagger)",
-      "tier": "popular",
-      "category": "docker",
-      "repo": "dagger/container-use",
-      "git_url": "https://github.com/dagger/container-use",
-      "readme_url": "https://github.com/dagger/container-use#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @dagger/container-use"
-        }
-      ],
-      "remove_hint": "Remove 'container-use' from mcpServers in settings.json",
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.container-use"
-      },
-      "integration": {
-        "type": "mcp_server",
-        "mcp_config": {
-          "type": "stdio",
-          "command": "npx",
-          "args": [
-            "-y",
-            "@dagger/container-use"
-          ]
-        }
-      },
-      "conflicts_with": [
-        "docker-mcp"
-      ],
-      "min_version": null,
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "overlap_group": "Container Management"
-    },
-    {
-      "name": "github-mcp",
-      "display_name": "GitHub MCP",
-      "description": "GitHub API access via MCP - 51 tools for PRs, issues, CI",
-      "tier": "useful",
-      "category": "mcp-server",
-      "repo": "github/github-mcp-server",
-      "git_url": "https://github.com/github/github-mcp-server",
-      "readme_url": "https://github.com/github/github-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @github/github-mcp-server"
-        }
-      ],
-      "remove_hint": "Remove 'github' from mcpServers in settings.json",
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.github"
-      },
-      "integration": {
-        "type": "mcp_server",
-        "mcp_config": {
-          "type": "stdio",
-          "command": "npx",
-          "args": [
-            "-y",
-            "@github/github-mcp-server"
-          ],
-          "env": {
-            "GITHUB_TOKEN": "${GITHUB_TOKEN}"
-          }
-        }
-      },
-      "conflicts_with": [],
-      "min_version": null,
-      "owner_type": "vendor",
-      "official": true,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "safety": {
-        "needs_api_keys": true
-      },
-      "needs_api_key": "GITHUB_TOKEN"
-    },
-    {
-      "name": "sequential-thinking",
-      "display_name": "Sequential Thinking",
-      "description": "MCP server for structured sequential reasoning",
-      "tier": "popular",
-      "category": "mcp-server",
-      "repo": "modelcontextprotocol/servers",
-      "git_url": "https://github.com/modelcontextprotocol/servers",
-      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @modelcontextprotocol/server-sequential-thinking"
-        }
-      ],
-      "remove_hint": "Remove 'sequential-thinking' from mcpServers in settings.json",
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.sequential-thinking"
-      },
-      "integration": {
-        "type": "mcp_server",
-        "mcp_config": {
-          "type": "stdio",
-          "command": "npx",
-          "args": [
-            "-y",
-            "@modelcontextprotocol/server-sequential-thinking"
-          ]
-        }
-      },
-      "conflicts_with": [],
-      "min_version": null,
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08"
-    },
-    {
-      "name": "desktop-commander",
-      "display_name": "Desktop Commander",
-      "description": "Desktop automation and window management via MCP",
-      "tier": "popular",
-      "category": "mcp-server",
-      "repo": "wonderwhy-er/DesktopCommanderMCP",
-      "git_url": "https://github.com/wonderwhy-er/DesktopCommanderMCP",
-      "readme_url": "https://github.com/wonderwhy-er/DesktopCommanderMCP#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @wonderwhy-er/desktop-commander"
-        }
-      ],
-      "remove_hint": "Remove 'desktop-commander' from mcpServers in settings.json",
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.desktop-commander"
-      },
-      "integration": {
-        "type": "mcp_server",
-        "mcp_config": {
-          "type": "stdio",
-          "command": "npx",
-          "args": [
-            "-y",
-            "@wonderwhy-er/desktop-commander"
-          ]
-        }
-      },
-      "conflicts_with": [],
-      "min_version": null,
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08"
-    },
-    {
-      "name": "chrome-devtools-mcp",
-      "display_name": "Chrome DevTools MCP",
-      "description": "Official Google Chrome DevTools MCP — lets AI agents control and inspect a live Chrome tab",
-      "tier": "useful",
-      "category": "mcp-server",
-      "repo": "ChromeDevTools/chrome-devtools-mcp",
-      "git_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
-      "readme_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @google/chrome-devtools-mcp"
-        }
-      ],
-      "remove_hint": "Remove 'chrome-devtools' from mcpServers in settings.json",
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.chrome-devtools"
-      },
-      "integration": {
-        "type": "mcp_server",
-        "mcp_config": {
-          "type": "stdio",
-          "command": "npx",
-          "args": [
-            "-y",
-            "@google/chrome-devtools-mcp"
-          ]
-        }
-      },
-      "conflicts_with": [
-        "browserbase-mcp",
-        "mcp-puppeteer",
-        "playwright-mcp",
-        "stagehand-mcp"
-      ],
-      "min_version": null,
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "overlap_group": "Browser Automation"
-    },
-    {
-      "name": "serena",
-      "display_name": "Serena",
-      "description": "Semantic code editing at symbol level via language server — faster and more precise than file-based edits",
-      "tier": "recommended",
-      "category": "mcp-server",
-      "repo": "oraios/serena",
-      "git_url": "https://github.com/oraios/serena",
-      "readme_url": "https://github.com/oraios/serena#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx serena"
-        }
-      ],
-      "remove_hint": "pip uninstall serena",
-      "detect": {
-        "command": "serena --version",
-        "pattern": null,
-        "settings_json_key": "mcpServers.serena"
-      },
-      "integration": {
-        "type": "mcp_server",
-        "mcp_config": {
-          "type": "stdio",
-          "command": "uvx",
-          "args": [
-            "serena"
-          ]
-        }
-      },
-      "conflicts_with": [],
-      "min_version": null,
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08"
-    },
-    {
-      "name": "wcgw",
-      "display_name": "WCGW Shell Agent",
-      "description": "Fully interactive shell + file read/write/edit MCP tools — extremely powerful, use with caution",
-      "tier": "useful",
-      "category": "mcp-server",
-      "repo": "rusiaaman/wcgw",
-      "git_url": "https://github.com/rusiaaman/wcgw",
-      "readme_url": "https://github.com/rusiaaman/wcgw#readme",
-      "install_methods": [
-        {
-          "type": "pip",
-          "command": "uvx wcgw@latest"
-        }
-      ],
-      "remove_hint": "pip uninstall wcgw",
-      "detect": {
-        "command": "wcgw --version",
-        "pattern": null,
-        "settings_json_key": "mcpServers.wcgw"
-      },
-      "integration": {
-        "type": "mcp_server",
-        "mcp_config": {
-          "type": "stdio",
-          "command": "uvx",
-          "args": [
-            "wcgw@latest"
-          ]
-        }
-      },
-      "conflicts_with": [],
-      "min_version": null,
-      "audience": "advanced",
-      "safety": {
-        "dangerous_shell": true,
-        "writes_files": true
-      },
-      "owner_type": "vendor",
-      "official": true,
-      "last_verified_at": "2026-04-08"
-    },
-    {
-      "name": "mcp-filesystem",
-      "display_name": "Filesystem MCP",
-      "description": "Secure file operations with configurable access controls for local file system.",
-      "tier": "core",
-      "category": "devtools",
-      "repo": "modelcontextprotocol/servers",
-      "git_url": "https://github.com/modelcontextprotocol/servers",
-      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @modelcontextprotocol/server-filesystem"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-filesystem"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "mcp-memory",
-      "display_name": "Memory MCP",
-      "description": "Knowledge graph-based persistent memory system for LLMs.",
-      "tier": "core",
-      "category": "mcp-server",
-      "repo": "modelcontextprotocol/servers",
-      "git_url": "https://github.com/modelcontextprotocol/servers",
-      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @modelcontextprotocol/server-memory"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-memory"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [
-        "cc-memory",
-        "claude-mem",
-        "memos"
-      ],
-      "overlap_group": "Memory & Context"
-    },
-    {
-      "name": "mcp-brave-search",
-      "display_name": "Brave Search MCP",
-      "description": "Privacy-focused web and local search using Brave's Search API.",
-      "tier": "useful",
-      "category": "search",
-      "repo": "modelcontextprotocol/servers",
-      "git_url": "https://github.com/modelcontextprotocol/servers",
-      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @modelcontextprotocol/server-brave-search"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-brave-search"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [
-        "exa-mcp",
-        "firecrawl-mcp-server",
-        "mcp-omnisearch",
-        "perplexity-mcp",
-        "tavily-mcp",
-        "tavily-mcp-server"
-      ],
-      "overlap_group": "Web Search",
-      "needs_api_key": "BRAVE_API_KEY"
-    },
-    {
-      "name": "mcp-puppeteer",
-      "display_name": "Puppeteer MCP",
-      "description": "Browser automation via Puppeteer for web interaction and screenshots.",
-      "tier": "useful",
-      "category": "devtools",
-      "repo": "modelcontextprotocol/servers",
-      "git_url": "https://github.com/modelcontextprotocol/servers",
-      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @modelcontextprotocol/server-puppeteer"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-puppeteer"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [
-        "browserbase-mcp",
-        "chrome-devtools-mcp",
-        "playwright-mcp",
-        "stagehand-mcp"
-      ],
-      "overlap_group": "Browser Automation"
-    },
-    {
-      "name": "mcp-postgres",
-      "display_name": "PostgreSQL MCP",
-      "description": "PostgreSQL database schema inspection and read-only query execution.",
-      "tier": "useful",
-      "category": "database",
-      "repo": "modelcontextprotocol/servers",
-      "git_url": "https://github.com/modelcontextprotocol/servers",
-      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @modelcontextprotocol/server-postgres"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-postgres"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "mcp-gitlab",
-      "display_name": "GitLab MCP",
-      "description": "GitLab platform integration for projects, merge requests, and CI/CD.",
-      "tier": "useful",
-      "category": "devtools",
-      "repo": "modelcontextprotocol/servers",
-      "git_url": "https://github.com/modelcontextprotocol/servers",
-      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @modelcontextprotocol/server-gitlab"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-gitlab"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "mcp-gdrive",
-      "display_name": "Google Drive MCP",
-      "description": "Google Drive file access, search, and management via MCP.",
-      "tier": "useful",
-      "category": "productivity",
-      "repo": "modelcontextprotocol/servers",
-      "git_url": "https://github.com/modelcontextprotocol/servers",
-      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @modelcontextprotocol/server-gdrive"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-gdrive"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [],
-      "needs_api_key": "GOOGLE_OAUTH"
-    },
-    {
-      "name": "mcp-everything",
-      "display_name": "Everything MCP",
-      "description": "Reference and test MCP server demonstrating all MCP features (prompts, resources, tools).",
-      "tier": "experimental",
-      "category": "mcp-server",
-      "repo": "modelcontextprotocol/servers",
-      "git_url": "https://github.com/modelcontextprotocol/servers",
-      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @modelcontextprotocol/server-everything"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-everything"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "cloudflare-mcp",
-      "display_name": "Cloudflare MCP",
-      "description": "Deploy, configure, and interrogate resources on the Cloudflare platform via MCP.",
-      "tier": "useful",
-      "category": "cloud",
-      "repo": "cloudflare/mcp-server-cloudflare",
-      "git_url": "https://github.com/cloudflare/mcp-server-cloudflare",
-      "readme_url": "https://github.com/cloudflare/mcp-server-cloudflare#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @cloudflare/mcp-server-cloudflare"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.cloudflare-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "vendor",
-      "official": true,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [],
-      "needs_api_key": "CLOUDFLARE_API_TOKEN"
-    },
-    {
-      "name": "stripe-mcp",
-      "display_name": "Stripe MCP",
-      "description": "Official Stripe MCP server for payment processing, customers, and subscriptions.",
-      "tier": "useful",
-      "category": "mcp-server",
-      "repo": "stripe/agent-toolkit",
-      "git_url": "https://github.com/stripe/agent-toolkit",
-      "readme_url": "https://github.com/stripe/agent-toolkit#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @stripe/mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.stripe-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "vendor",
-      "official": true,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [],
-      "needs_api_key": "STRIPE_API_KEY"
-    },
-    {
-      "name": "supabase-mcp",
-      "display_name": "Supabase MCP",
-      "description": "Connect Supabase to AI assistants for database, auth, and edge function management.",
-      "tier": "useful",
-      "category": "database",
-      "repo": "supabase-community/supabase-mcp",
-      "git_url": "https://github.com/supabase-community/supabase-mcp",
-      "readme_url": "https://github.com/supabase-community/supabase-mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @supabase/mcp-server-supabase"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.supabase-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [],
-      "needs_api_key": "SUPABASE_URL + SUPABASE_KEY"
-    },
-    {
-      "name": "notion-mcp",
-      "display_name": "Notion MCP",
-      "description": "Official Notion MCP server for reading and writing Notion pages and databases.",
-      "tier": "useful",
-      "category": "productivity",
-      "repo": "makenotion/notion-mcp-server",
-      "git_url": "https://github.com/makenotion/notion-mcp-server",
-      "readme_url": "https://github.com/makenotion/notion-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @notionhq/notion-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.notion-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [],
-      "needs_api_key": "NOTION_API_KEY"
-    },
-    {
-      "name": "slack-mcp",
-      "display_name": "Slack MCP",
-      "description": "Powerful Slack MCP server with stdio/SSE transports, DMs, channels, and history.",
-      "tier": "useful",
-      "category": "communication",
-      "repo": "korotovsky/slack-mcp-server",
-      "git_url": "https://github.com/korotovsky/slack-mcp-server",
-      "readme_url": "https://github.com/korotovsky/slack-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y slack-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.slack-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [],
-      "needs_api_key": "SLACK_BOT_TOKEN"
-    },
-    {
-      "name": "linear-mcp",
-      "display_name": "Linear MCP",
-      "description": "Linear issue tracking integration via MCP for AI-powered project management.",
-      "tier": "useful",
-      "category": "productivity",
-      "repo": "jerhadf/linear-mcp-server",
-      "git_url": "https://github.com/jerhadf/linear-mcp-server",
-      "readme_url": "https://github.com/jerhadf/linear-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y linear-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.linear-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [],
-      "needs_api_key": "LINEAR_API_KEY"
-    },
-    {
-      "name": "mongodb-mcp",
-      "display_name": "MongoDB MCP",
-      "description": "Query and analyze MongoDB collections via MCP with schema inspection.",
-      "tier": "useful",
-      "category": "database",
-      "repo": "kiliczsh/mcp-mongo-server",
-      "git_url": "https://github.com/kiliczsh/mcp-mongo-server",
-      "readme_url": "https://github.com/kiliczsh/mcp-mongo-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y mcp-mongo-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mongodb-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [],
-      "needs_api_key": "MONGODB_URI"
-    },
-    {
-      "name": "airtable-mcp",
-      "display_name": "Airtable MCP",
-      "description": "Read and write Airtable database access with schema inspection via MCP.",
-      "tier": "useful",
-      "category": "database",
-      "repo": "domdomegg/airtable-mcp-server",
-      "git_url": "https://github.com/domdomegg/airtable-mcp-server",
-      "readme_url": "https://github.com/domdomegg/airtable-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y airtable-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.airtable-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "tavily-mcp",
-      "display_name": "Tavily Search MCP",
-      "description": "AI-powered web search and extract via Tavily's search API optimized for LLMs.",
-      "tier": "useful",
-      "category": "search",
-      "repo": "tavily-ai/tavily-mcp",
-      "git_url": "https://github.com/tavily-ai/tavily-mcp",
-      "readme_url": "https://github.com/tavily-ai/tavily-mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @tavily/mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.tavily-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "safety": {
-        "needs_api_keys": true
-      },
-      "conflicts_with": [
-        "exa-mcp",
-        "firecrawl-mcp-server",
-        "mcp-brave-search",
-        "mcp-omnisearch",
-        "perplexity-mcp",
-        "tavily-mcp-server"
-      ],
-      "overlap_group": "Web Search",
-      "needs_api_key": "TAVILY_API_KEY"
-    },
-    {
-      "name": "exa-mcp",
-      "display_name": "Exa MCP",
-      "description": "Exa neural search engine MCP server combining embeddings and traditional search for LLMs.",
-      "tier": "useful",
-      "category": "search",
-      "repo": "exa-labs/exa-mcp-server",
-      "git_url": "https://github.com/exa-labs/exa-mcp-server",
-      "readme_url": "https://github.com/exa-labs/exa-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y exa-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.exa-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "safety": {
-        "needs_api_keys": true
-      },
-      "conflicts_with": [
-        "firecrawl-mcp-server",
-        "mcp-brave-search",
-        "mcp-omnisearch",
-        "perplexity-mcp",
-        "tavily-mcp",
-        "tavily-mcp-server"
-      ],
-      "overlap_group": "Web Search",
-      "needs_api_key": "EXA_API_KEY"
-    },
-    {
-      "name": "docker-mcp",
-      "display_name": "Docker MCP",
-      "description": "Container and compose stack management via MCP with secure sandboxing.",
-      "tier": "useful",
-      "category": "devtools",
-      "repo": "QuantGeekDev/docker-mcp",
-      "git_url": "https://github.com/QuantGeekDev/docker-mcp",
-      "readme_url": "https://github.com/QuantGeekDev/docker-mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y docker-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.docker-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [
-        "container-use"
-      ],
-      "overlap_group": "Container Management"
-    },
-    {
-      "name": "e2b-mcp",
-      "display_name": "E2B Code Sandbox MCP",
-      "description": "Secure cloud development sandboxes for AI agents to run code safely.",
-      "tier": "useful",
-      "category": "devtools",
-      "repo": "e2b-dev/mcp-server",
-      "git_url": "https://github.com/e2b-dev/mcp-server",
-      "readme_url": "https://github.com/e2b-dev/mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @e2b/mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.e2b-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [
-        "mcp-code-sandbox",
-        "microsandbox-mcp"
-      ],
-      "overlap_group": "Sandboxed Execution",
-      "needs_api_key": "E2B_API_KEY"
-    },
-    {
-      "name": "upstash-mcp",
-      "display_name": "Upstash MCP",
-      "description": "Serverless Redis and Kafka management via Upstash MCP server.",
-      "tier": "useful",
-      "category": "database",
-      "repo": "upstash/mcp-server",
-      "git_url": "https://github.com/upstash/mcp-server",
-      "readme_url": "https://github.com/upstash/mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @upstash/mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.upstash-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "vendor",
-      "official": true,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "twilio-mcp",
-      "display_name": "Twilio MCP",
-      "description": "Official Twilio MCP server exposing 1400+ API endpoints for SMS, voice, and communication.",
-      "tier": "useful",
-      "category": "communication",
-      "repo": "twilio-labs/mcp",
-      "git_url": "https://github.com/twilio-labs/mcp",
-      "readme_url": "https://github.com/twilio-labs/mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @twilio-labs/mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.twilio-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [],
-      "needs_api_key": "TWILIO_AUTH_TOKEN"
-    },
-    {
-      "name": "ms365-mcp",
-      "display_name": "Microsoft 365 MCP",
-      "description": "Connect to the full Microsoft 365 suite including Office, Outlook, and Excel via Graph API.",
-      "tier": "useful",
-      "category": "productivity",
-      "repo": "softeria/ms-365-mcp-server",
-      "git_url": "https://github.com/softeria/ms-365-mcp-server",
-      "readme_url": "https://github.com/softeria/ms-365-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y ms-365-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.ms365-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "browserbase-mcp",
-      "display_name": "Browserbase MCP",
-      "description": "Cloud browser automation via Browserbase for web interactions and scraping.",
-      "tier": "useful",
-      "category": "devtools",
-      "repo": "browserbase/mcp-server-browserbase",
-      "git_url": "https://github.com/browserbase/mcp-server-browserbase",
-      "readme_url": "https://github.com/browserbase/mcp-server-browserbase#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @browserbasehq/mcp-browserbase"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.browserbase-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "vendor",
-      "official": true,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [
-        "chrome-devtools-mcp",
-        "mcp-puppeteer",
-        "playwright-mcp",
-        "stagehand-mcp"
-      ],
-      "overlap_group": "Browser Automation",
-      "needs_api_key": "BROWSERBASE_API_KEY"
-    },
-    {
-      "name": "stagehand-mcp",
-      "display_name": "Stagehand MCP",
-      "description": "AI browser automation framework by Browserbase for natural language web control.",
-      "tier": "useful",
-      "category": "devtools",
-      "repo": "browserbase/stagehand",
-      "git_url": "https://github.com/browserbase/stagehand",
-      "readme_url": "https://github.com/browserbase/stagehand#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @browserbasehq/stagehand-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.stagehand-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "vendor",
-      "official": true,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [
-        "browserbase-mcp",
-        "chrome-devtools-mcp",
-        "mcp-puppeteer",
-        "playwright-mcp"
-      ],
-      "overlap_group": "Browser Automation",
-      "needs_api_key": "BROWSERBASE_API_KEY"
-    },
-    {
-      "name": "replicate-mcp",
-      "display_name": "Replicate MCP",
-      "description": "Run AI image generation and ML models on Replicate via MCP.",
-      "tier": "useful",
-      "category": "mcp-server",
-      "repo": "replicate/replicate-mcp",
-      "git_url": "https://github.com/replicate/replicate-mcp",
-      "readme_url": "https://github.com/replicate/replicate-mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y replicate-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.replicate-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "shopify-mcp",
-      "display_name": "Shopify Dev MCP",
-      "description": "Shopify developer documentation and API interaction MCP server.",
-      "tier": "useful",
-      "category": "mcp-server",
-      "repo": "DanielNordahl/dev-shopify-mcp",
-      "git_url": "https://github.com/DanielNordahl/dev-shopify-mcp",
-      "readme_url": "https://github.com/DanielNordahl/dev-shopify-mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @shopify/dev-mcp@latest"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.shopify-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "datadog-mcp",
-      "display_name": "Datadog MCP",
-      "description": "Datadog monitoring and observability MCP server for metrics, logs, and dashboards.",
-      "tier": "useful",
-      "category": "devtools",
-      "repo": "shelfio/datadog-mcp",
-      "git_url": "https://github.com/shelfio/datadog-mcp",
-      "readme_url": "https://github.com/shelfio/datadog-mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @shelfio/datadog-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.datadog-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [],
-      "needs_api_key": "DD_API_KEY"
-    },
-    {
-      "name": "google-maps-mcp",
-      "display_name": "Google Maps MCP",
-      "description": "Google Maps API MCP server for geocoding, directions, and places search.",
-      "tier": "useful",
-      "category": "mcp-server",
-      "repo": "modelcontextprotocol/servers",
-      "git_url": "https://github.com/modelcontextprotocol/servers",
-      "readme_url": "https://github.com/modelcontextprotocol/servers#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @modelcontextprotocol/server-google-maps"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.google-maps-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [
-        "mapbox-mcp",
-        "openstreetmap-mcp",
-        "osm-mcp"
-      ],
-      "overlap_group": "Maps & Geo"
-    },
-    {
-      "name": "mcp-omnisearch",
-      "display_name": "MCP Omnisearch",
-      "description": "Unified MCP search combining Tavily, Brave, Kagi, Exa, Firecrawl, and GitHub through one interface.",
-      "tier": "useful",
-      "category": "search",
-      "repo": "spences10/mcp-omnisearch",
-      "git_url": "https://github.com/spences10/mcp-omnisearch",
-      "readme_url": "https://github.com/spences10/mcp-omnisearch#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y mcp-omnisearch"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-omnisearch"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "safety": {
-        "needs_api_keys": true
-      },
-      "conflicts_with": [
-        "exa-mcp",
-        "firecrawl-mcp-server",
-        "mcp-brave-search",
-        "perplexity-mcp",
-        "tavily-mcp",
-        "tavily-mcp-server"
-      ],
-      "overlap_group": "Web Search",
-      "needs_api_key": "multiple API keys"
-    },
-    {
-      "name": "dbhub-mcp",
-      "display_name": "DBHub MCP",
-      "description": "Zero-dependency token-efficient database MCP for Postgres, MySQL, SQLite, MariaDB.",
-      "tier": "useful",
-      "category": "database",
-      "repo": "bytebase/dbhub",
-      "git_url": "https://github.com/bytebase/dbhub",
-      "readme_url": "https://github.com/bytebase/dbhub#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y dbhub"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.dbhub-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "mongodb-lens",
-      "display_name": "MongoDB Lens MCP",
-      "description": "Full-featured MongoDB MCP server with comprehensive collection and aggregation tooling.",
-      "tier": "useful",
-      "category": "database",
-      "repo": "furey/mongodb-lens",
-      "git_url": "https://github.com/furey/mongodb-lens",
-      "readme_url": "https://github.com/furey/mongodb-lens#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y mongodb-lens"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mongodb-lens"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": [],
-      "needs_api_key": "MONGODB_URI"
-    },
-    {
-      "name": "mcp-everything-search",
-      "display_name": "Everything Search MCP",
-      "description": "Lightning-fast Windows file search powered by Everything SDK via MCP.",
-      "tier": "useful",
-      "category": "devtools",
-      "repo": "mamertofabian/mcp-everything-search",
-      "git_url": "https://github.com/mamertofabian/mcp-everything-search",
-      "readme_url": "https://github.com/mamertofabian/mcp-everything-search#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y mcp-everything-search"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-everything-search"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "computer-use-mcp",
-      "display_name": "Computer Use MCP",
-      "description": "Give AI models control of your computer via Anthropic's computer use API.",
-      "tier": "experimental",
-      "category": "devtools",
-      "repo": "domdomegg/computer-use-mcp",
-      "git_url": "https://github.com/domdomegg/computer-use-mcp",
-      "readme_url": "https://github.com/domdomegg/computer-use-mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y computer-use-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.computer-use-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "sendgrid-mcp",
-      "display_name": "SendGrid MCP",
-      "description": "SendGrid email marketing API MCP for managing contacts, templates, and campaigns.",
-      "tier": "useful",
-      "category": "communication",
-      "repo": "Garoth/sendgrid-mcp",
-      "git_url": "https://github.com/Garoth/sendgrid-mcp",
-      "readme_url": "https://github.com/Garoth/sendgrid-mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y sendgrid-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.sendgrid-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "mcp-buildkite",
-      "display_name": "Buildkite MCP",
-      "description": "Manage Buildkite pipelines, builds, and CI/CD workflows via MCP.",
-      "tier": "useful",
-      "category": "devtools",
-      "repo": "buildkite/buildkite-mcp-server",
-      "git_url": "https://github.com/buildkite/buildkite-mcp-server",
-      "readme_url": "https://github.com/buildkite/buildkite-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @buildkite/mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-buildkite"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "mcp-line",
-      "display_name": "LINE Messaging MCP",
-      "description": "Official LINE Messaging API MCP server for integrating AI agents with LINE.",
-      "tier": "useful",
-      "category": "communication",
-      "repo": "line/line-bot-mcp-server",
-      "git_url": "https://github.com/line/line-bot-mcp-server",
-      "readme_url": "https://github.com/line/line-bot-mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y line-bot-mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-line"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "mcp-algolia",
-      "display_name": "Algolia MCP",
-      "description": "Algolia search index provisioning and querying via MCP.",
-      "tier": "useful",
-      "category": "search",
-      "repo": "algolia/mcp-node",
-      "git_url": "https://github.com/algolia/mcp-node",
-      "readme_url": "https://github.com/algolia/mcp-node#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @algolia/mcp-node"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-algolia"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "vercel-mcp",
-      "display_name": "Vercel MCP",
-      "description": "Vercel deployment and project management MCP server.",
-      "tier": "useful",
-      "category": "cloud",
-      "repo": "vercel/mcp-server",
-      "git_url": "https://github.com/vercel/mcp-server",
-      "readme_url": "https://github.com/vercel/mcp-server#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y @vercel/mcp-server"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.vercel-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "vendor",
-      "official": true,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "n8n-mcp",
-      "display_name": "n8n MCP",
-      "description": "MCP server for building n8n automation workflows via Claude Desktop/Code.",
-      "tier": "useful",
-      "category": "orchestration",
-      "repo": "czlonkowski/n8n-mcp",
-      "git_url": "https://github.com/czlonkowski/n8n-mcp",
-      "readme_url": "https://github.com/czlonkowski/n8n-mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y n8n-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.n8n-mcp"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
-      "name": "mcp-ntfy",
-      "display_name": "ntfy MCP",
-      "description": "Send and fetch ntfy push notifications from AI agents to self-hosted ntfy servers.",
-      "tier": "experimental",
-      "category": "communication",
-      "repo": "gitmotion/ntfy-me-mcp",
-      "git_url": "https://github.com/gitmotion/ntfy-me-mcp",
-      "readme_url": "https://github.com/gitmotion/ntfy-me-mcp#readme",
-      "install_methods": [
-        {
-          "type": "mcp",
-          "command": "npx -y ntfy-me-mcp"
-        }
-      ],
-      "detect": {
-        "command": null,
-        "pattern": null,
-        "settings_json_key": "mcpServers.mcp-ntfy"
-      },
-      "integration": {
-        "type": "mcp",
-        "managed_by": "claude-settings"
-      },
-      "owner_type": "community",
-      "official": false,
-      "audience": "everyone",
-      "last_verified_at": "2026-04-08",
-      "conflicts_with": []
-    },
-    {
       "name": "mcp-figma-talk",
       "display_name": "Claude Talk to Figma MCP",
       "description": "MCP server that lets Claude read, analyze, and modify Figma designs directly.",
@@ -4917,6 +4220,32 @@
       "conflicts_with": []
     },
     {
+      "name": "mcp-pandas",
+      "display_name": "Pandas MCP Server",
+      "description": "Pandas data processing MCP server for LLM-powered DataFrame analysis.",
+      "tier": "experimental",
+      "category": "data-science",
+      "repo": "marlonluo2018/pandas-mcp-server",
+      "git_url": "https://github.com/marlonluo2018/pandas-mcp-server",
+      "readme_url": "https://github.com/marlonluo2018/pandas-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "manual",
+          "command": "uvx pandas-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": "pandas --version",
+        "pattern": null
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "mcp-box",
       "display_name": "Box MCP",
       "description": "Allow AI agents to access Box content management seamlessly via MCP.",
@@ -4940,6 +4269,32 @@
         "type": "mcp",
         "managed_by": "claude-settings"
       },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "mcp-redshift",
+      "display_name": "Amazon Redshift MCP",
+      "description": "Amazon Redshift data warehouse MCP server for analytics queries.",
+      "tier": "useful",
+      "category": "database",
+      "repo": "awslabs/mcp",
+      "git_url": "https://github.com/awslabs/mcp",
+      "readme_url": "https://github.com/awslabs/mcp#readme",
+      "install_methods": [
+        {
+          "type": "manual",
+          "command": "uvx awslabs.redshift-mcp-server@latest"
+        }
+      ],
+      "detect": {
+        "command": "redshift --version",
+        "pattern": null
+      },
+      "integration": {},
       "owner_type": "community",
       "official": false,
       "audience": "everyone",
@@ -7183,6 +6538,33 @@
       "conflicts_with": []
     },
     {
+      "name": "mcp-pandoc",
+      "display_name": "Pandoc MCP",
+      "description": "Document format conversion between Markdown, DOCX, PDF, HTML using Pandoc.",
+      "tier": "useful",
+      "category": "file-conversion",
+      "repo": "vivekVells/mcp-pandoc",
+      "git_url": "https://github.com/vivekVells/mcp-pandoc",
+      "readme_url": "https://github.com/vivekVells/mcp-pandoc#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx mcp-pandoc"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-pandoc"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "docx-mcp",
       "display_name": "DOCX MCP",
       "description": "Standalone MCP server for reading and manipulating Microsoft Word DOCX files, built with Rust.",
@@ -7206,6 +6588,60 @@
         "type": "mcp",
         "managed_by": "claude-settings"
       },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "office-word-mcp",
+      "display_name": "Office Word MCP",
+      "description": "Create, read, and manipulate Microsoft Word documents through a standardized MCP interface.",
+      "tier": "useful",
+      "category": "file-conversion",
+      "repo": "GongRzhe/Office-Word-MCP-Server",
+      "git_url": "https://github.com/GongRzhe/Office-Word-MCP-Server",
+      "readme_url": "https://github.com/GongRzhe/Office-Word-MCP-Server#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx office-word-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.office-word-mcp"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "mcp-documents-reader",
+      "display_name": "Documents Reader MCP",
+      "description": "Read multiple document types including DOCX, PDF, Excel, and TXT via MCP.",
+      "tier": "useful",
+      "category": "file-conversion",
+      "repo": "xt765/mcp_documents_reader",
+      "git_url": "https://github.com/xt765/mcp_documents_reader",
+      "readme_url": "https://github.com/xt765/mcp_documents_reader#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx mcp-documents-reader"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-documents-reader"
+      },
+      "integration": {},
       "owner_type": "community",
       "official": false,
       "audience": "everyone",
@@ -7274,6 +6710,64 @@
       "conflicts_with": []
     },
     {
+      "name": "image-gen-mcp",
+      "display_name": "Image Gen MCP (Stable Diffusion WebUI)",
+      "description": "Text-to-image generation using a local Stable Diffusion WebUI API (AUTOMATIC1111/ForgeUI).",
+      "tier": "useful",
+      "category": "image-generation",
+      "repo": "Ichigo3766/image-gen-mcp",
+      "git_url": "https://github.com/Ichigo3766/image-gen-mcp",
+      "readme_url": "https://github.com/Ichigo3766/image-gen-mcp#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx image-gen-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.image-gen-mcp"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "mcp-code-sandbox",
+      "display_name": "Code Sandbox MCP",
+      "description": "Lightweight MCP server providing sandboxed code execution for AI agents.",
+      "tier": "useful",
+      "category": "code-execution",
+      "repo": "chrishayuk/mcp-code-sandbox",
+      "git_url": "https://github.com/chrishayuk/mcp-code-sandbox",
+      "readme_url": "https://github.com/chrishayuk/mcp-code-sandbox#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx mcp-code-sandbox"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mcp-code-sandbox"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [
+        "e2b-mcp",
+        "microsandbox-mcp"
+      ],
+      "overlap_group": "Sandboxed Execution"
+    },
+    {
       "name": "google-calendar-mcp-nspady",
       "display_name": "Google Calendar MCP",
       "description": "Full Google Calendar integration with multi-account support, event management, and free/busy queries.",
@@ -7297,6 +6791,33 @@
         "type": "mcp",
         "managed_by": "claude-settings"
       },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "ical-mcp",
+      "display_name": "iCal MCP (macOS Calendar)",
+      "description": "Interact with macOS Calendar app through natural language via MCP.",
+      "tier": "useful",
+      "category": "calendar",
+      "repo": "Omar-V2/mcp-ical",
+      "git_url": "https://github.com/Omar-V2/mcp-ical",
+      "readme_url": "https://github.com/Omar-V2/mcp-ical#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx mcp-ical"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.ical-mcp"
+      },
+      "integration": {},
       "owner_type": "community",
       "official": false,
       "audience": "everyone",
@@ -7429,6 +6950,38 @@
       ],
       "overlap_group": "Maps & Geo",
       "needs_api_key": "MAPBOX_ACCESS_TOKEN"
+    },
+    {
+      "name": "openstreetmap-mcp",
+      "display_name": "OpenStreetMap MCP",
+      "description": "Location-based services and geospatial data queries via OpenStreetMap APIs.",
+      "tier": "useful",
+      "category": "maps",
+      "repo": "jagan-shanmugam/open-streetmap-mcp",
+      "git_url": "https://github.com/jagan-shanmugam/open-streetmap-mcp",
+      "readme_url": "https://github.com/jagan-shanmugam/open-streetmap-mcp#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx open-streetmap-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.openstreetmap-mcp"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": [
+        "google-maps-mcp",
+        "mapbox-mcp",
+        "osm-mcp"
+      ],
+      "overlap_group": "Maps & Geo"
     },
     {
       "name": "coingecko-mcp-server",
@@ -8100,6 +7653,33 @@
       "conflicts_with": []
     },
     {
+      "name": "mailchimp-mcp",
+      "display_name": "Mailchimp MCP",
+      "description": "Manage Mailchimp campaigns, lists, templates, automations, and reports via MCP.",
+      "tier": "useful",
+      "category": "email-marketing",
+      "repo": "LokiMCPUniverse/mailchimp-mcp-server",
+      "git_url": "https://github.com/LokiMCPUniverse/mailchimp-mcp-server",
+      "readme_url": "https://github.com/LokiMCPUniverse/mailchimp-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx mailchimp-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.mailchimp-mcp"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "convertkit-mcp",
       "display_name": "Kit (ConvertKit) MCP",
       "description": "Manage Kit.com (ConvertKit) subscribers, tags, sequences, and email broadcasts.",
@@ -8123,6 +7703,33 @@
         "type": "mcp",
         "managed_by": "claude-settings"
       },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "aws-ses-mcp",
+      "display_name": "AWS SES MCP",
+      "description": "Send HTML and plain text emails with CC, BCC, and reply-to via AWS Simple Email Service.",
+      "tier": "useful",
+      "category": "email",
+      "repo": "omd01/aws-ses-mcp",
+      "git_url": "https://github.com/omd01/aws-ses-mcp",
+      "readme_url": "https://github.com/omd01/aws-ses-mcp#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx aws-ses-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.aws-ses-mcp"
+      },
+      "integration": {},
       "owner_type": "community",
       "official": false,
       "audience": "everyone",
@@ -8676,6 +8283,33 @@
       "conflicts_with": []
     },
     {
+      "name": "vegalite-mcp",
+      "display_name": "Vega-Lite MCP",
+      "description": "Generate data visualizations and charts using the Vega-Lite specification.",
+      "tier": "useful",
+      "category": "visualization",
+      "repo": "isaacwasserman/mcp-vegalite-server",
+      "git_url": "https://github.com/isaacwasserman/mcp-vegalite-server",
+      "readme_url": "https://github.com/isaacwasserman/mcp-vegalite-server#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx mcp-vegalite-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.vegalite-mcp"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "antv-chart-mcp",
       "display_name": "AntV Chart MCP",
       "description": "Generate visual charts and graphs using the AntV data visualization library.",
@@ -8766,6 +8400,87 @@
       "conflicts_with": []
     },
     {
+      "name": "facebook-ads-mcp",
+      "display_name": "Facebook Ads MCP",
+      "description": "Programmatic access to Facebook Ads API for campaign management and analytics.",
+      "tier": "useful",
+      "category": "advertising",
+      "repo": "gomarble-ai/facebook-ads-mcp-server",
+      "git_url": "https://github.com/gomarble-ai/facebook-ads-mcp-server",
+      "readme_url": "https://github.com/gomarble-ai/facebook-ads-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx facebook-ads-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.facebook-ads-mcp"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "google-ads-mcp",
+      "display_name": "Google Ads MCP",
+      "description": "Programmatic access to Google Ads API for campaign management and reporting.",
+      "tier": "useful",
+      "category": "advertising",
+      "repo": "gomarble-ai/google-ads-mcp-server",
+      "git_url": "https://github.com/gomarble-ai/google-ads-mcp-server",
+      "readme_url": "https://github.com/gomarble-ai/google-ads-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx google-ads-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.google-ads-mcp"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "videodb-mcp",
+      "display_name": "VideoDB MCP",
+      "description": "Serverless video database with AI tagging, transcription, and workflow automation.",
+      "tier": "useful",
+      "category": "video",
+      "repo": "video-db/agent-toolkit",
+      "git_url": "https://github.com/video-db/agent-toolkit",
+      "readme_url": "https://github.com/video-db/agent-toolkit#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx videodb-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.videodb-mcp"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "google-news-mcp",
       "display_name": "Google News MCP",
       "description": "Multi-language news search via Google News with topic and keyword filtering.",
@@ -8819,6 +8534,33 @@
         "type": "mcp",
         "managed_by": "claude-settings"
       },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "arxiv-mcp",
+      "display_name": "ArXiv MCP",
+      "description": "Search and retrieve academic research papers from the ArXiv preprint server.",
+      "tier": "useful",
+      "category": "research",
+      "repo": "blazickjp/arxiv-mcp-server",
+      "git_url": "https://github.com/blazickjp/arxiv-mcp-server",
+      "readme_url": "https://github.com/blazickjp/arxiv-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx arxiv-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.arxiv-mcp"
+      },
+      "integration": {},
       "owner_type": "community",
       "official": false,
       "audience": "everyone",
@@ -9036,6 +8778,33 @@
       "conflicts_with": []
     },
     {
+      "name": "signoz-mcp",
+      "display_name": "SigNoz MCP",
+      "description": "Comprehensive integration with SigNoz observability APIs for logs, traces, and metrics.",
+      "tier": "useful",
+      "category": "monitoring",
+      "repo": "DrDroidLab/signoz-mcp-server",
+      "git_url": "https://github.com/DrDroidLab/signoz-mcp-server",
+      "readme_url": "https://github.com/DrDroidLab/signoz-mcp-server#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx signoz-mcp-server"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.signoz-mcp"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "figma-context-mcp",
       "display_name": "Figma Context MCP",
       "description": "Retrieve Figma design data and component metadata for use in AI coding workflows.",
@@ -9089,6 +8858,33 @@
         "type": "mcp",
         "managed_by": "claude-settings"
       },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "maven-tools-mcp",
+      "display_name": "Maven Tools MCP",
+      "description": "Maven Central dependency intelligence for searching and resolving Java packages.",
+      "tier": "useful",
+      "category": "package-management",
+      "repo": "arvindand/maven-tools-mcp",
+      "git_url": "https://github.com/arvindand/maven-tools-mcp",
+      "readme_url": "https://github.com/arvindand/maven-tools-mcp#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx maven-tools-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.maven-tools-mcp"
+      },
+      "integration": {},
       "owner_type": "community",
       "official": false,
       "audience": "everyone",
@@ -9931,6 +9727,33 @@
       "conflicts_with": []
     },
     {
+      "name": "zenml-mcp",
+      "display_name": "ZenML MLOps MCP",
+      "description": "Interact with ZenML MLOps and LLMOps pipelines for machine learning workflows.",
+      "tier": "useful",
+      "category": "ai-tools",
+      "repo": "zenml-io/mcp-zenml",
+      "git_url": "https://github.com/zenml-io/mcp-zenml",
+      "readme_url": "https://github.com/zenml-io/mcp-zenml#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx mcp-zenml"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.zenml-mcp"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "creatify-mcp",
       "display_name": "Creatify AI Video MCP",
       "description": "Generate and edit AI marketing videos programmatically via Creatify API.",
@@ -10134,6 +9957,33 @@
         "type": "mcp",
         "managed_by": "claude-settings"
       },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "qgis-mcp",
+      "display_name": "QGIS Desktop MCP",
+      "description": "Control QGIS Desktop GIS software for spatial analysis and map creation.",
+      "tier": "experimental",
+      "category": "maps",
+      "repo": "jjsantos01/qgis_mcp",
+      "git_url": "https://github.com/jjsantos01/qgis_mcp",
+      "readme_url": "https://github.com/jjsantos01/qgis_mcp#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx qgis-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.qgis-mcp"
+      },
+      "integration": {},
       "owner_type": "community",
       "official": false,
       "audience": "everyone",
@@ -10351,6 +10201,33 @@
       "conflicts_with": []
     },
     {
+      "name": "ebook-mcp",
+      "display_name": "eBook MCP",
+      "description": "Interact with and extract content from PDF and EPUB ebook files.",
+      "tier": "useful",
+      "category": "books",
+      "repo": "onebirdrocks/ebook-mcp",
+      "git_url": "https://github.com/onebirdrocks/ebook-mcp",
+      "readme_url": "https://github.com/onebirdrocks/ebook-mcp#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx ebook-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.ebook-mcp"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "slite-mcp",
       "display_name": "Slite Notes MCP",
       "description": "Search and browse Slite team documentation and note hierarchy.",
@@ -10434,6 +10311,33 @@
         "type": "mcp",
         "managed_by": "claude-settings"
       },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "chronulus-mcp",
+      "display_name": "Chronulus Forecasting MCP",
+      "description": "Multimodal AI forecasting and prediction models via Chronulus AI.",
+      "tier": "experimental",
+      "category": "ai-tools",
+      "repo": "ChronulusAI/chronulus-mcp",
+      "git_url": "https://github.com/ChronulusAI/chronulus-mcp",
+      "readme_url": "https://github.com/ChronulusAI/chronulus-mcp#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx chronulus-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.chronulus-mcp"
+      },
+      "integration": {},
       "owner_type": "community",
       "official": false,
       "audience": "everyone",
@@ -10892,6 +10796,33 @@
       "conflicts_with": []
     },
     {
+      "name": "netwrix-mcp",
+      "display_name": "Netwrix Access Analyzer MCP",
+      "description": "Analyze user access and permissions data via Netwrix Access Analyzer.",
+      "tier": "useful",
+      "category": "security",
+      "repo": "netwrix/mcp-server-naa",
+      "git_url": "https://github.com/netwrix/mcp-server-naa",
+      "readme_url": "https://github.com/netwrix/mcp-server-naa#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx netwrix-mcp"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.netwrix-mcp"
+      },
+      "integration": {},
+      "owner_type": "community",
+      "official": false,
+      "audience": "advanced",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
       "name": "entra-id-mcp",
       "display_name": "Microsoft Entra ID MCP",
       "description": "Manage Microsoft Entra ID users, groups, and policies via Graph API.",
@@ -10945,6 +10876,33 @@
         "type": "mcp",
         "managed_by": "claude-settings"
       },
+      "owner_type": "community",
+      "official": false,
+      "audience": "everyone",
+      "last_verified_at": "2026-04-08",
+      "conflicts_with": []
+    },
+    {
+      "name": "llm-context-mcp",
+      "display_name": "LLM Context MCP",
+      "description": "Share code context with LLMs via MCP or clipboard with smart filtering.",
+      "tier": "useful",
+      "category": "development",
+      "repo": "cyberchitta/llm-context.py",
+      "git_url": "https://github.com/cyberchitta/llm-context.py",
+      "readme_url": "https://github.com/cyberchitta/llm-context.py#readme",
+      "install_methods": [
+        {
+          "type": "pip",
+          "command": "uvx llm-context"
+        }
+      ],
+      "detect": {
+        "command": null,
+        "pattern": null,
+        "settings_json_key": "mcpServers.llm-context-mcp"
+      },
+      "integration": {},
       "owner_type": "community",
       "official": false,
       "audience": "everyone",
