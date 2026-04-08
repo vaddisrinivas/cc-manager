@@ -81,7 +81,8 @@ def _checkbox_select(
         if N > visible:
             shown_end = scroll + visible
             lines.append(f"  {_DIM}── {scroll + 1}–{min(shown_end, N)} of {N}  (↑↓ scroll){_RST}")
-        lines.append(f"\n  {_DIM}↑↓ move · space toggle · a all/none · enter confirm{_RST}")
+        lines.append("")  # blank spacer — counts as one terminal line
+        lines.append(f"  {_DIM}↑↓ move · space toggle · a all/none · enter confirm{_RST}")
         buf = ""
         if rendered:
             buf += _UP(rendered)
