@@ -71,12 +71,73 @@ class Store:
         return records[:limit]
 
     def tail(self, n: int = 20) -> list[dict]:
-        records = self._read_all()
-        return records[-n:]
+        """Return last n records efficiently without parsing the whole file."""
+        if not self.path.exists():
+            return []
+        try:
+            with open(self.path, "rb") as f:
+                f.seek(0, 2)
+                size = f.tell()
+                if size == 0:
+                    return []
+                # Read enough bytes from the end to cover n lines (~512 bytes each)
+                chunk = min(size, max(n * 512, 8192))
+                f.seek(-chunk, 2)
+                raw = f.read()
+            lines = raw.decode("utf-8", errors="replace").splitlines()
+            # First line may be partial if we didn't read from the start
+            if chunk < size:
+                lines = lines[1:]
+        except Exception:
+            lines = self.path.read_text(encoding="utf-8").splitlines()
+
+        records: list[dict] = []
+        for line in reversed(lines):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                records.append(json.loads(line))
+            except json.JSONDecodeError:
+                pass
+            if len(records) >= n:
+                break
+        return list(reversed(records))
 
     def sessions(self, since: datetime | None = None) -> list[dict]:
         return self.query(event="session_end", since=since)
 
     def latest(self, event: str) -> dict | None:
-        records = self.query(event=event, limit=10000)
+        """Return the most recent record for the given event type.
+
+        Scans from the end of the file so it is fast even on large stores.
+        """
+        if not self.path.exists():
+            return None
+        try:
+            with open(self.path, "rb") as f:
+                f.seek(0, 2)
+                size = f.tell()
+                if size == 0:
+                    return None
+                chunk = min(size, 65536)  # scan at most 64 KB from the end
+                f.seek(-chunk, 2)
+                raw = f.read()
+            lines = raw.decode("utf-8", errors="replace").splitlines()
+            if chunk < size:
+                lines = lines[1:]  # first line may be partial
+            for line in reversed(lines):
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    record = json.loads(line)
+                    if record.get("event") == event:
+                        return record
+                except json.JSONDecodeError:
+                    pass
+        except Exception:
+            pass
+        # Fallback: full scan
+        records = [r for r in self._read_all() if r.get("event") == event]
         return records[-1] if records else None

@@ -7,17 +7,9 @@ from rich.padding import Padding
 
 from cc_manager.context import get_ctx
 from cc_manager.display import console
+from cc_manager.theme import tier_label
 
 app = typer.Typer()
-
-
-def _tier_label(tier: str) -> str:
-    mapping = {
-        "recommended": "[bright_cyan]★ recommended[/bright_cyan]",
-        "popular": "[bright_green]◆ popular[/bright_green]",
-        "community": "[dim]· community[/dim]",
-    }
-    return mapping.get(tier, f"[dim]{tier}[/dim]")
 
 
 def _install_hint(tool: dict) -> str:
@@ -65,7 +57,7 @@ def search_cmd(query: str = typer.Argument(..., help="Search query")) -> None:
 
         body = (
             f"  [dim]{desc}[/dim]\n"
-            f"  {_tier_label(tier)}  [dim]·[/dim]  [magenta]{category}[/magenta]"
+            f"  {tier_label(tier)}  [dim]·[/dim]  [magenta]{category}[/magenta]"
             + (f"  [dim]·[/dim]  [dim]{hint}[/dim]" if hint != "—" else "")
         )
 

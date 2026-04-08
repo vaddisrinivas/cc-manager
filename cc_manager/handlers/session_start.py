@@ -11,14 +11,15 @@ def handle(payload: dict, ctx) -> dict:
 
     # Check installed tools
     missing = []
-    for name, info in ctx.installed.get("tools", {}).items():
-        reg = next((t for t in ctx.registry if t["name"] == name), None)
+    for name in ctx.installed.get("tools", {}):
+        reg = ctx.registry_map.get(name)
         if not reg:
             continue
         detect = reg.get("detect", {})
-        if detect.get("type") == "binary":
+        cmd = detect.get("command", "")
+        if cmd:
             from cc_manager.context import run_cmd
-            rc, _ = run_cmd(detect.get("command", ""), timeout=3)
+            rc, _ = run_cmd(cmd, timeout=3)
             if rc != 0:
                 missing.append(name)
 

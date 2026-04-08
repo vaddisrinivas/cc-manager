@@ -30,21 +30,46 @@ Check your Claude Code ecosystem status: installed tools, hook registration, and
 
 ## /cc-manager:install
 
-Install a tool from the cc-manager registry.
+Install a tool from the cc-manager registry. Run the install command automatically — no need to copy-paste.
 
 **Usage:** `/cc-manager:install <tool-name>`
 
 **What it does:**
-- Looks up `<tool-name>` in the registry
-- Runs the install command (brew, npm, cargo, etc.) or registers an MCP server
-- Records the install in `~/.cc-manager/registry/installed.json`
+1. Runs `ccm info <tool-name>` to confirm the tool exists and show what will be installed
+2. Runs `ccm install <tool-name>` — this executes the appropriate install command (cargo, npm, brew, MCP config, etc.)
+3. Runs `ccm doctor` to verify the tool is detected correctly after install
+4. Reports the result and any follow-up steps
 
-**Runs:** `ccm install <tool-name>` via Bash tool
+**How it works:**
+`ccm install` reads the install command directly from the registry entry — you never need to know the install method. The registry carries the correct command for each tool (cargo, npm, brew, MCP config, plugin, etc.) and `ccm install` runs it.
+
+**Runs:** `ccm info <name> && ccm install <name> && ccm doctor` via Bash tool
 
 **Example:**
 ```
 /cc-manager:install rtk
 /cc-manager:install context7
+/cc-manager:install caveman
+```
+
+---
+
+## /cc-manager:remove
+
+Remove a tool installed via cc-manager.
+
+**Usage:** `/cc-manager:remove <tool-name>`
+
+**What it does:**
+- Removes the tool entry from `~/.cc-manager/registry/installed.json`
+- Cleans up any MCP server config in `~/.claude/settings.json`
+- Does not uninstall system binaries (brew/npm/cargo managed separately)
+
+**Runs:** `ccm remove <tool-name>` via Bash tool
+
+**Example:**
+```
+/cc-manager:remove context7
 ```
 
 ---
@@ -100,22 +125,22 @@ Show token and cost analytics for the current or recent sessions.
 
 ## /cc-manager:recommend
 
-Get personalized tool recommendations based on your usage patterns.
+Get tool recommendations derived from your actual session analytics.
 
 **Usage:** `/cc-manager:recommend`
 
 **What it does:**
-- Analyzes your session history (tools used, hooks triggered, common tasks)
-- Compares against the cc-manager registry
-- Suggests tools you are not yet using that match your patterns
+- Runs `ccm analyze` to compute real usage stats (tokens, cost, compaction, model mix)
+- Only surfaces a recommendation when the data justifies it — high token volume → RTK, high cost → cc-sentinel, Opus dominance → model warning, etc.
+- Shows nothing if no sessions have been recorded yet
 
-**Runs:** `ccm recommend` via Bash tool
+**Runs:** `ccm analyze && ccm recommend` via Bash tool
 
 **Example output:**
 ```
-◉ RECOMMENDATIONS
-  rtk     — Token optimizer (saves 60-90% on dev ops)  [not installed]
-  context7 — Up-to-date library docs in-context        [not installed]
+◉ RECOMMENDATIONS  (from ccm analyze · last 7 days)
+  rtk       avg 620K tokens/session — token filter saves 60-90%   ccm install rtk
+  cc-sentinel  $3.40 spent this week — sentinel intercepts waste   ccm install cc-sentinel
 ```
 
 ---
@@ -140,3 +165,117 @@ Show recent cc-manager events from the session event store.
   2026-04-07T09:12:45  post_tool_use   tool=Bash tokens=1240
   2026-04-07T09:18:30  session_end     input=45K output=8K cost=$0.0021
 ```
+
+---
+
+## /cc-retrospect:cost
+
+Show a cost breakdown from your most recent Claude Code session.
+
+**Usage:** `/cc-retrospect:cost`
+
+**Runs:** `cc-retrospect cost` via Bash tool
+
+---
+
+## /cc-retrospect:habits
+
+Show habit patterns detected across your recent sessions.
+
+**Usage:** `/cc-retrospect:habits`
+
+**Runs:** `cc-retrospect habits` via Bash tool
+
+---
+
+## /cc-retrospect:health
+
+Show a session health score — context pressure, compaction frequency, waste signals.
+
+**Usage:** `/cc-retrospect:health`
+
+**Runs:** `cc-retrospect health` via Bash tool
+
+---
+
+## /cc-retrospect:waste
+
+Show real-time waste interception report — redundant tool calls, over-long prompts, unnecessary re-reads.
+
+**Usage:** `/cc-retrospect:waste`
+
+**Runs:** `cc-retrospect waste` via Bash tool
+
+---
+
+## /cc-retrospect:tips
+
+Get actionable tips derived from your session patterns.
+
+**Usage:** `/cc-retrospect:tips`
+
+**Runs:** `cc-retrospect tips` via Bash tool
+
+---
+
+## /cc-retrospect:compare
+
+Week-over-week comparison of token usage, cost, and session efficiency.
+
+**Usage:** `/cc-retrospect:compare`
+
+**Runs:** `cc-retrospect compare` via Bash tool
+
+---
+
+## /cc-retrospect:report
+
+Full retrospective report — cost, habits, health, waste, and tips in one view.
+
+**Usage:** `/cc-retrospect:report`
+
+**Runs:** `cc-retrospect report` via Bash tool
+
+---
+
+## /cc-retrospect:hints
+
+Show real-time pre-tool hints (fires before expensive tool calls to suggest cheaper alternatives).
+
+**Usage:** `/cc-retrospect:hints`
+
+**Runs:** `cc-retrospect hints` via Bash tool
+
+---
+
+## /cc-later:queue
+
+Queue a task into LATER.md for dispatch near window expiry.
+
+**Usage:** `/cc-later:queue <task description>`
+
+**What it does:**
+- Appends the task to `LATER.md` with priority and context
+- cc-later dispatches queued tasks automatically as the context window fills
+
+**Runs:** `cc-later queue "<task>"` via Bash tool
+
+---
+
+## /cc-later:list
+
+Show all pending tasks in LATER.md.
+
+**Usage:** `/cc-later:list`
+
+**Runs:** `cc-later list` via Bash tool
+
+---
+
+## /cc-later:flush
+
+Manually trigger dispatch of all LATER.md tasks now (without waiting for window pressure).
+
+**Usage:** `/cc-later:flush`
+
+**Runs:** `cc-later flush` via Bash tool

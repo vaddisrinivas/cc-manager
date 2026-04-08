@@ -10,6 +10,7 @@ from rich.table import Table
 
 from cc_manager.context import get_ctx
 from cc_manager.display import console
+from cc_manager.theme import tier_label
 
 app = typer.Typer()
 
@@ -47,15 +48,6 @@ def get_tools_list(
         results.append(entry)
 
     return results
-
-
-def _tier_label(tier: str) -> str:
-    mapping = {
-        "recommended": "[bright_cyan]★ recommended[/bright_cyan]",
-        "popular": "[bright_green]◆ popular[/bright_green]",
-        "community": "[dim]· community[/dim]",
-    }
-    return mapping.get(tier, f"[dim]{tier}[/dim]")
 
 
 @app.command("list")
@@ -102,7 +94,7 @@ def list_cmd(
         tbl.add_row(
             name_cell,
             status_cell,
-            _tier_label(tool.get("tier", "")),
+            tier_label(tool.get("tier", "")),
             tool.get("category", ""),
             tool.get("description", "")[:60],
         )

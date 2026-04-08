@@ -1,194 +1,76 @@
-"""cc-manager init command — 5-step dramatic interactive setup."""
+"""cc-manager init command."""
 from __future__ import annotations
 
 import shutil
-import time
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import typer
 from rich import box
 from rich.panel import Panel
-from rich.padding import Padding
+from rich.progress import BarColumn, Progress, SpinnerColumn, TaskProgressColumn, TextColumn
 from rich.rule import Rule
 from rich.table import Table
 
 import cc_manager.context as ctx_mod
 import cc_manager.settings as settings_mod
+from cc_manager.config import HOOK_EVENTS, MODULES, cfg
 from cc_manager.context import get_ctx, run_cmd
-from cc_manager.display import console, header, success, warning, info, dim_info
-
-# Default config toml content
-DEFAULT_CONFIG = """\
-[manager]
-schema_version = 1
-backup_on_change = true
-log_level = "info"
-
-[later]
-enabled = true
-
-[compact]
-enabled = true
-
-[resume]
-enabled = true
-
-[budget]
-enabled = true
-weekly_budget_tokens = 10_000_000
-backoff_at_pct = 80
-
-[window]
-enabled = true
-duration_minutes = 300
-
-[stats]
-enabled = true
-cost_tracking = true
-
-[stats.pricing]
-sonnet_input = 3.00
-sonnet_output = 15.00
-opus_input = 15.00
-opus_output = 75.00
-haiku_input = 0.25
-haiku_output = 1.25
-sonnet_cache_write = 3.75
-sonnet_cache_read = 0.30
-opus_cache_write = 18.75
-opus_cache_read = 1.50
-haiku_cache_write = 0.30
-haiku_cache_read = 0.03
-
-[nudge]
-enabled = true
-stale_minutes = 10
-max_retries = 2
-"""
-
-HOOK_EVENTS = ["Stop", "SessionStart", "SessionEnd", "PostToolUse", "PreCompact"]
-
-MODULES = [
-    ("later", "dispatch deferred tasks at window end"),
-    ("compact", "context recovery after compaction"),
-    ("resume", "auto-resume limit-hit tasks"),
-    ("budget", "global budget enforcement"),
-    ("window", "5-hour window lifecycle"),
-    ("stats", "token analytics + cost tracking"),
-    ("nudge", "stale agent detection"),
-]
+from cc_manager.display import console, dim_info, header, success
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
+# ── Helpers ────────────────────────────────────────────────────────────────────
 
-def _show_step(n: int, total: int, title: str) -> None:
-    """Print a numbered step header."""
+def _step(n: int, total: int, title: str) -> None:
     console.print()
-    console.print(Rule(
-        f"[bold bright_cyan]Step {n}/{total}:[/bold bright_cyan] [bright_white]{title}[/bright_white]",
-        style="cyan",
-    ))
+    console.print(Rule(f"[bold bright_cyan]Step {n}/{total}:[/bold bright_cyan] [bright_white]{title}[/bright_white]", style="cyan"))
     console.print()
 
 
-def _detect_tool(tool: dict) -> str | None:
-    """Return version string if tool is detected, else None."""
-    detect_cmd = tool.get("detect_cmd")
-    if detect_cmd:
-        rc, output = run_cmd(detect_cmd, timeout=5)
-        if rc == 0 and output:
-            # Return first line as version hint
-            return output.splitlines()[0].strip()[:60]
-        return None
-
-    # Fallback: check if primary binary exists on PATH
-    name = tool.get("name", "")
-    if shutil.which(name):
-        return f"found in PATH"
-    return None
+def _detect_tool(tool: dict) -> bool:
+    detect = tool.get("detect", {})
+    cmd = detect.get("command", "")
+    if cmd:
+        rc, _ = run_cmd(cmd, timeout=5)
+        return rc == 0
+    return bool(shutil.which(tool.get("name", "")))
 
 
-def _build_hook_entry(event_name: str) -> dict:
-    return {
-        event_name: [
-            {
-                "matcher": "",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": f"python3 ~/.cc-manager/hook.py {event_name}",
-                    }
-                ],
-            }
-        ]
-    }
+def _build_hook_entry(event: str) -> dict:
+    return {event: [{"matcher": "", "hooks": [{"type": "command", "command": f"python3 ~/.cc-manager/hook.py {event}"}]}]}
 
 
 def _install_skills(claude_dir: Path, dry_run: bool) -> list[str]:
-    """Install skill files to ~/.claude/. Returns list of actions taken."""
-    actions: list[str] = []
-    skills_src = Path(__file__).parent.parent / "skills"
-
     if dry_run:
-        dim_info("[DRY RUN] would install cc-manager skill files to ~/.claude/")
-        return actions
-
-    # Write cc-manager.md to ~/.claude/
-    ccm_md_src = skills_src / "cc-manager.md"
-    ccm_md_dst = claude_dir / "cc-manager.md"
-    if ccm_md_src.exists():
-        shutil.copy2(ccm_md_src, ccm_md_dst)
+        return []
+    actions: list[str] = []
+    src = Path(__file__).parent.parent / "skills"
+    ccm_md = src / "cc-manager.md"
+    if ccm_md.exists():
+        shutil.copy2(ccm_md, claude_dir / "cc-manager.md")
         actions.append("~/.claude/cc-manager.md")
-
-    # Append @cc-manager to CLAUDE.md if not already there
     claude_md = claude_dir / "CLAUDE.md"
-    if claude_md.exists():
-        content = claude_md.read_text(encoding="utf-8")
-        if "@cc-manager" not in content:
-            claude_md.write_text(content + "\n@cc-manager\n", encoding="utf-8")
-            actions.append("~/.claude/CLAUDE.md (@cc-manager appended)")
-    else:
-        claude_md.write_text("@cc-manager\n", encoding="utf-8")
-        actions.append("~/.claude/CLAUDE.md (created)")
-
-    # Install SKILL.md to ~/.claude/skills/cc-manager/
-    skill_src = skills_src / "SKILL.md"
+    text = claude_md.read_text(encoding="utf-8") if claude_md.exists() else ""
+    if "@cc-manager" not in text:
+        claude_md.write_text(text + "\n@cc-manager\n", encoding="utf-8")
+        actions.append("~/.claude/CLAUDE.md")
+    skill_src = src / "SKILL.md"
     if skill_src.exists():
-        skills_dst = claude_dir / "skills" / "cc-manager"
-        skills_dst.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(skill_src, skills_dst / "SKILL.md")
+        dst = claude_dir / "skills" / "cc-manager"
+        dst.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(skill_src, dst / "SKILL.md")
         actions.append("~/.claude/skills/cc-manager/SKILL.md")
-
     return actions
 
 
-def _install_hook_script(manager_dir: Path, dry_run: bool) -> None:
-    """Copy hook.py to ~/.cc-manager/hook.py."""
+def _install_hook_script(manager_dir: Path) -> None:
     dest = manager_dir / "hook.py"
-    if dry_run:
-        dim_info(f"[DRY RUN] would install hook.py to {dest}")
-        return
-
-    candidates = [
-        Path(__file__).parent.parent / "hook.py",
-    ]
-    for src in candidates:
-        if src.exists():
-            shutil.copy2(src, dest)
-            return
-
-    # Fall back: write minimal stub
-    dest.write_text(
-        "#!/usr/bin/env python3\n"
-        "import sys, json\n"
-        "# cc-manager hook dispatcher\n"
-        "# Re-run: ccm init to update this file\n"
-        "print('{}')\n"
-        "sys.exit(0)\n",
-        encoding="utf-8",
-    )
+    src = Path(__file__).parent.parent / "hook.py"
+    if src.exists():
+        shutil.copy2(src, dest)
+    else:
+        dest.write_text("#!/usr/bin/env python3\nimport sys\nprint('{}')\nsys.exit(0)\n", encoding="utf-8")
 
 
 def _prompt_yes(msg: str, default: bool = True) -> bool:
@@ -198,401 +80,240 @@ def _prompt_yes(msg: str, default: bool = True) -> bool:
         return default
 
 
-# ---------------------------------------------------------------------------
-# Step implementations
-# ---------------------------------------------------------------------------
+# ── Steps ──────────────────────────────────────────────────────────────────────
 
-def _step1_detect_environment(dry_run: bool) -> dict:
-    """Step 1/5: Detecting environment. Returns detection results."""
-    _show_step(1, 5, "Detecting environment")
-
-    results = {}
-
-    with console.status("[bright_cyan]Scanning environment...[/bright_cyan]", spinner="dots12"):
-        # Claude Code config dir
-        results["claude_dir_exists"] = ctx_mod.CLAUDE_DIR.exists()
-        results["settings_exists"] = ctx_mod.SETTINGS_PATH.exists()
-
-        # Existing non-cc-manager hooks
-        existing_hooks: list[str] = []
-        if ctx_mod.SETTINGS_PATH.exists():
-            import json
-            try:
-                data = json.loads(ctx_mod.SETTINGS_PATH.read_text(encoding="utf-8"))
-                hooks_data = data.get("hooks", {})
-                for event_name, hook_list in hooks_data.items():
-                    for entry in (hook_list if isinstance(hook_list, list) else []):
-                        for h in entry.get("hooks", []):
-                            cmd = h.get("command", "")
-                            if ".cc-manager" not in cmd:
-                                existing_hooks.append(f"{Path(cmd.split()[0]).name} ({event_name})")
-            except Exception:
-                pass
-        results["existing_hooks"] = existing_hooks
-
-        # Python version
-        rc, py_out = run_cmd("python3 --version", timeout=5)
-        results["python"] = py_out.strip() if rc == 0 else None
-
-        # Tool binaries
-        for bin_name in ("cargo", "go", "npm", "pip"):
-            results[bin_name] = shutil.which(bin_name) is not None
-
-    # Display results panel
-    def _found(val: bool) -> str:
-        return "[bright_green]found[/bright_green]" if val else "[dim]not found[/dim]"
-
-    settings_label = "[bright_green]found[/bright_green]" if results["settings_exists"] else "[yellow]not found[/yellow]"
-    hooks_label = (
-        f"[bright_white]{', '.join(results['existing_hooks'][:2])}[/bright_white]"
-        if results["existing_hooks"]
-        else "[dim]none[/dim]"
-    )
-    python_label = (
-        f"[bright_white]{results['python']}[/bright_white]"
-        if results["python"]
-        else "[dim]not found[/dim]"
-    )
-
-    claude_dir_str = str(ctx_mod.CLAUDE_DIR).replace(str(Path.home()), "~")
-    settings_str = str(ctx_mod.SETTINGS_PATH).replace(str(Path.home()), "~")
-
-    lines = [
-        f"  [bright_cyan]◆[/bright_cyan] Claude Code config    [dim]{claude_dir_str}[/dim]               {_found(results['claude_dir_exists'])}",
-        f"  [bright_cyan]◆[/bright_cyan] settings.json         [dim]{settings_str}[/dim]  {settings_label}",
-        f"  [bright_cyan]◆[/bright_cyan] Existing hooks         {hooks_label}",
-        f"  [bright_cyan]◆[/bright_cyan] Python                 {python_label}",
-        f"  [bright_cyan]◆[/bright_cyan] cargo                  {_found(results['cargo'])}",
-        f"  [bright_cyan]◆[/bright_cyan] go                     {_found(results['go'])}",
-        f"  [bright_cyan]◆[/bright_cyan] npm                    {_found(results['npm'])}",
-        f"  [bright_cyan]◆[/bright_cyan] pip                    {_found(results['pip'])}",
+def _step1_detect(dry_run: bool) -> None:
+    _step(1, 5, "Detecting environment")
+    found = lambda v: "[bright_green]found[/bright_green]" if v else "[dim]not found[/dim]"
+    rc, py = run_cmd("python3 --version", timeout=5)
+    rows = [
+        ("Claude config", found(ctx_mod.CLAUDE_DIR.exists())),
+        ("settings.json", found(ctx_mod.SETTINGS_PATH.exists())),
+        ("Python",        f"[bright_white]{py}[/bright_white]" if rc == 0 else "[dim]not found[/dim]"),
+        ("cargo",         found(bool(shutil.which("cargo")))),
+        ("npm",           found(bool(shutil.which("npm")))),
     ]
-
-    console.print(
-        Panel(
-            "\n".join(lines),
-            border_style="cyan",
-            box=box.SIMPLE_HEAVY,
-            padding=(0, 1),
-        )
-    )
-
-    return results
+    for label, val in rows:
+        console.print(f"  [bright_cyan]◆[/bright_cyan] {label:<16} {val}")
 
 
-def _step2_backup(dry_run: bool) -> str | None:
-    """Step 2/5: Back up existing settings. Returns backup path or None."""
-    _show_step(2, 5, "Backing up current config")
-
+def _step2_backup(dry_run: bool) -> None:
+    _step(2, 5, "Backing up config")
     if not ctx_mod.SETTINGS_PATH.exists():
-        dim_info("No settings.json found — skipping backup.")
-        return None
-
-    if dry_run:
+        dim_info("No settings.json — skipping.")
+        return
+    if not dry_run:
+        bpath = settings_mod.backup_create()
+        console.print(f"  [bright_green]✓[/bright_green]  {str(bpath).replace(str(Path.home()), '~')}")
+    else:
         dim_info("[DRY RUN] would back up settings.json")
-        return None
-
-    console.print(f"  [bright_cyan]◆[/bright_cyan]  Backing up settings.json...")
-    bpath = settings_mod.backup_create()
-    bpath_str = str(bpath).replace(str(Path.home()), "~")
-    console.print(f"  [bright_green]✓[/bright_green]  [dim]{bpath_str}[/dim]")
-    return str(bpath)
 
 
 def _step3_install_tools(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
-    """Step 3/5: Install recommended tools. Returns list of installed tool names."""
-    _show_step(3, 5, "Installing recommended tools")
-
-    installed_tools: list[str] = []
-
+    _step(3, 5, "Installing recommended tools")
     if minimal:
-        dim_info("--minimal: skipping tool installation.")
-        return installed_tools
+        dim_info("--minimal: skipping.")
+        return []
 
     ctx = get_ctx()
     recommended = [t for t in ctx.registry if t.get("tier") == "recommended"]
-
     if not recommended:
-        dim_info("No recommended tools found in registry.")
-        return installed_tools
+        dim_info("No recommended tools in registry.")
+        return []
 
-    total = len(recommended)
+    installable, already_done = [], []
+    tbl = Table(box=box.SIMPLE_HEAVY, border_style="cyan", expand=True, padding=(0, 1))
+    tbl.add_column("#", style="dim", width=3)
+    tbl.add_column("TOOL", style="bright_white", min_width=14)
+    tbl.add_column("DESCRIPTION", min_width=30)
+    tbl.add_column("METHOD", style="dim", min_width=8)
+    tbl.add_column("STATUS", min_width=10)
 
-    from cc_manager.commands.install import install_tool, AlreadyInstalledError, ToolNotFoundError, InstallError
-
-    for idx, tool in enumerate(recommended, 1):
-        name = tool.get("name", "?")
-        desc = tool.get("description", "")
-        methods = tool.get("install_methods", [])
-        method = methods[0] if methods else {}
-        method_type = method.get("type", "unknown")
-        method_cmd = method.get("command", "")
-
-        # Build method hint
-        if method_type == "mcp":
-            method_hint = "[dim]→ adds to mcpServers in settings.json[/dim]"
-        elif method_type == "plugin":
-            plugin_cmd = method_cmd or f"claude plugin install {name}"
-            method_hint = f"[dim]→ {plugin_cmd}[/dim]"
-        elif method_type in ("github_action", "manual"):
-            method_hint = "[yellow]→ manual setup required[/yellow]"
-        else:
-            method_hint = f"[dim]→ {method_cmd}[/dim]" if method_cmd else f"[dim]→ {method_type}[/dim]"
-
-        # Detect if already installed
-        version = _detect_tool(tool)
-        already = name in ctx.installed.get("tools", {})
-
-        prefix = f"  [{idx}/{total}] [bright_white]{name}[/bright_white]"
-        dashes = "─" * max(1, 16 - len(name))
-
-        if already or version:
-            version_str = version or "installed"
-            console.print(f"{prefix} {dashes} [dim]{version_str}[/dim]  [dim]already installed[/dim]  [dim italic][SKIP][/dim italic]")
-            continue
-
-        console.print(f"{prefix} {dashes} [dim]{desc[:50]}[/dim]")
-        console.print(f"         {method_hint}")
-
-        if dry_run:
-            console.print(f"         [dim][DRY RUN] would install[/dim]")
-            continue
-
-        # Prompt
-        if yes:
-            do_install = True
-        elif method_type in ("github_action", "manual"):
-            instructions = method.get("instructions", "See repository for manual install instructions.")
-            console.print(
-                Panel(
-                    f"[yellow]{instructions}[/yellow]",
-                    border_style="yellow",
-                    box=box.SIMPLE_HEAVY,
-                    padding=(0, 1),
-                )
-            )
-            do_install = _prompt_yes("         Mark as noted?", default=True)
-        else:
-            do_install = _prompt_yes(f"         Install? ({method_cmd or method_type})", default=True)
-
-        if not do_install:
-            console.print("         [dim]Skipped.[/dim]")
-            continue
-
-        # Execute install
-        try:
-            if method_type in ("github_action", "manual"):
-                # Just record it
-                from cc_manager.commands.install import _record_installed
-                _record_installed(name, "manual", ctx)
-                console.print(f"         [bright_green]✓[/bright_green] Noted.")
+    with console.status("[bright_cyan]Detecting...[/bright_cyan]", spinner="dots12"):
+        for i, t in enumerate(recommended, 1):
+            name = t.get("name", "?")
+            methods = t.get("install_methods", [])
+            method_type = (methods[0] if methods else {}).get("type", "unknown")
+            already = name in ctx.installed.get("tools", {}) or _detect_tool(t)
+            if already:
+                already_done.append(name)
+                status_str = "[dim]installed[/dim]"
             else:
-                with console.status(f"         [bright_cyan]◆ Installing...[/bright_cyan]", spinner="dots12"):
-                    install_tool(name, dry_run=False)
-                console.print(f"         [bright_green]✓[/bright_green] done")
-                installed_tools.append(name)
-        except AlreadyInstalledError:
-            console.print(f"         [dim]Already installed.[/dim]")
-        except (ToolNotFoundError, InstallError, Exception) as e:
-            warning(f"Failed to install {name}: {e}")
+                installable.append(t)
+                status_str = "[bright_cyan]?[/bright_cyan]"
+            tbl.add_row(str(i), name, f"[dim]{(t.get('description') or '')[:44]}[/dim]", method_type, status_str)
 
-    return installed_tools
-
-
-def _step4_enable_modules(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
-    """Step 4/5: Enable cc-manager modules. Returns list of enabled module names."""
-    _show_step(4, 5, "Enabling cc-manager modules")
-
-    enabled_modules = []
-
-    for mod_name, mod_desc in MODULES:
-        if minimal or yes:
-            # All on without prompting
-            console.print(f"  [bright_green][✓][/bright_green] [bright_white]{mod_name:<10}[/bright_white]  [dim]— {mod_desc}[/dim]")
-            enabled_modules.append(mod_name)
-        else:
-            # Interactive toggle — default all on
-            do_enable = _prompt_yes(
-                f"  Enable [bright_white]{mod_name}[/bright_white] — {mod_desc}?",
-                default=True,
-            )
-            marker = "[bright_green][✓][/bright_green]" if do_enable else "[dim][ ][/dim]"
-            console.print(f"  {marker} [bright_white]{mod_name:<10}[/bright_white]  [dim]— {mod_desc}[/dim]")
-            if do_enable:
-                enabled_modules.append(mod_name)
-
-    return enabled_modules
-
-
-def _step5_write_config(
-    dry_run: bool,
-    manager_dir: Path,
-    config_path: Path,
-) -> dict:
-    """Step 5/5: Write configuration files. Returns summary dict."""
-    _show_step(5, 5, "Writing configuration")
-
-    summary = {
-        "dirs_created": False,
-        "config_written": False,
-        "hook_script_installed": False,
-        "hooks_merged": 0,
-    }
-
+    console.print(tbl)
+    if not installable:
+        console.print("  [bright_green]✓[/bright_green]  All recommended tools already installed.")
+        return []
     if dry_run:
-        console.print(f"  [dim][DRY RUN] would create[/dim] [bright_white]{str(manager_dir).replace(str(Path.home()), '~')}/{{store,backups,registry,state}}[/bright_white]")
-        console.print(f"  [dim][DRY RUN] would write[/dim]  [bright_white]{str(config_path).replace(str(Path.home()), '~')}[/bright_white]")
-        console.print(f"  [dim][DRY RUN] would register hooks:[/dim] [bright_cyan]{', '.join(HOOK_EVENTS)}[/bright_cyan]")
-        console.print(f"  [dim][DRY RUN] would install[/dim] [bright_white]{str(manager_dir / 'hook.py').replace(str(Path.home()), '~')}[/bright_white]")
-        return summary
+        dim_info(f"[DRY RUN] would install: {', '.join(t['name'] for t in installable)}")
+        return []
 
-    # Create directory structure
-    for subdir in ("store", "backups", "registry", "state"):
-        (manager_dir / subdir).mkdir(parents=True, exist_ok=True)
-    dirs_str = str(manager_dir).replace(str(Path.home()), "~")
-    console.print(f"  [bright_green]✓[/bright_green]  [bright_white]{dirs_str}/[/bright_white]  [dim](directories created)[/dim]")
-    summary["dirs_created"] = True
+    approved: list[dict] = []
+    console.print("  [dim]Select tools to install:[/dim]\n")
+    try:
+        for t in installable:
+            name = t["name"]
+            cmd_hint = (t.get("install_methods") or [{}])[0].get("command") or "manual"
+            if yes:
+                approved.append(t)
+                console.print(f"  [bright_green]✓[/bright_green]  {name:<18}  [dim]{cmd_hint}[/dim]")
+            elif _prompt_yes(f"  Install [bright_white]{name}[/bright_white]  [dim]({cmd_hint})[/dim]?"):
+                approved.append(t)
+            else:
+                console.print(f"  [dim]  {name} — skipped[/dim]")
+    except (KeyboardInterrupt, typer.Abort):
+        console.print("\n  [yellow]⚠[/yellow]  Cancelled.")
 
-    # Write default config if not present
+    if not approved:
+        return []
+
+    results: dict[str, tuple[bool, str]] = {}
+    write_lock = threading.Lock()
+
+    def _install_one(t: dict) -> tuple[str, bool, str]:
+        name = t["name"]
+        method = (t.get("install_methods") or [{}])[0]
+        mtype = method.get("type", "unknown")
+        try:
+            if mtype in ("github_action", "manual"):
+                with write_lock:
+                    ctx.record_installed(name, "manual")
+                    ctx.store.append("install", tool=name, version="latest", method="manual")
+                return name, True, "noted (manual)"
+            elif mtype == "mcp":
+                mcp_cfg = method.get("mcp_config", {})
+                if not mcp_cfg and method.get("command"):
+                    parts = method["command"].split()
+                    mcp_cfg = {"command": parts[0], "args": parts[1:]}
+                with write_lock:
+                    settings_mod.merge_mcp(name, mcp_cfg)
+                    ctx.record_installed(name, "mcp")
+                    ctx.store.append("install", tool=name, version="latest", method="mcp")
+                return name, True, "added to mcpServers"
+            elif mtype in ("cargo", "npm", "go", "pip", "brew", "plugin"):
+                cmd = method.get("command")
+                if not cmd:
+                    return name, False, f"no command for {mtype}"
+                rc, out = run_cmd(cmd, timeout=120)
+                if rc != 0:
+                    return name, False, out[:80]
+                with write_lock:
+                    ctx.record_installed(name, mtype)
+                    ctx.store.append("install", tool=name, version="latest", method=mtype)
+                return name, True, f"via {mtype}"
+            return name, False, f"unknown: {mtype}"
+        except Exception as e:
+            return name, False, str(e)[:80]
+
+    with Progress(SpinnerColumn(), TextColumn("[bright_cyan]{task.description}[/bright_cyan]"),
+                  BarColumn(bar_width=20), TaskProgressColumn(), console=console) as prog:
+        overall = prog.add_task("Installing...", total=len(approved))
+        tids = {t["name"]: prog.add_task(f"[dim]{t['name']}[/dim]", total=1) for t in approved}
+        with ThreadPoolExecutor(max_workers=min(4, len(approved))) as pool:
+            for future in as_completed({pool.submit(_install_one, t): t for t in approved}):
+                name, ok, msg = future.result()
+                results[name] = (ok, msg)
+                prog.update(tids[name], completed=1,
+                            description=f"[green]✓ {name}[/green]" if ok else f"[red]✗ {name}[/red]")
+                prog.advance(overall)
+
+    console.print()
+    installed: list[str] = []
+    for name, (ok, msg) in results.items():
+        icon = "[bright_green]✓[/bright_green]" if ok else "[bright_red]✗[/bright_red]"
+        console.print(f"  {icon}  [bright_white]{name:<18}[/bright_white]  [dim]{msg}[/dim]")
+        if ok:
+            installed.append(name)
+    return installed
+
+
+def _step4_modules(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
+    _step(4, 5, "Enabling modules")
+    enabled = []
+    for name, desc in MODULES:
+        if minimal or yes or _prompt_yes(f"  Enable [bright_white]{name}[/bright_white] — {desc}?"):
+            marker = "[bright_green][✓][/bright_green]"
+            enabled.append(name)
+        else:
+            marker = "[dim][ ][/dim]"
+        console.print(f"  {marker} [bright_white]{name:<10}[/bright_white]  [dim]— {desc}[/dim]")
+    return enabled
+
+
+def _step5_config(dry_run: bool, manager_dir: Path, config_path: Path) -> dict:
+    _step(5, 5, "Writing configuration")
+    if dry_run:
+        dim_info(f"[DRY RUN] would create {str(manager_dir).replace(str(Path.home()), '~')}/{{store,backups,registry,state}}")
+        dim_info(f"[DRY RUN] would write {str(config_path).replace(str(Path.home()), '~')}")
+        dim_info(f"[DRY RUN] would register hooks: {', '.join(HOOK_EVENTS)}")
+        return {}
+
+    for sub in ("store", "backups", "registry", "state"):
+        (manager_dir / sub).mkdir(parents=True, exist_ok=True)
+    console.print(f"  [bright_green]✓[/bright_green]  directories")
+
     if not config_path.exists():
-        config_path.write_text(DEFAULT_CONFIG, encoding="utf-8")
-        cfg_str = str(config_path).replace(str(Path.home()), "~")
-        console.print(f"  [bright_green]✓[/bright_green]  [bright_white]{cfg_str}[/bright_white]  [dim](config written)[/dim]")
-        summary["config_written"] = True
-    else:
-        cfg_str = str(config_path).replace(str(Path.home()), "~")
-        console.print(f"  [bright_green]✓[/bright_green]  [bright_white]{cfg_str}[/bright_white]  [dim](already exists)[/dim]")
-        summary["config_written"] = True
+        config_path.write_text(cfg.to_toml(), encoding="utf-8")
+    console.print(f"  [bright_green]✓[/bright_green]  {str(config_path).replace(str(Path.home()), '~')}")
 
-    # Install hook.py
-    _install_hook_script(manager_dir, dry_run=False)
-    hook_str = str(manager_dir / "hook.py").replace(str(Path.home()), "~")
-    console.print(f"  [bright_green]✓[/bright_green]  [bright_white]{hook_str}[/bright_white]  [dim](dispatcher installed)[/dim]")
-    summary["hook_script_installed"] = True
+    _install_hook_script(manager_dir)
+    console.print(f"  [bright_green]✓[/bright_green]  hook.py")
 
-    # Register hooks
     hooks: dict = {}
     for event in HOOK_EVENTS:
         hooks.update(_build_hook_entry(event))
     settings_mod.merge_hooks(hooks)
-    settings_str = str(ctx_mod.SETTINGS_PATH).replace(str(Path.home()), "~")
-    console.print(
-        f"  [bright_green]✓[/bright_green]  [bright_white]{settings_str}[/bright_white]  "
-        f"[dim](merged: {len(HOOK_EVENTS)} hook entries)[/dim]"
-    )
-    summary["hooks_merged"] = len(HOOK_EVENTS)
+    console.print(f"  [bright_green]✓[/bright_green]  {len(HOOK_EVENTS)} hooks → settings.json")
 
-    # Install skill files
-    skill_actions = _install_skills(claude_dir=ctx_mod.CLAUDE_DIR, dry_run=False)
-    for action in skill_actions:
-        console.print(f"  [bright_green]✓[/bright_green]  [bright_white]{action}[/bright_white]  [dim](skills installed)[/dim]")
-    summary["skills_installed"] = skill_actions
+    for action in _install_skills(claude_dir=ctx_mod.CLAUDE_DIR, dry_run=False):
+        console.print(f"  [bright_green]✓[/bright_green]  {action}")
 
-    return summary
+    return {"hooks_merged": len(HOOK_EVENTS)}
 
 
-# ---------------------------------------------------------------------------
-# Core init function
-# ---------------------------------------------------------------------------
+# ── Main ───────────────────────────────────────────────────────────────────────
 
 def run_init(dry_run: bool = False, minimal: bool = False, yes: bool = False) -> None:
-    """Core init logic (called by CLI and tests)."""
-    manager_dir = ctx_mod.MANAGER_DIR
-    config_path = ctx_mod.CONFIG_PATH
-
-    # Show header
     header("cc-manager init")
-    console.print(
-        Padding(
-            "[dim]Intelligent Claude Code ecosystem controller — interactive setup[/dim]",
-            (0, 2),
-        )
-    )
-    console.print()
+    if dry_run:
+        console.print(Panel("[bold yellow]DRY RUN — nothing will be written[/bold yellow]", border_style="yellow"))
+
+    _step1_detect(dry_run)
+    _step2_backup(dry_run)
+    installed_tools = _step3_install_tools(dry_run, minimal, yes)
+    enabled_modules = _step4_modules(dry_run, minimal, yes)
+    summary = _step5_config(dry_run, ctx_mod.MANAGER_DIR, ctx_mod.CONFIG_PATH)
 
     if dry_run:
-        console.print(
-            Panel(
-                "[bold yellow]Nothing will be written. Showing full plan.[/bold yellow]",
-                title="[bold yellow]⚠ DRY RUN MODE[/bold yellow]",
-                border_style="yellow",
-                box=box.HEAVY,
-                padding=(0, 1),
-            )
-        )
-
-    # ── Step 1: Detect environment ────────────────────────────────────────────
-    _step1_detect_environment(dry_run=dry_run)
-
-    # ── Step 2: Backup ────────────────────────────────────────────────────────
-    _step2_backup(dry_run=dry_run)
-
-    # ── Step 3: Install tools ─────────────────────────────────────────────────
-    installed_tools = _step3_install_tools(dry_run=dry_run, minimal=minimal, yes=yes)
-
-    # ── Step 4: Enable modules ────────────────────────────────────────────────
-    enabled_modules = _step4_enable_modules(dry_run=dry_run, minimal=minimal, yes=yes)
-
-    # ── Step 5: Write config ──────────────────────────────────────────────────
-    summary = _step5_write_config(dry_run=dry_run, manager_dir=manager_dir, config_path=config_path)
-
-    if dry_run:
-        console.print()
-        dim_info("[DRY RUN] No files were written.")
-        console.print()
+        dim_info("[DRY RUN] No files written.")
         return
 
-    # Reset ctx so next get_ctx() picks up fresh state
-    ctx_mod._ctx = None
+    ctx_mod.invalidate_ctx()
     ctx = get_ctx()
-
-    # Log init event
     ctx.store.append("init", minimal=minimal)
 
-    # ── Final summary panel ───────────────────────────────────────────────────
-    hooks_list = ", ".join(HOOK_EVENTS[:3]) + f",\n    {', '.join(HOOK_EVENTS[3:])}"
-    tools_count = len(installed_tools)
-    hooks_count = summary.get("hooks_merged", len(HOOK_EVENTS))
-    modules_count = len(enabled_modules)
-
-    summary_lines = [
-        f"  [bright_green]✓[/bright_green]  [bright_white]{tools_count} tool{'s' if tools_count != 1 else ''} installed[/bright_white]",
-        f"  [bright_green]✓[/bright_green]  [bright_white]{hooks_count} hooks registered[/bright_white] [dim]({hooks_list})[/dim]",
-        f"  [bright_green]✓[/bright_green]  [bright_white]{modules_count} module{'s' if modules_count != 1 else ''} enabled[/bright_white]",
-    ]
-
     console.print()
-    console.print(
-        Panel(
-            "\n".join(summary_lines),
-            title="[bold bright_cyan]◉ INITIALIZATION COMPLETE[/bold bright_cyan]",
-            border_style="bright_cyan",
-            box=box.DOUBLE_EDGE,
-            padding=(0, 1),
-        )
-    )
-    console.print()
-    console.print(
-        Padding(
-            "[dim]Run[/dim] [bright_cyan]ccm status[/bright_cyan] [dim]to verify.[/dim]",
-            (0, 2),
-        )
-    )
-    console.print()
+    console.print(Panel(
+        f"  [bright_green]✓[/bright_green]  {len(installed_tools)} tools installed\n"
+        f"  [bright_green]✓[/bright_green]  {summary.get('hooks_merged', len(HOOK_EVENTS))} hooks registered\n"
+        f"  [bright_green]✓[/bright_green]  {len(enabled_modules)} modules enabled",
+        title="[bold bright_cyan]◉ DONE[/bold bright_cyan]",
+        border_style="bright_cyan",
+        box=box.DOUBLE_EDGE,
+    ))
+    console.print("\n  [dim]Run[/dim] [bright_cyan]ccm status[/bright_cyan] [dim]to verify.[/dim]\n")
 
-
-# ---------------------------------------------------------------------------
-# CLI entry point
-# ---------------------------------------------------------------------------
 
 app = typer.Typer()
 
-
 @app.command("init")
 def init_cmd(
-    dry_run: bool = typer.Option(False, "--dry-run", help="Print what would happen, write nothing"),
-    minimal: bool = typer.Option(False, "--minimal", help="Hooks + config only, no tools"),
-    yes: bool = typer.Option(False, "--yes", "-y", help="Non-interactive, install all recommended"),
+    dry_run: bool = typer.Option(False, "--dry-run"),
+    minimal: bool = typer.Option(False, "--minimal"),
+    yes: bool = typer.Option(False, "--yes", "-y"),
 ) -> None:
     """Initialize cc-manager: create dirs, config, register hooks."""
     run_init(dry_run=dry_run, minimal=minimal, yes=yes)

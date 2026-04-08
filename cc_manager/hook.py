@@ -1,24 +1,60 @@
 """cc-manager hook dispatcher — installed to ~/.cc-manager/hook.py."""
 from __future__ import annotations
 
-import importlib
 import json
 import sys
 import threading
-from pathlib import Path
+from typing import Any
+
+from cc_manager.handlers import Handler
+
+# ---------------------------------------------------------------------------
+# Handler registry
+# ---------------------------------------------------------------------------
+
+_HANDLER_MODULES = {
+    "SessionStart": "cc_manager.handlers.session_start",
+    "SessionEnd":   "cc_manager.handlers.session_end",
+    "Stop":         "cc_manager.handlers.stop",
+    "PostToolUse":  "cc_manager.handlers.post_tool_use",
+    "PreCompact":   "cc_manager.handlers.pre_compact",
+}
+
+# Loaded lazily on first dispatch, keyed by event name
+_handlers: dict[str, Handler] = {}
 
 
-def _run_with_timeout(fn, args, timeout_s: float):
-    result = {}
-    exc = []
+def _load_handler(event_name: str) -> Handler | None:
+    """Import and validate a handler, caching on success."""
+    if event_name in _handlers:
+        return _handlers[event_name]
+    module_path = _HANDLER_MODULES.get(event_name)
+    if not module_path:
+        return None
+    try:
+        handler = Handler.from_module(module_path)
+        _handlers[event_name] = handler
+        return handler
+    except (AttributeError, ImportError) as exc:
+        # A broken handler should never crash a live session
+        sys.stderr.write(f"[cc-manager] Failed to load handler for {event_name!r}: {exc}\n")
+        return None
+
+
+# ---------------------------------------------------------------------------
+# Dispatch
+# ---------------------------------------------------------------------------
+
+def _run_with_timeout(fn, args: tuple, timeout_s: float) -> dict:
+    result: dict = {}
 
     def target():
         try:
             r = fn(*args)
             if isinstance(r, dict):
                 result.update(r)
-        except Exception as e:
-            exc.append(e)
+        except Exception:
+            pass
 
     t = threading.Thread(target=target, daemon=True)
     t.start()
@@ -26,34 +62,23 @@ def _run_with_timeout(fn, args, timeout_s: float):
     return result
 
 
-HANDLER_MAP = {
-    "SessionStart": "cc_manager.handlers.session_start",
-    "SessionEnd": "cc_manager.handlers.session_end",
-    "Stop": "cc_manager.handlers.stop",
-    "PostToolUse": "cc_manager.handlers.post_tool_use",
-    "PreCompact": "cc_manager.handlers.pre_compact",
-}
-
-
 def dispatch(event_name: str, payload: dict) -> dict:
     """Dispatch to the matching handler and return merged output."""
-    module_path = HANDLER_MAP.get(event_name)
-    if not module_path:
+    handler = _load_handler(event_name)
+    if handler is None:
         return {}
-
     try:
         from cc_manager.context import get_ctx
         ctx = get_ctx()
-        module = importlib.import_module(module_path)
-        handle_fn = getattr(module, "handle", None)
-        if handle_fn is None:
-            return {}
-        timeout_ms = getattr(module, "TIMEOUT_MS", 5000)
-        result = _run_with_timeout(handle_fn, (payload, ctx), timeout_ms / 1000.0)
+        result = _run_with_timeout(handler.fn, (payload, ctx), handler.timeout_ms / 1000.0)
         return result or {}
     except Exception:
         return {}
 
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
 
 def main():
     if len(sys.argv) < 2:

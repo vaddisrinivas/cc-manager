@@ -10,6 +10,7 @@ from rich.rule import Rule
 from cc_manager import __version__
 from cc_manager.context import get_ctx
 from cc_manager.display import console, section, info, dim_info
+from cc_manager.context import fmt_tokens
 
 app = typer.Typer()
 
@@ -92,17 +93,10 @@ def status_cmd() -> None:
         dur = last.get("duration_min", 0)
         ts = last.get("ts", "")[:19]
 
-        def fmt_tok(n: int) -> str:
-            if n >= 1_000_000:
-                return f"{n/1_000_000:.1f}M"
-            if n >= 1_000:
-                return f"{n//1000}K"
-            return str(n)
-
         line = (
-            f"  [bright_white]{fmt_tok(inp)}[/bright_white] [dim]input[/dim]  ·  "
-            f"[bright_white]{fmt_tok(out)}[/bright_white] [dim]output[/dim]  ·  "
-            f"[bright_white]{fmt_tok(cache)}[/bright_white] [dim]cache[/dim]  ·  "
+            f"  [bright_white]{fmt_tokens(inp)}[/bright_white] [dim]input[/dim]  ·  "
+            f"[bright_white]{fmt_tokens(out)}[/bright_white] [dim]output[/dim]  ·  "
+            f"[bright_white]{fmt_tokens(cache)}[/bright_white] [dim]cache[/dim]  ·  "
             f"[bright_green]${cost:.4f}[/bright_green]  ·  "
             f"[bright_white]{dur}[/bright_white] [dim]min[/dim]"
         )

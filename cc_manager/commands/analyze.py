@@ -16,6 +16,7 @@ from rich.table import Table
 
 from cc_manager.context import get_ctx, parse_duration
 from cc_manager.display import console
+from cc_manager.context import fmt_tokens
 
 app = typer.Typer()
 
@@ -89,14 +90,6 @@ def compute_stats(period_days: int = 7, session_id: Optional[str] = None) -> dic
     }
 
 
-def _fmt_tok(n: int) -> str:
-    if n >= 1_000_000:
-        return f"{n / 1_000_000:.1f}M"
-    if n >= 1_000:
-        return f"{n // 1000}K"
-    return str(n)
-
-
 @app.command("analyze")
 def analyze_cmd(
     period: str = typer.Option("7d", "--period", help="Analysis period (e.g., 7d, 30d)"),
@@ -135,12 +128,12 @@ def analyze_cmd(
     total_tok = s["total_input_tokens"] + s["total_output_tokens"]
     metrics = [
         ("Total Cost", f"[bright_green]${s['total_cost_usd']:.4f}[/bright_green]"),
-        ("Total Tokens", f"[bright_white]{_fmt_tok(total_tok)}[/bright_white]"),
+        ("Total Tokens", f"[bright_white]{fmt_tokens(total_tok)}[/bright_white]"),
         ("Sessions", f"[bright_white]{s['sessions']}[/bright_white]  [dim]{s['sessions_per_day']}/day avg[/dim]"),
         ("Avg Duration", f"[bright_white]{s['avg_duration_min']}[/bright_white] [dim]min[/dim]"),
-        ("Input Tokens", f"[bright_white]{_fmt_tok(s['total_input_tokens'])}[/bright_white]"),
-        ("Output Tokens", f"[bright_white]{_fmt_tok(s['total_output_tokens'])}[/bright_white]"),
-        ("Cache Read", f"[bright_white]{_fmt_tok(s['total_cache_read'])}[/bright_white]"),
+        ("Input Tokens", f"[bright_white]{fmt_tokens(s['total_input_tokens'])}[/bright_white]"),
+        ("Output Tokens", f"[bright_white]{fmt_tokens(s['total_output_tokens'])}[/bright_white]"),
+        ("Cache Read", f"[bright_white]{fmt_tokens(s['total_cache_read'])}[/bright_white]"),
         ("Compactions", f"[bright_white]{s['compaction_count']}[/bright_white]"),
     ]
 

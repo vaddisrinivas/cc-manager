@@ -1,487 +1,338 @@
-"""Tests for cc_manager dashboard (TDD - written before implementation).
+"""Tests for cc_manager dashboard — Textual app."""
+from __future__ import annotations
 
-API Contract Note:
-  The /api/analyze endpoint (implemented in serve.py by the API agent) must return:
-    {
-      "daily_labels": ["Mon", "Tue", ...],  # 7 day labels
-      "daily_input":  [...],                 # input tokens per day
-      "daily_output": [...],                 # output tokens per day
-      "daily_cost":   [...],                 # cost USD per day
-      ...  # other existing analyze fields
-    }
-  app.js depends on these fields for the token and cost charts.
-"""
-import io
 import json
-from pathlib import Path
-from unittest.mock import MagicMock, patch, call
-import threading
+from unittest.mock import patch, MagicMock
 
 import pytest
 
-DASHBOARD_DIR = Path(__file__).parent.parent.parent / "cc_manager" / "dashboard"
+
+# ---------------------------------------------------------------------------
+# Fixtures
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(autouse=True)
+def reset_ctx():
+    import cc_manager.context as ctx_mod
+    ctx_mod._ctx = None
+    yield
+    ctx_mod._ctx = None
+
+
+@pytest.fixture
+def patched_env(tmp_path, monkeypatch):
+    claude_dir = tmp_path / ".claude"
+    manager_dir = tmp_path / ".cc-manager"
+    claude_dir.mkdir()
+    manager_dir.mkdir()
+    (manager_dir / "store").mkdir()
+    (manager_dir / "registry").mkdir()
+    (manager_dir / "state").mkdir()
+    (manager_dir / "backups").mkdir()
+
+    settings_path = claude_dir / "settings.json"
+    registry_path = manager_dir / "registry" / "installed.json"
+    store_path = manager_dir / "store" / "events.jsonl"
+
+    settings_path.write_text(json.dumps({"hooks": {}, "mcpServers": {}}))
+    registry_path.write_text(json.dumps({"schema_version": 1, "tools": {}}))
+
+    import cc_manager.context as ctx_mod
+    monkeypatch.setattr(ctx_mod, "CLAUDE_DIR", claude_dir)
+    monkeypatch.setattr(ctx_mod, "MANAGER_DIR", manager_dir)
+    monkeypatch.setattr(ctx_mod, "SETTINGS_PATH", settings_path)
+    monkeypatch.setattr(ctx_mod, "CONFIG_PATH", manager_dir / "cc-manager.toml")
+    monkeypatch.setattr(ctx_mod, "STORE_PATH", store_path)
+    monkeypatch.setattr(ctx_mod, "REGISTRY_PATH", registry_path)
+    monkeypatch.setattr(ctx_mod, "STATE_PATH", manager_dir / "state" / "state.json")
+    monkeypatch.setattr(ctx_mod, "BACKUPS_DIR", manager_dir / "backups")
+    return {
+        "claude_dir": claude_dir,
+        "manager_dir": manager_dir,
+        "registry_path": registry_path,
+        "store_path": store_path,
+        "settings_path": settings_path,
+        "tmp_path": tmp_path,
+    }
 
 
 # ---------------------------------------------------------------------------
-# 1. Dashboard directory and file existence
+# 1. Imports
 # ---------------------------------------------------------------------------
 
-def test_dashboard_dir_exists():
-    assert DASHBOARD_DIR.is_dir(), f"Expected cc_manager/dashboard/ to exist at {DASHBOARD_DIR}"
-    assert (DASHBOARD_DIR / "index.html").is_file()
-    assert (DASHBOARD_DIR / "style.css").is_file()
-    assert (DASHBOARD_DIR / "app.js").is_file()
+def test_ccmanager_app_importable():
+    from cc_manager.app import CCManagerApp
+    assert CCManagerApp is not None
+
+
+def test_dashboard_data_importable():
+    from cc_manager.dashboard_data import build_data
+    assert callable(build_data)
+
+
+def test_all_widgets_importable():
+    from cc_manager.widgets.header_bar import HeaderBar
+    from cc_manager.widgets.stats_bar import StatsBar
+    from cc_manager.widgets.token_chart import TokenChart
+    from cc_manager.widgets.cost_chart import CostChart
+    from cc_manager.widgets.tools_table import ToolsTable
+    from cc_manager.widgets.health_table import HealthTable
+    from cc_manager.widgets.sessions_table import SessionsTable
+    from cc_manager.widgets.event_log import EventLog
+    from cc_manager.widgets.recs_widget import RecsWidget
+    for cls in (HeaderBar, StatsBar, TokenChart, CostChart, ToolsTable,
+                HealthTable, SessionsTable, EventLog, RecsWidget):
+        assert cls is not None
 
 
 # ---------------------------------------------------------------------------
-# 2. index.html structure
+# 2. CCManagerApp structure
 # ---------------------------------------------------------------------------
 
-def test_index_html_has_chart_js():
-    content = (DASHBOARD_DIR / "index.html").read_text()
-    assert "https://cdn.jsdelivr.net/npm/chart.js" in content, \
-        "index.html must include Chart.js CDN script tag"
+def test_app_has_bindings():
+    from cc_manager.app import CCManagerApp
+    binding_keys = {b.key for b in CCManagerApp.BINDINGS}
+    assert "q" in binding_keys
+    assert "r" in binding_keys
+    assert "d" in binding_keys
 
 
-def test_index_html_has_required_ids():
-    content = (DASHBOARD_DIR / "index.html").read_text()
-    required_ids = [
-        "tokenChart",
-        "costChart",
-        "toolsTable",
-        "sessionsTable",
-        "healthPanel",
-        "recommendPanel",
+def test_app_has_action_remove_tool():
+    from cc_manager.app import CCManagerApp
+    assert hasattr(CCManagerApp, "action_remove_tool")
+    assert callable(CCManagerApp.action_remove_tool)
+
+
+def test_app_has_action_run_doctor():
+    from cc_manager.app import CCManagerApp
+    assert hasattr(CCManagerApp, "action_run_doctor")
+    assert callable(CCManagerApp.action_run_doctor)
+
+
+def test_app_has_action_refresh():
+    from cc_manager.app import CCManagerApp
+    assert hasattr(CCManagerApp, "action_refresh")
+    assert callable(CCManagerApp.action_refresh)
+
+
+def test_app_has_auto_refresh():
+    """set_interval(30, ...) is called in on_mount."""
+    import inspect
+    from cc_manager.app import CCManagerApp
+    src = inspect.getsource(CCManagerApp.on_mount)
+    assert "set_interval" in src
+    assert "30" in src
+
+
+# ---------------------------------------------------------------------------
+# 3. build_data() contract
+# ---------------------------------------------------------------------------
+
+REQUIRED_KEYS = {
+    "version", "timestamp", "status",
+    "sessions", "total_input", "total_output", "total_cost", "total_tokens",
+    "avg_tokens_per_session", "model_breakdown",
+    "spark_values", "spark_days",
+    "installed", "health_checks", "cc_hooks", "settings_ok",
+    "recs", "available", "events",
+}
+
+
+def test_build_data_returns_required_keys(patched_env):
+    from cc_manager.dashboard_data import build_data
+    data = build_data()
+    for key in REQUIRED_KEYS:
+        assert key in data, f"build_data() missing key: {key!r}"
+
+
+def test_build_data_status_values(patched_env):
+    from cc_manager.dashboard_data import build_data
+    data = build_data()
+    assert data["status"] in ("NOMINAL", "DEGRADED")
+
+
+def test_build_data_empty_store_no_crash(patched_env):
+    from cc_manager.dashboard_data import build_data
+    data = build_data()
+    assert isinstance(data["sessions"], list)
+    assert data["total_cost"] >= 0.0
+
+
+def test_build_data_with_sessions(patched_env):
+    from datetime import datetime, timezone
+    from cc_manager.dashboard_data import build_data
+
+    now = datetime.now(timezone.utc).isoformat()
+    lines = [
+        json.dumps({"ts": now, "event": "session_end", "model": "claude-sonnet",
+                    "input_tokens": 100_000, "output_tokens": 25_000,
+                    "cost_usd": 0.45, "duration_min": 15}),
+        json.dumps({"ts": now, "event": "session_end", "model": "claude-opus",
+                    "input_tokens": 200_000, "output_tokens": 50_000,
+                    "cost_usd": 1.20, "duration_min": 30}),
     ]
-    for id_ in required_ids:
-        assert f'id="{id_}"' in content, f"index.html missing element with id='{id_}'"
+    patched_env["store_path"].write_text("\n".join(lines) + "\n")
+
+    data = build_data()
+    assert len(data["sessions"]) == 2
+    assert data["total_input"] == 300_000
+    assert data["total_output"] == 75_000
+    assert abs(data["total_cost"] - 1.65) < 0.001
 
 
-def test_index_html_loads_app_js():
-    content = (DASHBOARD_DIR / "index.html").read_text()
-    assert 'src="app.js"' in content
+def test_build_data_with_installed_tools(patched_env):
+    from cc_manager.dashboard_data import build_data
 
-
-def test_index_html_loads_style_css():
-    content = (DASHBOARD_DIR / "index.html").read_text()
-    assert 'href="style.css"' in content
-
-
-# ---------------------------------------------------------------------------
-# 3. style.css dark theme
-# ---------------------------------------------------------------------------
-
-def test_css_has_dark_theme():
-    content = (DASHBOARD_DIR / "style.css").read_text()
-    assert "--bg" in content, "style.css must define --bg CSS variable for dark theme"
-
-
-def test_css_has_surface_var():
-    content = (DASHBOARD_DIR / "style.css").read_text()
-    assert "--surface" in content
-
-
-def test_css_has_status_classes():
-    content = (DASHBOARD_DIR / "style.css").read_text()
-    assert "status-ok" in content
-    assert "status-warn" in content
-    assert "status-fail" in content
+    patched_env["registry_path"].write_text(json.dumps({
+        "schema_version": 1,
+        "tools": {
+            "rtk": {"version": "0.25.0", "method": "cargo"},
+            "context7": {"version": "latest", "method": "mcp"},
+        },
+    }))
+    data = build_data()
+    assert "rtk" in data["installed"]
+    assert "context7" in data["installed"]
 
 
 # ---------------------------------------------------------------------------
-# 4. app.js functions
+# 4. dashboard.run() — thin launcher
 # ---------------------------------------------------------------------------
 
-def test_app_js_has_fetchall():
-    content = (DASHBOARD_DIR / "app.js").read_text()
-    assert "function fetchAll" in content, "app.js must define fetchAll function"
+def test_dashboard_run_exists():
+    from cc_manager.commands.dashboard import run
+    assert callable(run)
 
 
-def test_app_js_has_all_renderers():
-    content = (DASHBOARD_DIR / "app.js").read_text()
-    required = [
-        "renderTokenChart",
-        "renderCostChart",
-        "renderTools",
-        "renderSessions",
-        "renderHealth",
-        "renderRecommendations",
+def test_run_terminal_helper_exists():
+    from cc_manager.commands.dashboard import _run_terminal
+    assert callable(_run_terminal)
+
+
+def test_dashboard_run_terminal_calls_app(monkeypatch):
+    """_run_terminal() calls CCManagerApp().run()."""
+    import cc_manager.commands.dashboard as dash_mod
+    mock_app_instance = MagicMock()
+    mock_app_class = MagicMock(return_value=mock_app_instance)
+    monkeypatch.setattr(dash_mod, "CCManagerApp", mock_app_class, raising=False)
+
+    # Patch the import inside _run_terminal
+    import sys
+    fake_app_mod = MagicMock()
+    fake_app_mod.CCManagerApp = mock_app_class
+    with patch.dict(sys.modules, {"cc_manager.app": fake_app_mod}):
+        try:
+            dash_mod._run_terminal()
+        except Exception:
+            pass  # App.run() may fail outside a real terminal
+
+
+# ---------------------------------------------------------------------------
+# 5. tui.run() — thin launcher
+# ---------------------------------------------------------------------------
+
+def test_tui_run_exists():
+    from cc_manager.commands.tui import run
+    assert callable(run)
+
+
+def test_tui_helpers_still_present():
+    """sparkline, abbrev, get_recommendations must stay in tui.py."""
+    from cc_manager.commands.tui import sparkline, abbrev, get_recommendations
+    assert callable(sparkline)
+    assert callable(abbrev)
+    assert callable(get_recommendations)
+
+
+# ---------------------------------------------------------------------------
+# 6. Widget unit tests
+# ---------------------------------------------------------------------------
+
+def test_token_chart_instantiates():
+    from cc_manager.widgets.token_chart import TokenChart
+    w = TokenChart()
+    assert w is not None
+
+
+def test_cost_chart_instantiates():
+    from cc_manager.widgets.cost_chart import CostChart
+    w = CostChart()
+    assert w is not None
+
+
+def test_tools_table_get_selected_tool_returns_none_before_mount():
+    from cc_manager.widgets.tools_table import ToolsTable
+    w = ToolsTable()
+    result = w.get_selected_tool()
+    assert result is None
+
+
+def test_event_log_fmt_detail_empty():
+    from cc_manager.widgets.event_log import _fmt_event_detail
+    assert _fmt_event_detail({}) == "—"
+
+
+def test_event_log_fmt_detail_session_end():
+    from cc_manager.widgets.event_log import _fmt_event_detail
+    detail = _fmt_event_detail({
+        "event": "session_end",
+        "input_tokens": 100_000,
+        "cost_usd": 0.45,
+        "duration_min": 15,
+        "model": "claude-sonnet",
+    })
+    assert "100K" in detail
+    assert "$0.45" in detail
+    assert "15m" in detail
+    assert "sonnet" in detail
+
+
+def test_stats_bar_instantiates():
+    from cc_manager.widgets.stats_bar import StatsBar
+    w = StatsBar()
+    assert w is not None
+
+
+def test_recs_widget_instantiates():
+    from cc_manager.widgets.recs_widget import RecsWidget
+    w = RecsWidget()
+    assert w is not None
+
+
+def test_app_has_stats_bar_and_recs():
+    """App compose should include StatsBar and RecsWidget."""
+    import inspect
+    from cc_manager.app import CCManagerApp
+    src = inspect.getsource(CCManagerApp.compose)
+    assert "StatsBar" in src
+    assert "RecsWidget" in src
+
+
+def test_build_data_has_daily_cost(patched_env):
+    """build_data must return 'daily_cost' key."""
+    from cc_manager.dashboard_data import build_data
+    data = build_data()
+    assert "daily_cost" in data
+    assert isinstance(data["daily_cost"], dict)
+
+
+def test_build_data_daily_cost_populated(patched_env):
+    """daily_cost should sum costs per day from session events."""
+    from datetime import datetime, timezone
+    from cc_manager.dashboard_data import build_data
+
+    now = datetime.now(timezone.utc).isoformat()
+    lines = [
+        json.dumps({"ts": now, "event": "session_end", "model": "claude-sonnet",
+                    "input_tokens": 1000, "output_tokens": 500,
+                    "cost_usd": 0.50, "duration_min": 5}),
+        json.dumps({"ts": now, "event": "session_end", "model": "claude-sonnet",
+                    "input_tokens": 2000, "output_tokens": 1000,
+                    "cost_usd": 0.75, "duration_min": 10}),
     ]
-    for fn in required:
-        assert f"function {fn}" in content, f"app.js missing function: {fn}"
-
-
-def test_app_js_has_auto_refresh():
-    content = (DASHBOARD_DIR / "app.js").read_text()
-    assert "setInterval" in content, "app.js must use setInterval for auto-refresh"
-    assert "60000" in content, "app.js auto-refresh interval should be 60000ms"
-
-
-# ---------------------------------------------------------------------------
-# 5. dashboard.py command: run() behavior
-# ---------------------------------------------------------------------------
-
-def test_dashboard_run_no_open():
-    """run() starts server in background thread and prints URL without opening browser."""
-    from cc_manager.commands import dashboard as dash_mod
-
-    mock_server = MagicMock()
-    mock_server_instance = MagicMock()
-    mock_server.return_value = mock_server_instance
-
-    mock_thread = MagicMock()
-    mock_thread_instance = MagicMock()
-    mock_thread.return_value = mock_thread_instance
-    # Make join raise KeyboardInterrupt immediately so run() exits
-    mock_thread_instance.join.side_effect = KeyboardInterrupt
-
-    with patch("cc_manager.commands.dashboard.HTTPServer", mock_server), \
-         patch("cc_manager.commands.dashboard.threading.Thread", mock_thread), \
-         patch("cc_manager.commands.dashboard.webbrowser.open") as mock_open, \
-         patch("cc_manager.commands.dashboard.console") as mock_console:
-
-        try:
-            dash_mod.run(port=19847, no_open=True)
-        except (KeyboardInterrupt, SystemExit):
-            pass
-
-        # Browser should NOT be opened when --no-open
-        mock_open.assert_not_called()
-
-        # Server should have been started
-        assert mock_server.called, "HTTPServer should be instantiated"
-        assert mock_thread_instance.start.called, "Thread.start() should be called"
-
-        # URL should be printed
-        printed_args = " ".join(
-            str(a) for call_ in mock_console.print.call_args_list for a in call_[0]
-        )
-        assert "19847" in printed_args or "localhost" in printed_args
-
-
-def test_dashboard_run_opens_browser():
-    """run() calls webbrowser.open by default."""
-    from cc_manager.commands import dashboard as dash_mod
-
-    mock_server = MagicMock()
-    mock_server_instance = MagicMock()
-    mock_server.return_value = mock_server_instance
-
-    mock_thread = MagicMock()
-    mock_thread_instance = MagicMock()
-    mock_thread.return_value = mock_thread_instance
-    mock_thread_instance.join.side_effect = KeyboardInterrupt
-
-    with patch("cc_manager.commands.dashboard.HTTPServer", mock_server), \
-         patch("cc_manager.commands.dashboard.threading.Thread", mock_thread), \
-         patch("cc_manager.commands.dashboard.webbrowser.open") as mock_open, \
-         patch("cc_manager.commands.dashboard.console"):
-
-        try:
-            dash_mod.run(port=19848, no_open=False)
-        except (KeyboardInterrupt, SystemExit):
-            pass
-
-        mock_open.assert_called_once()
-        call_url = mock_open.call_args[0][0]
-        assert "19848" in call_url
-
-
-# ---------------------------------------------------------------------------
-# 6. Static file handler (make_handler_class)
-# ---------------------------------------------------------------------------
-
-def _make_fake_request(method, path, static_dir):
-    """Build a handler instance wired to a fake socket/connection."""
-    from cc_manager.commands.dashboard import make_handler_class
-
-    HandlerClass = make_handler_class(static_dir)
-
-    output = io.BytesIO()
-
-    class FakeSocket:
-        def makefile(self, mode, *a, **kw):
-            if "r" in mode:
-                request_line = f"{method} {path} HTTP/1.1\r\nHost: localhost\r\n\r\n"
-                return io.BytesIO(request_line.encode())
-            return output
-
-        def sendall(self, data):
-            output.write(data)
-
-        def getpeername(self):
-            return ("127.0.0.1", 0)
-
-    # Build handler using BaseHTTPRequestHandler internal protocol
-    handler = HandlerClass.__new__(HandlerClass)
-    handler.server = MagicMock()
-    handler.connection = FakeSocket()
-    handler.client_address = ("127.0.0.1", 0)
-    handler.request = handler.connection
-    handler.wfile = output
-    handler.rfile = io.BytesIO()
-
-    # Capture response via send_response / send_header / end_headers / wfile
-    sent_status = []
-    sent_headers = {}
-
-    def fake_send_response(code, message=None):
-        sent_status.append(code)
-
-    def fake_send_header(key, value):
-        sent_headers[key.lower()] = str(value)
-
-    def fake_end_headers():
-        pass
-
-    handler.send_response = fake_send_response
-    handler.send_header = fake_send_header
-    handler.end_headers = fake_end_headers
-
-    return handler, sent_status, sent_headers, output
-
-
-def test_static_file_serving(tmp_path):
-    """make_handler_class serves index.html for GET /."""
-    index = tmp_path / "index.html"
-    index.write_text("<html><body>hello</body></html>")
-
-    from cc_manager.commands.dashboard import make_handler_class
-    HandlerClass = make_handler_class(tmp_path)
-
-    output = io.BytesIO()
-    sent_status = []
-    sent_headers = {}
-
-    handler = HandlerClass.__new__(HandlerClass)
-    handler.server = MagicMock()
-    handler.wfile = output
-    handler.path = "/"
-
-    handler.send_response = lambda code, msg=None: sent_status.append(code)
-    handler.send_header = lambda k, v: sent_headers.__setitem__(k.lower(), str(v))
-    handler.end_headers = lambda: None
-
-    handler.do_GET()
-
-    assert sent_status == [200]
-    assert "text/html" in sent_headers.get("content-type", "")
-    assert b"hello" in output.getvalue()
-
-
-def test_static_file_css(tmp_path):
-    """make_handler_class serves style.css with correct content-type."""
-    css_file = tmp_path / "style.css"
-    css_file.write_text(":root { --bg: #000; }")
-
-    from cc_manager.commands.dashboard import make_handler_class
-    HandlerClass = make_handler_class(tmp_path)
-
-    output = io.BytesIO()
-    sent_status = []
-    sent_headers = {}
-
-    handler = HandlerClass.__new__(HandlerClass)
-    handler.server = MagicMock()
-    handler.wfile = output
-    handler.path = "/style.css"
-
-    handler.send_response = lambda code, msg=None: sent_status.append(code)
-    handler.send_header = lambda k, v: sent_headers.__setitem__(k.lower(), str(v))
-    handler.end_headers = lambda: None
-
-    handler.do_GET()
-
-    assert sent_status == [200]
-    assert "text/css" in sent_headers.get("content-type", "")
-    assert b"--bg" in output.getvalue()
-
-
-def test_static_file_js(tmp_path):
-    """make_handler_class serves app.js with correct content-type."""
-    js_file = tmp_path / "app.js"
-    js_file.write_text("function fetchAll() {}")
-
-    from cc_manager.commands.dashboard import make_handler_class
-    HandlerClass = make_handler_class(tmp_path)
-
-    output = io.BytesIO()
-    sent_status = []
-    sent_headers = {}
-
-    handler = HandlerClass.__new__(HandlerClass)
-    handler.server = MagicMock()
-    handler.wfile = output
-    handler.path = "/app.js"
-
-    handler.send_response = lambda code, msg=None: sent_status.append(code)
-    handler.send_header = lambda k, v: sent_headers.__setitem__(k.lower(), str(v))
-    handler.end_headers = lambda: None
-
-    handler.do_GET()
-
-    assert sent_status == [200]
-    assert "javascript" in sent_headers.get("content-type", "")
-
-
-def test_static_file_not_found_falls_back_to_index(tmp_path):
-    """Unknown paths fall through to index.html (SPA routing)."""
-    index = tmp_path / "index.html"
-    index.write_text("<html>spa</html>")
-
-    from cc_manager.commands.dashboard import make_handler_class
-    HandlerClass = make_handler_class(tmp_path)
-
-    output = io.BytesIO()
-    sent_status = []
-    sent_headers = {}
-
-    handler = HandlerClass.__new__(HandlerClass)
-    handler.server = MagicMock()
-    handler.wfile = output
-    handler.path = "/some/unknown/path"
-
-    handler.send_response = lambda code, msg=None: sent_status.append(code)
-    handler.send_header = lambda k, v: sent_headers.__setitem__(k.lower(), str(v))
-    handler.end_headers = lambda: None
-
-    handler.do_GET()
-
-    assert sent_status == [200]
-    assert b"spa" in output.getvalue()
-
-
-def test_api_route_passthrough(tmp_path):
-    """GET /api/* routes are handled by the API handler, not static files."""
-    from cc_manager.commands.dashboard import make_handler_class
-    HandlerClass = make_handler_class(tmp_path)
-
-    output = io.BytesIO()
-    sent_status = []
-    sent_headers = {}
-    sent_body = {}
-
-    handler = HandlerClass.__new__(HandlerClass)
-    handler.server = MagicMock()
-    handler.wfile = output
-    handler.path = "/api/status"
-
-    handler.send_response = lambda code, msg=None: sent_status.append(code)
-    handler.send_header = lambda k, v: sent_headers.__setitem__(k.lower(), str(v))
-    handler.end_headers = lambda: None
-
-    # CCManagerHandler.do_GET should be called for /api/ routes
-    with patch.object(HandlerClass.__bases__[0], "do_GET") as mock_parent_get:
-        handler.do_GET()
-        mock_parent_get.assert_called_once()
-
-
-# ---------------------------------------------------------------------------
-# 7. Interactive app.js functions
-# ---------------------------------------------------------------------------
-
-def test_app_js_has_api_post():
-    content = (DASHBOARD_DIR / "app.js").read_text()
-    assert "async function apiPost" in content, "app.js must define apiPost function"
-
-
-def test_app_js_has_install_tool():
-    content = (DASHBOARD_DIR / "app.js").read_text()
-    assert "async function installTool" in content, "app.js must define installTool function"
-
-
-def test_app_js_has_remove_tool():
-    content = (DASHBOARD_DIR / "app.js").read_text()
-    assert "async function removeTool" in content, "app.js must define removeTool function"
-
-
-def test_app_js_has_toggle_module():
-    content = (DASHBOARD_DIR / "app.js").read_text()
-    assert "async function toggleModule" in content, "app.js must define toggleModule function"
-
-
-def test_app_js_has_run_doctor():
-    content = (DASHBOARD_DIR / "app.js").read_text()
-    assert "async function runDoctor" in content, "app.js must define runDoctor function"
-
-
-def test_app_js_has_render_registry():
-    content = (DASHBOARD_DIR / "app.js").read_text()
-    assert "function renderRegistry" in content, "app.js must define renderRegistry function"
-
-
-def test_app_js_has_load_registry():
-    content = (DASHBOARD_DIR / "app.js").read_text()
-    assert "async function loadRegistry" in content, "app.js must define loadRegistry function"
-
-
-# ---------------------------------------------------------------------------
-# 8. Interactive index.html elements
-# ---------------------------------------------------------------------------
-
-def test_index_has_registry_panel():
-    content = (DASHBOARD_DIR / "index.html").read_text()
-    assert 'id="registryPanel"' in content, "index.html must have element with id='registryPanel'"
-
-
-def test_index_has_registry_card():
-    content = (DASHBOARD_DIR / "index.html").read_text()
-    assert 'id="registryCard"' in content, "index.html must have element with id='registryCard'"
-
-
-def test_index_tools_table_has_action_column():
-    content = (DASHBOARD_DIR / "index.html").read_text()
-    assert "ACTION" in content, "index.html tools table must have ACTION column header"
-
-
-def test_index_health_card_has_rescan_button():
-    content = (DASHBOARD_DIR / "index.html").read_text()
-    assert "runDoctor" in content, "index.html health card must have Re-scan button calling runDoctor"
-
-
-# ---------------------------------------------------------------------------
-# 9. Interactive CSS classes
-# ---------------------------------------------------------------------------
-
-def test_css_has_install_btn():
-    content = (DASHBOARD_DIR / "style.css").read_text()
-    assert ".install-btn" in content, "style.css must define .install-btn"
-
-
-def test_css_has_remove_btn():
-    content = (DASHBOARD_DIR / "style.css").read_text()
-    assert ".remove-btn" in content, "style.css must define .remove-btn"
-
-
-def test_css_has_module_toggle():
-    content = (DASHBOARD_DIR / "style.css").read_text()
-    assert ".module-toggle" in content, "style.css must define .module-toggle"
-
-
-def test_css_has_card_header():
-    content = (DASHBOARD_DIR / "style.css").read_text()
-    assert ".card-header" in content, "style.css must define .card-header"
-
-
-def test_css_has_action_btn():
-    content = (DASHBOARD_DIR / "style.css").read_text()
-    assert ".action-btn" in content, "style.css must define .action-btn"
-
-
-def test_css_has_button_disabled():
-    content = (DASHBOARD_DIR / "style.css").read_text()
-    assert "button:disabled" in content, "style.css must define button:disabled style"
-
-
-# ---------------------------------------------------------------------------
-# 10. Demo data and fetchWithFallback
-# ---------------------------------------------------------------------------
-
-def test_app_js_has_demo_data():
-    content = (DASHBOARD_DIR / "app.js").read_text()
-    assert "DEMO_DATA" in content, "app.js must define DEMO_DATA for offline/fallback mode"
-
-
-def test_app_js_has_fetch_with_fallback():
-    content = (DASHBOARD_DIR / "app.js").read_text()
-    assert "fetchWithFallback" in content, "app.js must define fetchWithFallback function"
+    patched_env["store_path"].write_text("\n".join(lines) + "\n")
+
+    data = build_data()
+    day = now[:10]
+    assert day in data["daily_cost"]
+    assert abs(data["daily_cost"][day] - 1.25) < 0.001

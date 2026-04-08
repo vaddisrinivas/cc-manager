@@ -1,13 +1,13 @@
 """cc-manager context — paths, singleton context, helpers."""
 from __future__ import annotations
 
-import importlib.resources
 import json
 import subprocess
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+from collections import defaultdict
 from cc_manager.store import Store
 
 # ---------------------------------------------------------------------------
@@ -59,7 +59,6 @@ def run_cmd(cmd: str, timeout: int = 30) -> tuple[int, str]:
 def load_registry() -> list:
     """Load bundled registry/tools.json via importlib.resources."""
     try:
-        # Try importlib.resources (works when installed as a package)
         import importlib.resources as pkg_resources
         try:
             ref = pkg_resources.files("registry").joinpath("tools.json")
@@ -70,7 +69,6 @@ def load_registry() -> list:
     except Exception:
         pass
 
-    # Fallback: look for registry/tools.json relative to this file or in common locations
     candidates = [
         Path(__file__).parent.parent / "registry" / "tools.json",
         MANAGER_DIR / "registry" / "tools.json",
@@ -78,12 +76,10 @@ def load_registry() -> list:
     for candidate in candidates:
         if candidate.exists():
             return json.loads(candidate.read_text(encoding="utf-8"))
-
     return []
 
 
 def _load_settings() -> dict:
-    """Load settings.json, returning {} if missing."""
     if not SETTINGS_PATH.exists():
         return {}
     try:
@@ -93,7 +89,6 @@ def _load_settings() -> dict:
 
 
 def _load_installed() -> dict:
-    """Load installed.json, returning default structure if missing."""
     if not REGISTRY_PATH.exists():
         return {"schema_version": 1, "tools": {}}
     try:
@@ -103,14 +98,19 @@ def _load_installed() -> dict:
 
 
 def _load_config() -> dict:
-    """Load cc-manager.toml, returning {} if missing."""
     if not CONFIG_PATH.exists():
         return {}
     try:
-        import tomllib  # Python 3.11+
+        import tomllib
         return tomllib.loads(CONFIG_PATH.read_text(encoding="utf-8"))
     except Exception:
         return {}
+
+
+def _write_installed(data: dict) -> None:
+    """Persist installed.json to disk."""
+    REGISTRY_PATH.parent.mkdir(parents=True, exist_ok=True)
+    REGISTRY_PATH.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
 # ---------------------------------------------------------------------------
@@ -126,6 +126,93 @@ class Context:
         self.installed: dict = _load_installed()
         self.registry: list = load_registry()
         self.store: Store = Store(STORE_PATH)
+
+    @property
+    def registry_map(self) -> dict[str, dict]:
+        """O(1) lookup by tool name. Derived from self.registry so stays in sync."""
+        return {t["name"]: t for t in self.registry}
+
+    # ── Installed registry mutations ───────────────────────────────────────────
+
+    def record_installed(
+        self,
+        name: str,
+        method: str,
+        version: str = "latest",
+    ) -> None:
+        """Record a tool as installed, update in-memory state, and persist."""
+        tools = self.installed.setdefault("tools", {})
+        tools[name] = {
+            "version": version,
+            "method": method,
+            "installed_at": datetime.now(timezone.utc).isoformat(),
+            "pinned": False,
+        }
+        _write_installed(self.installed)
+
+    def remove_installed(self, name: str) -> None:
+        """Remove a tool from the installed registry and persist."""
+        self.installed.get("tools", {}).pop(name, None)
+        _write_installed(self.installed)
+
+
+# ---------------------------------------------------------------------------
+# Shared helpers (previously in utils.py)
+# ---------------------------------------------------------------------------
+
+def fmt_tokens(n: int) -> str:
+    if n >= 1_000_000:
+        return f"{n / 1_000_000:.1f}M"
+    if n >= 1_000:
+        return f"{n // 1_000}K"
+    return str(n)
+
+
+def dot_get(data: dict, key: str) -> Any:
+    val: Any = data
+    for part in key.split("."):
+        val = val.get(part) if isinstance(val, dict) else None
+    return val
+
+
+def dot_set(data: dict, key: str, value: Any) -> dict:
+    parts = key.split(".")
+    d = data
+    for part in parts[:-1]:
+        d = d.setdefault(part, {})
+    d[parts[-1]] = value
+    return data
+
+
+def daily_buckets(sessions: list[dict]) -> tuple[dict[str, int], dict[str, float]]:
+    daily: dict[str, int] = defaultdict(int)
+    costs: dict[str, float] = defaultdict(float)
+    for s in sessions:
+        day = (s.get("ts") or "")[:10]
+        if day:
+            daily[day] += s.get("input_tokens", 0) + s.get("output_tokens", 0)
+            costs[day] += s.get("cost_usd", 0.0)
+    return daily, costs
+
+
+def run_health_checks(installed: dict, registry_map: dict, settings: dict) -> list[tuple[str, str, str]]:
+    checks: list[tuple[str, str, str]] = []
+    for name in installed:
+        reg = registry_map.get(name)
+        if reg is None:
+            checks.append((name, "warn", "not in registry"))
+            continue
+        detect = reg.get("detect", {})
+        cmd = detect.get("command", "")
+        key = detect.get("settings_json_key", "")
+        if cmd:
+            rc, out = run_cmd(cmd, timeout=3)
+            checks.append((name, "ok" if rc == 0 else "fail", out.strip()[:40]))
+        elif key:
+            checks.append((name, "ok" if dot_get(settings, key) is not None else "warn", key[:40]))
+        else:
+            checks.append((name, "ok", "configured"))
+    return checks
 
 
 # ---------------------------------------------------------------------------
@@ -146,3 +233,9 @@ def set_ctx(ctx: Context) -> None:
     """Set the module-level context (used by tests)."""
     global _ctx
     _ctx = ctx
+
+
+def invalidate_ctx() -> None:
+    """Invalidate the context singleton, forcing a fresh load on next get_ctx()."""
+    global _ctx
+    _ctx = None

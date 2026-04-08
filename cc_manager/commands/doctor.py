@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import sys
-import time
 try:
     import tomllib
 except ImportError:
@@ -10,20 +9,18 @@ except ImportError:
         import tomli as tomllib  # type: ignore[no-redef]
     except ImportError:
         tomllib = None  # type: ignore[assignment]
-from pathlib import Path
 
 import typer
 from rich import box
-from rich.console import Group
 from rich.panel import Panel
 from rich.padding import Padding
-from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TaskProgressColumn
-from rich.rule import Rule
-from rich.text import Text
+from rich.progress import Progress, SpinnerColumn, TextColumn
 
 import cc_manager.context as ctx_mod
-from cc_manager.context import get_ctx, run_cmd
+from cc_manager.context import get_ctx, run_cmd  # run_cmd imported for test mock-ability
 from cc_manager.display import console
+from cc_manager.theme import status_icon, status_word
+from cc_manager.context import dot_get
 
 app = typer.Typer()
 
@@ -33,14 +30,14 @@ def run_checks() -> dict[str, dict]:
     ctx = get_ctx()
     results: dict[str, dict] = {}
 
-    # Python version check
+    # Python version
     major, minor = sys.version_info[:2]
     if (major, minor) >= (3, 11):
         results["python_version"] = {"status": "ok", "message": f"Python {major}.{minor}"}
     else:
         results["python_version"] = {"status": "fail", "message": f"Python {major}.{minor} < 3.11"}
 
-    # Config valid check
+    # Config valid
     config_path = ctx_mod.CONFIG_PATH
     if config_path.exists():
         try:
@@ -53,7 +50,7 @@ def run_checks() -> dict[str, dict]:
     else:
         results["config_valid"] = {"status": "warn", "message": "config.toml not found"}
 
-    # Store writable check
+    # Store writable
     store_path = ctx_mod.STORE_PATH
     try:
         store_path.parent.mkdir(parents=True, exist_ok=True)
@@ -64,9 +61,8 @@ def run_checks() -> dict[str, dict]:
     except Exception as e:
         results["store_writable"] = {"status": "fail", "message": str(e)}
 
-    # Hooks registered check
-    settings = ctx.settings
-    hooks = settings.get("hooks", {})
+    # Hooks registered
+    hooks = ctx.settings.get("hooks", {})
     cc_hooks = [
         ev for ev, entries in hooks.items()
         for entry in entries
@@ -80,33 +76,21 @@ def run_checks() -> dict[str, dict]:
     else:
         results["hooks_registered"] = {"status": "fail", "message": "No cc-manager hooks in settings.json"}
 
-    # Installed tools checks
-    for tool_name, info in ctx.installed.get("tools", {}).items():
-        # Find detect command from registry
+    # Installed tool checks (inline so tests can mock module-level run_cmd)
+    for tool_name in ctx.installed.get("tools", {}):
         reg_entry = next((t for t in ctx.registry if t["name"] == tool_name), None)
         if reg_entry is None:
             results[f"tool:{tool_name}"] = {"status": "warn", "message": "Not in registry"}
             continue
-
         detect = reg_entry.get("detect", {})
         cmd = detect.get("command", "")
         settings_key = detect.get("settings_json_key", "")
-
         if cmd:
-            rc, output = run_cmd(cmd)
-            if rc == 0:
-                results[f"tool:{tool_name}"] = {"status": "ok", "message": output.strip()[:80]}
-            else:
-                results[f"tool:{tool_name}"] = {"status": "fail", "message": f"Not found: {cmd}"}
+            rc, output = run_cmd(cmd, timeout=3)
+            status = "ok" if rc == 0 else "fail"
+            results[f"tool:{tool_name}"] = {"status": status, "message": output.strip()[:80]}
         elif settings_key:
-            parts = settings_key.split(".")
-            val = settings
-            for part in parts:
-                if isinstance(val, dict):
-                    val = val.get(part)
-                else:
-                    val = None
-                    break
+            val = dot_get(ctx.settings, settings_key)
             if val is not None:
                 results[f"tool:{tool_name}"] = {"status": "ok", "message": f"Found in settings: {settings_key}"}
             else:
@@ -114,31 +98,13 @@ def run_checks() -> dict[str, dict]:
         else:
             results[f"tool:{tool_name}"] = {"status": "ok", "message": "Manual install (no detect)"}
 
-    # Log doctor event
     ctx.store.append("doctor", results={k: v["status"] for k, v in results.items()})
     return results
-
-
-def _status_icon(status: str) -> str:
-    return {
-        "ok": "[bright_green]  ✓[/bright_green]",
-        "warn": "[yellow]  ⚠[/yellow]",
-        "fail": "[bright_red]  ✗[/bright_red]",
-    }.get(status, "  ?")
-
-
-def _status_label(status: str) -> str:
-    return {
-        "ok": "[bright_green]ok[/bright_green]",
-        "warn": "[yellow]warn[/yellow]",
-        "fail": "[bright_red]FAIL[/bright_red]",
-    }.get(status, status)
 
 
 @app.command("doctor")
 def doctor_cmd() -> None:
     """Run diagnostic checks on the cc-manager installation."""
-    # ── Header ────────────────────────────────────────────────────────────────
     console.print()
     console.print(
         Panel(
@@ -150,49 +116,32 @@ def doctor_cmd() -> None:
     )
     console.print()
 
-    # ── Fake scanning progress ────────────────────────────────────────────────
     with Progress(
         SpinnerColumn("dots12", style="bright_cyan"),
         TextColumn("[bright_cyan]{task.description}[/bright_cyan]"),
-        BarColumn(bar_width=22, style="cyan", complete_style="bright_cyan"),
-        TaskProgressColumn(),
         console=console,
         transient=True,
     ) as progress:
-        t1 = progress.add_task("Scanning configuration...", total=100)
-        t2 = progress.add_task("Checking installed tools...", total=100)
-        t3 = progress.add_task("Validating hooks...", total=100)
-        for i in range(0, 101, 5):
-            progress.update(t1, completed=i)
-            time.sleep(0.01)
-        for i in range(0, 101, 5):
-            progress.update(t2, completed=i)
-            time.sleep(0.01)
-        for i in range(0, 101, 5):
-            progress.update(t3, completed=i)
-            time.sleep(0.01)
+        task = progress.add_task("Running checks...", total=None)
+        results = run_checks()
+        progress.update(task, completed=True)
 
-    # ── Run actual checks ─────────────────────────────────────────────────────
-    results = run_checks()
-
-    # ── Group results into categories ─────────────────────────────────────────
     system_checks = {k: v for k, v in results.items() if not k.startswith("tool:")}
     tool_checks = {k: v for k, v in results.items() if k.startswith("tool:")}
 
-    def _render_check_rows(checks: dict) -> str:
+    def _render_rows(checks: dict) -> str:
         lines = []
         for check, info in checks.items():
-            icon = _status_icon(info["status"])
-            label = _status_label(info["status"])
+            icon = status_icon(info["status"])
+            label = status_word(info["status"])
             display_name = check.replace("tool:", "").replace("_", " ")
             msg = info.get("message", "")
             lines.append(f"{icon}  [bright_white]{display_name:<24}[/bright_white]  [dim]{msg[:56]}[/dim]")
         return "\n".join(lines) if lines else "  [dim]No checks[/dim]"
 
-    # System panel
     console.print(
         Panel(
-            _render_check_rows(system_checks),
+            _render_rows(system_checks),
             title="[bold bright_cyan]◆ SYSTEM[/bold bright_cyan]",
             border_style="cyan",
             box=box.SIMPLE_HEAVY,
@@ -200,11 +149,10 @@ def doctor_cmd() -> None:
         )
     )
 
-    # Tools panel
     if tool_checks:
         console.print(
             Panel(
-                _render_check_rows(tool_checks),
+                _render_rows(tool_checks),
                 title="[bold bright_cyan]◆ EXTERNAL TOOLS[/bold bright_cyan]",
                 border_style="cyan",
                 box=box.SIMPLE_HEAVY,
@@ -212,13 +160,11 @@ def doctor_cmd() -> None:
             )
         )
 
-    # ── Summary ───────────────────────────────────────────────────────────────
     n_ok = sum(1 for v in results.values() if v["status"] == "ok")
     n_warn = sum(1 for v in results.values() if v["status"] == "warn")
     n_fail = sum(1 for v in results.values() if v["status"] == "fail")
 
-    summary_parts = []
-    summary_parts.append(f"[bright_green]{n_ok} passed[/bright_green]")
+    summary_parts = [f"[bright_green]{n_ok} passed[/bright_green]"]
     if n_warn:
         summary_parts.append(f"[yellow]{n_warn} warning{'s' if n_warn != 1 else ''}[/yellow]")
     if n_fail:
@@ -235,6 +181,5 @@ def doctor_cmd() -> None:
     )
     console.print()
 
-    has_fail = any(v["status"] == "fail" for v in results.values())
-    if has_fail:
+    if n_fail:
         raise typer.Exit(1)
