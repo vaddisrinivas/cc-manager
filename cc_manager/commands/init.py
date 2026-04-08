@@ -73,9 +73,12 @@ def _install_hook_script(manager_dir: Path) -> None:
         dest.write_text("#!/usr/bin/env python3\nimport sys\nprint('{}')\nsys.exit(0)\n", encoding="utf-8")
 
 
-def _prompt_yes(msg: str, default: bool = True) -> bool:
+def _prompt_yes(rich_msg: str, plain_msg: str | None = None, default: bool = True) -> bool:
+    """Print rich_msg with markup, then prompt with plain yes/no."""
     try:
-        return typer.confirm(msg, default=default)
+        if rich_msg:
+            console.print(rich_msg, end="")
+        return typer.confirm(plain_msg or "", default=default)
     except Exception:
         return default
 
@@ -160,7 +163,7 @@ def _step3_install_tools(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
             if yes:
                 approved.append(t)
                 console.print(f"  [bright_green]✓[/bright_green]  {name:<18}  [dim]{cmd_hint}[/dim]")
-            elif _prompt_yes(f"  Install {name} ({cmd_hint})?"):
+            elif _prompt_yes(f"  Install [bright_white]{name}[/bright_white] [dim]({cmd_hint})[/dim]", "?"):
                 approved.append(t)
             else:
                 console.print(f"  [dim]  {name} — skipped[/dim]")
@@ -234,7 +237,7 @@ def _step4_modules(dry_run: bool, minimal: bool, yes: bool) -> list[str]:
     _step(4, 5, "Enabling modules")
     enabled = []
     for name, desc in MODULES:
-        if minimal or yes or _prompt_yes(f"  Enable {name} — {desc}?"):
+        if minimal or yes or _prompt_yes(f"  Enable [bright_white]{name}[/bright_white] — {desc}", "?"):
             marker = "[bright_green][✓][/bright_green]"
             enabled.append(name)
         else:
