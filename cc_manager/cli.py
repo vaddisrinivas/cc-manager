@@ -1,168 +1,345 @@
-"""cc-manager CLI entry point."""
+"""cc-manager CLI — 8 commands, one file."""
 from __future__ import annotations
 
-import importlib
-import functools
+import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 
 import typer
+from rich.console import Console
+from rich.table import Table
 from rich.panel import Panel
 from rich import box
 
-from cc_manager import __version__
+from cc_manager import __version__, registry, settings, installer
+from cc_manager.installer import (
+    ToolNotFoundError, AlreadyInstalledError, ConflictError, InstallError,
+    run_cmd, load_installed,
+)
+from cc_manager.paths import MANAGER_DIR, INSTALLED_PATH, SETTINGS_PATH
+
+app = typer.Typer(
+    name="ccm",
+    help="cc-manager — nvm for Claude Code. Install tools, wire hooks, manage your setup.",
+    no_args_is_help=True,
+    add_completion=False,
+)
+console = Console()
 
 # ---------------------------------------------------------------------------
-# Global error handler — no raw tracebacks, always a helpful hint
+# Helpers
 # ---------------------------------------------------------------------------
-_ERROR_HINTS: dict[type, str] = {
-    FileNotFoundError:  "hint: run [bright_cyan]ccm init[/bright_cyan] to create required directories",
-    PermissionError:    "hint: check file permissions on [dim]~/.cc-manager/[/dim]",
-    ValueError:         "hint: check the arguments you passed",
-    ConnectionError:    "hint: check your internet connection",
-}
+
+def _build_hook_config() -> dict:
+    """Build the hooks dict to wire into settings.json."""
+    hook_cmd = f"{sys.executable} -m cc_manager.hooks"
+    return {
+        "SessionStart": [
+            {"matcher": "", "hooks": [{"type": "command", "command": f"{hook_cmd} SessionStart", "timeout": 10000}]}
+        ],
+        "SessionEnd": [
+            {"matcher": "", "hooks": [{"type": "command", "command": f"{hook_cmd} SessionEnd", "timeout": 30000}]}
+        ],
+    }
 
 
-def _rich_error(exc: BaseException, cmd: str = "") -> None:
-    """Print a formatted error panel instead of a raw traceback."""
-    from cc_manager.display import console
-    hint = _ERROR_HINTS.get(type(exc), "run [bright_cyan]ccm doctor[/bright_cyan] for diagnostics")
-    msg = str(exc).strip() or exc_type
-    title = f"[bold bright_red]✗ {cmd or exc_type}[/bold bright_red]"
-    body = f"  [bright_red]{msg}[/bright_red]"
-    if hint:
-        body += f"\n\n  [dim]{hint}[/dim]"
-    console.print(Panel(body, title=title, border_style="bright_red", box=box.SIMPLE_HEAVY, padding=(0, 1)))
+def _err(msg: str) -> None:
+    console.print(f"[red]Error:[/red] {msg}")
 
 
-def _wrap(fn, cmd_name: str):
-    """Wrap a command function to catch unhandled exceptions."""
-    @functools.wraps(fn)
-    def wrapper(*args, **kwargs):
+def _ok(msg: str) -> None:
+    console.print(f"[green]{msg}[/green]")
+
+
+# ---------------------------------------------------------------------------
+# ccm init
+# ---------------------------------------------------------------------------
+
+@app.command()
+def init(
+    yes: bool = typer.Option(False, "--yes", "-y", help="Accept defaults, skip prompts"),
+    quick: bool = typer.Option(False, "--quick", help="Minimal profile, no prompts"),
+) -> None:
+    """Set up cc-manager — pick a profile, install tools, wire hooks."""
+    profs = registry.profiles()
+    tools_map = registry.as_map()
+
+    if quick:
+        profile_name = "minimal"
+        yes = True
+    elif yes:
+        profile_name = "recommended"
+    else:
+        console.print("\n[bold]Available profiles:[/bold]\n")
+        for name, info in profs.items():
+            count = len(info["tools"])
+            console.print(f"  [cyan]{name:15}[/cyan] {count:3} tools  {info['description']}")
+        console.print()
+        profile_name = typer.prompt("Profile", default="recommended")
+
+    if profile_name not in profs:
+        _err(f"Unknown profile '{profile_name}'. Available: {', '.join(profs)}")
+        raise typer.Exit(1)
+
+    tool_names = profs[profile_name]["tools"]
+    console.print(f"\n[bold]Installing profile [cyan]{profile_name}[/cyan] ({len(tool_names)} tools)...[/bold]\n")
+
+    installed = load_installed()
+    succeeded, failed = 0, 0
+
+    for name in tool_names:
         try:
-            return fn(*args, **kwargs)
-        except (typer.Exit, typer.Abort, SystemExit):
-            raise
-        except KeyboardInterrupt:
-            from cc_manager.display import console
-            console.print("\n  [dim]interrupted[/dim]")
-            raise typer.Exit(130)
-        except Exception as exc:
-            _rich_error(exc, cmd_name)
-            raise typer.Exit(1)
-    return wrapper
+            with console.status(f"[bright_cyan]Installing {name}...[/bright_cyan]"):
+                mtype = installer.install_tool(name, tools_map, installed, dry_run=False)
+            console.print(f"  [green]+[/green] {name} [dim]({mtype})[/dim]")
+            installed = load_installed()  # refresh
+            succeeded += 1
+        except AlreadyInstalledError:
+            console.print(f"  [dim]~ {name} (already installed)[/dim]")
+            succeeded += 1
+        except (ConflictError, InstallError, ToolNotFoundError) as e:
+            console.print(f"  [red]x[/red] {name}: {e}")
+            failed += 1
 
+    # Wire hooks
+    settings.merge_hooks(_build_hook_config())
 
-app = typer.Typer(help="Claude Code ecosystem manager", no_args_is_help=False)
+    console.print(f"\n[bold green]Done![/bold green] {succeeded} installed, {failed} failed.")
+    console.print("[dim]Hooks wired into ~/.claude/settings.json[/dim]\n")
+
 
 # ---------------------------------------------------------------------------
-# Declarative command registry
-# Each entry: (cli-name, module-path, function-name)
+# ccm install <tool>
 # ---------------------------------------------------------------------------
-_COMMANDS: list[tuple[str, str, str]] = [
-    ("init",        "cc_manager.commands.init",          "init_cmd"),
-    ("install",     "cc_manager.commands.install",       "install_cmd"),
-    ("uninstall",   "cc_manager.commands.uninstall",     "uninstall_cmd"),
-    ("list",        "cc_manager.commands.list_cmd",      "list_cmd"),
-    ("search",      "cc_manager.commands.search",        "search_cmd"),
-    ("info",        "cc_manager.commands.info",          "info_cmd"),
-    ("status",      "cc_manager.commands.status",        "status_cmd"),
-    ("doctor",      "cc_manager.commands.doctor",        "doctor_cmd"),
-    ("backup",      "cc_manager.commands.backup",        "backup_cmd"),
-    ("config",       "cc_manager.commands.config",        "config_get_cmd"),
-    ("config-set",   "cc_manager.commands.config",        "config_set_cmd"),
-    ("config-reset", "cc_manager.commands.config",        "config_reset_cmd"),
-    ("update",      "cc_manager.commands.update",        "update_cmd"),
-    ("pin",         "cc_manager.commands.pin",           "pin_cmd"),
-    ("diff",        "cc_manager.commands.diff",          "diff_cmd"),
-    ("audit",       "cc_manager.commands.audit",         "audit_cmd"),
-    ("why",         "cc_manager.commands.why",           "why_cmd"),
-    ("clean",       "cc_manager.commands.clean",         "clean_cmd"),
-    ("logs",        "cc_manager.commands.logs",          "logs_cmd"),
-    ("analyze",     "cc_manager.commands.analyze",       "analyze_cmd"),
-    ("recommend",   "cc_manager.commands.recommend",     "recommend_cmd"),
-    ("export",      "cc_manager.commands.export_import", "export_cmd"),
-    ("import",      "cc_manager.commands.export_import", "import_cmd"),
-    ("migrate",     "cc_manager.commands.migrate",       "migrate_cmd"),
-    ("reset",       "cc_manager.commands.reset",         "reset_cmd"),
-    ("completions", "cc_manager.commands.completions",   "completions_cmd"),
-]
 
-# Optional commands — silently skipped if module/symbol is missing
-_OPTIONAL_COMMANDS: list[tuple[str, str, str]] = [
-    ("dashboard", "cc_manager.commands.dashboard", "run"),
-    ("tui",       "cc_manager.commands.tui",       "run"),
-]
+@app.command()
+def install(
+    name: str = typer.Argument(..., help="Tool name from registry"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Show what would happen"),
+) -> None:
+    """Install a single tool from the registry."""
+    tools_map = registry.as_map()
+    installed = load_installed()
 
-for _name, _mod_path, _fn_name in _COMMANDS:
-    _mod = importlib.import_module(_mod_path)
-    app.command(_name)(_wrap(getattr(_mod, _fn_name), _name))
-
-for _name, _mod_path, _fn_name in _OPTIONAL_COMMANDS:
     try:
-        _mod = importlib.import_module(_mod_path)
-        app.command(_name)(_wrap(getattr(_mod, _fn_name), _name))
-    except (ImportError, AttributeError):
-        pass
+        mtype = installer.install_tool(name, tools_map, installed, dry_run=dry_run)
+    except (ToolNotFoundError, AlreadyInstalledError, ConflictError, InstallError) as e:
+        _err(str(e))
+        raise typer.Exit(1)
+
+    if dry_run:
+        console.print(f"[dim]Would install '{name}' via {mtype}[/dim]")
+    else:
+        _ok(f"Installed {name} ({mtype})")
 
 
 # ---------------------------------------------------------------------------
-# --version callback
+# ccm remove <tool>
 # ---------------------------------------------------------------------------
 
-def _version_callback(value: bool):
+@app.command()
+def remove(
+    name: str = typer.Argument(..., help="Tool name to remove"),
+) -> None:
+    """Remove an installed tool."""
+    installed = load_installed()
+    try:
+        installer.remove_tool(name, installed)
+    except ToolNotFoundError as e:
+        _err(str(e))
+        raise typer.Exit(1)
+    _ok(f"Removed {name}")
+
+
+# ---------------------------------------------------------------------------
+# ccm list
+# ---------------------------------------------------------------------------
+
+@app.command("list")
+def list_cmd(
+    installed_only: bool = typer.Option(False, "--installed", "-i", help="Only show installed tools"),
+    tier: str | None = typer.Option(None, "--tier", "-t", help="Filter by tier"),
+) -> None:
+    """Browse the tool registry."""
+    if installed_only:
+        inst = load_installed()
+        tool_names = list(inst.get("tools", {}).keys())
+        if not tool_names:
+            console.print("[dim]No tools installed.[/dim]")
+            return
+        table = Table(title="Installed Tools", box=box.SIMPLE_HEAVY)
+        table.add_column("Name", style="cyan")
+        table.add_column("Method", style="dim")
+        table.add_column("Installed", style="dim")
+        for n in sorted(tool_names):
+            info = inst["tools"][n]
+            table.add_row(n, info.get("method", "?"), info.get("installed_at", "?")[:10])
+        console.print(table)
+        return
+
+    tools = registry.filter_tools(tier=tier)
+    table = Table(title=f"Registry ({len(tools)} tools)", box=box.SIMPLE_HEAVY)
+    table.add_column("Name", style="cyan", no_wrap=True)
+    table.add_column("Tier", style="magenta")
+    table.add_column("Category")
+    table.add_column("Description", max_width=50)
+
+    for t in tools:
+        table.add_row(
+            t["name"],
+            t.get("tier", ""),
+            t.get("category", ""),
+            (t.get("description", "")[:47] + "...") if len(t.get("description", "")) > 50 else t.get("description", ""),
+        )
+    console.print(table)
+
+
+# ---------------------------------------------------------------------------
+# ccm search <query>
+# ---------------------------------------------------------------------------
+
+@app.command()
+def search(
+    query: str = typer.Argument(..., help="Search term"),
+) -> None:
+    """Search the tool registry."""
+    results = registry.search(query)
+    if not results:
+        console.print(f"[dim]No tools matching '{query}'[/dim]")
+        return
+    table = Table(title=f"Search: {query} ({len(results)} results)", box=box.SIMPLE_HEAVY)
+    table.add_column("Name", style="cyan")
+    table.add_column("Tier", style="magenta")
+    table.add_column("Description", max_width=60)
+    for t in results:
+        table.add_row(t["name"], t.get("tier", ""), t.get("description", "")[:60])
+    console.print(table)
+
+
+# ---------------------------------------------------------------------------
+# ccm status
+# ---------------------------------------------------------------------------
+
+@app.command()
+def status() -> None:
+    """Show installed tools and hook health."""
+    installed = load_installed()
+    tool_count = len(installed.get("tools", {}))
+
+    # Check hooks
+    s = settings.read()
+    hooks = s.get("hooks", {})
+    hook_events = [e for e in hooks if any(
+        ".cc-manager" in h.get("command", "") or "cc_manager" in h.get("command", "")
+        for entry in hooks[e] for h in entry.get("hooks", [])
+    )]
+
+    console.print(Panel(
+        f"[bold]Tools installed:[/bold] {tool_count}\n"
+        f"[bold]Hooks wired:[/bold]    {', '.join(hook_events) if hook_events else '[dim]none[/dim]'}\n"
+        f"[bold]Settings:[/bold]       {SETTINGS_PATH}\n"
+        f"[bold]Data dir:[/bold]       {MANAGER_DIR}",
+        title="[bold cyan]cc-manager status[/bold cyan]",
+        box=box.ROUNDED,
+    ))
+
+
+# ---------------------------------------------------------------------------
+# ccm doctor
+# ---------------------------------------------------------------------------
+
+@app.command()
+def doctor() -> None:
+    """Run diagnostic checks."""
+    installed = load_installed()
+    tools_map = registry.as_map()
+    tool_names = list(installed.get("tools", {}).keys())
+    checks: list[tuple[str, bool, str]] = []
+
+    # Check settings.json exists
+    checks.append(("settings.json", SETTINGS_PATH.exists(), str(SETTINGS_PATH)))
+
+    # Check hooks wired
+    s = settings.read()
+    has_hooks = any(
+        "cc_manager" in h.get("command", "")
+        for hooks_list in s.get("hooks", {}).values()
+        for entry in hooks_list for h in entry.get("hooks", [])
+    )
+    checks.append(("Hooks wired", has_hooks, "SessionStart + SessionEnd in settings.json"))
+
+    # Check installed.json
+    checks.append(("installed.json", INSTALLED_PATH.exists(), str(INSTALLED_PATH)))
+
+    # Detect tools in PATH (parallel)
+    missing: list[str] = []
+    if tool_names:
+        def _check(n: str) -> str | None:
+            tool = tools_map.get(n)
+            if not tool:
+                return None
+            cmd = tool.get("detect", {}).get("command", "")
+            if not cmd:
+                return None
+            rc, _ = run_cmd(cmd, timeout=3)
+            return n if rc != 0 else None
+
+        with ThreadPoolExecutor(max_workers=min(8, len(tool_names))) as pool:
+            for result in pool.map(_check, tool_names):
+                if result:
+                    missing.append(result)
+
+    checks.append(("All tools detected", len(missing) == 0,
+                    f"Missing: {', '.join(missing)}" if missing else f"{len(tool_names)} tools OK"))
+
+    # Print results
+    table = Table(title="Doctor", box=box.SIMPLE_HEAVY)
+    table.add_column("Check")
+    table.add_column("Status")
+    table.add_column("Detail", style="dim")
+    for label, ok, detail in checks:
+        status_str = "[green]OK[/green]" if ok else "[red]FAIL[/red]"
+        table.add_row(label, status_str, detail)
+    console.print(table)
+
+
+# ---------------------------------------------------------------------------
+# ccm reset
+# ---------------------------------------------------------------------------
+
+@app.command()
+def reset(
+    confirm: bool = typer.Option(False, "--confirm", help="Required to actually reset"),
+) -> None:
+    """Reset cc-manager — wipe installed state and re-run init."""
+    if not confirm:
+        console.print("Pass [bold]--confirm[/bold] to wipe installed tools and re-init.")
+        raise typer.Exit(1)
+
+    # Wipe state
+    if INSTALLED_PATH.exists():
+        INSTALLED_PATH.unlink()
+        console.print(f"[dim]Removed {INSTALLED_PATH}[/dim]")
+
+    settings.remove_hooks()
+    console.print("[dim]Removed cc-manager hooks from settings.json[/dim]")
+
+    # Re-init minimal
+    init(yes=True, quick=False)
+
+
+# ---------------------------------------------------------------------------
+# Version callback
+# ---------------------------------------------------------------------------
+
+def _version_callback(value: bool) -> None:
     if value:
-        from cc_manager.display import console
-        console.print(f"cc-manager v{__version__}")
+        console.print(f"cc-manager {__version__}")
         raise typer.Exit()
 
 
-def _show_dashboard() -> None:
-    """5-line at-a-glance summary when ccm is run with no args."""
-    from cc_manager.display import console
-    try:
-        from cc_manager.context import get_ctx, get_week_stats
-        ctx = get_ctx()
-    except Exception:
-        console.print(f"  [bold bright_cyan]cc-manager[/bold bright_cyan] [dim]v{__version__}[/dim]  — [dim]run[/dim] [bright_cyan]ccm init[/bright_cyan] [dim]to get started[/dim]")
-        return
-
-    installed_count = len(ctx.installed.get("tools", {}))
-    recent, week_cost, _, _ = get_week_stats(ctx.store)
-    last = recent[-1] if recent else None
-
-    if last:
-        ts   = last.get("ts", "")[:10]
-        cost = last.get("cost_usd", 0.0)
-        dur  = last.get("duration_min", 0)
-        last_line = f"[dim]{ts}[/dim]  [bright_green]${cost:.4f}[/bright_green]  [dim]{dur}min[/dim]"
-    else:
-        last_line = "[dim]no sessions yet[/dim]"
-
-    cc_hooks = sum(
-        1 for entries in ctx.settings.get("hooks", {}).values()
-        for entry in entries
-        for h in entry.get("hooks", [])
-        if ".cc-manager" in h.get("command", "")
-    )
-    health = "[bright_green]healthy[/bright_green]" if cc_hooks >= 2 else "[yellow]run ccm doctor[/yellow]"
-
-    console.print()
-    console.print(f"  [bold bright_cyan]◉ cc-manager[/bold bright_cyan] [dim]v{__version__}[/dim]")
-    console.print(f"  [dim]tools[/dim]      [bright_white]{installed_count}[/bright_white] [dim]installed[/dim]")
-    console.print(f"  [dim]this week[/dim]  [bright_green]${week_cost:.2f}[/bright_green]")
-    console.print(f"  [dim]last run[/dim]   {last_line}")
-    console.print(f"  [dim]health[/dim]     {health}")
-    console.print()
-    console.print(f"  [dim]Run[/dim] [bright_cyan]ccm --help[/bright_cyan] [dim]to see all commands.[/dim]")
-    console.print()
-
-
-@app.callback(invoke_without_command=True)
+@app.callback()
 def main(
-    ctx: typer.Context,
-    version: bool = typer.Option(
-        None, "--version", callback=_version_callback, is_eager=True,
-        help="Show version and exit.",
-    ),
+    version: bool = typer.Option(False, "--version", "-V", callback=_version_callback, is_eager=True),
 ) -> None:
-    if ctx.invoked_subcommand is None:
-        _show_dashboard()
+    """cc-manager — nvm for Claude Code."""

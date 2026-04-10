@@ -1,39 +1,49 @@
-"""cc-manager settings — read/write ~/.claude/settings.json with locking."""
+"""Read/write ~/.claude/settings.json with fcntl locking and backups."""
 from __future__ import annotations
 
 import fcntl
 import json
 import shutil
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-# These are module-level so tests can monkeypatch them
-from cc_manager.context import SETTINGS_PATH, MANAGER_DIR, BACKUPS_DIR
+from cc_manager.paths import SETTINGS_PATH, BACKUPS_DIR, LOCK_PATH
 
-LOCK_PATH = MANAGER_DIR / ".settings.lock"
+_LOCK_TIMEOUT = 5.0
 
 
-def _ensure_backups_dir() -> None:
-    BACKUPS_DIR.mkdir(parents=True, exist_ok=True)
+# -- Locking ----------------------------------------------------------------
 
+def _acquire_lock(lock_file, exclusive: bool = False, timeout: float = _LOCK_TIMEOUT) -> None:
+    flag = (fcntl.LOCK_EX if exclusive else fcntl.LOCK_SH) | fcntl.LOCK_NB
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            fcntl.flock(lock_file.fileno(), flag)
+            return
+        except BlockingIOError:
+            if time.monotonic() >= deadline:
+                raise TimeoutError(f"Could not acquire settings lock after {timeout}s")
+            time.sleep(0.05)
+
+
+# -- Read / Write -----------------------------------------------------------
 
 def read() -> dict:
-    """Read settings.json with a shared (read) lock. Returns {} if missing."""
+    """Read settings.json with a shared lock. Returns {} if missing."""
     if not SETTINGS_PATH.exists():
         return {}
-    lock_path = LOCK_PATH
-    lock_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(lock_path, "a+") as lock_file:
-        fcntl.flock(lock_file, fcntl.LOCK_SH)
+    LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(LOCK_PATH, "a+") as lf:
+        _acquire_lock(lf, exclusive=False)
         try:
             text = SETTINGS_PATH.read_text(encoding="utf-8")
-            if not text.strip():
-                return {}
-            return json.loads(text)
+            return json.loads(text) if text.strip() else {}
         except (json.JSONDecodeError, FileNotFoundError):
             return {}
         finally:
-            fcntl.flock(lock_file, fcntl.LOCK_UN)
+            fcntl.flock(lf.fileno(), fcntl.LOCK_UN)
 
 
 def write(data: dict, backup: bool = True) -> None:
@@ -41,50 +51,39 @@ def write(data: dict, backup: bool = True) -> None:
     if backup and SETTINGS_PATH.exists():
         backup_create()
     SETTINGS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    lock_path = LOCK_PATH
-    lock_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(lock_path, "a+") as lock_file:
-        fcntl.flock(lock_file, fcntl.LOCK_EX)
+    LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(LOCK_PATH, "a+") as lf:
+        _acquire_lock(lf, exclusive=True)
         try:
-            SETTINGS_PATH.write_text(json.dumps(data, indent=2), encoding="utf-8")
+            SETTINGS_PATH.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
         finally:
-            fcntl.flock(lock_file, fcntl.LOCK_UN)
+            fcntl.flock(lf.fileno(), fcntl.LOCK_UN)
 
+
+# -- Backups ----------------------------------------------------------------
 
 def backup_create() -> Path:
-    """Copy current settings.json to backups/settings.json.<YYYYMMDD-HHMMSS-ffffff>."""
-    _ensure_backups_dir()
+    """Copy settings.json to backups/ with timestamp suffix."""
+    BACKUPS_DIR.mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
     dest = BACKUPS_DIR / f"settings.json.{ts}"
-    if SETTINGS_PATH.exists():
-        shutil.copy2(SETTINGS_PATH, dest)
-    else:
-        dest.write_text("{}", encoding="utf-8")
+    shutil.copy2(SETTINGS_PATH, dest)
     return dest
 
 
 def backup_list() -> list[Path]:
-    """Return list of backup paths sorted by name (oldest first)."""
-    _ensure_backups_dir()
-    backups = sorted(BACKUPS_DIR.glob("settings.json.*"))
-    return backups
+    """Return backup paths sorted oldest-first."""
+    if not BACKUPS_DIR.exists():
+        return []
+    return sorted(BACKUPS_DIR.glob("settings.json.*"))
 
 
-def backup_restore(timestamp: str) -> None:
-    """Restore backup with given timestamp. Backs up current first."""
-    backup_create()
-    src = BACKUPS_DIR / f"settings.json.{timestamp}"
-    if not src.exists():
-        raise FileNotFoundError(f"No backup found: {src}")
-    SETTINGS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(src, SETTINGS_PATH)
-
+# -- Merge / Remove helpers -------------------------------------------------
 
 def merge_hooks(hooks: dict) -> None:
     """Add hooks to settings['hooks'] without touching others."""
     data = read()
-    existing = data.setdefault("hooks", {})
-    existing.update(hooks)
+    data.setdefault("hooks", {}).update(hooks)
     write(data, backup=False)
 
 
@@ -92,41 +91,33 @@ def remove_hooks() -> None:
     """Remove hooks where command path contains '.cc-manager'."""
     data = read()
     hooks = data.get("hooks", {})
-    keys_to_delete = []
+    to_delete = []
     for event_name, hook_list in hooks.items():
         filtered = []
         for entry in hook_list:
-            # entry is like {"matcher": "", "hooks": [{"type": "command", "command": "..."}]}
-            inner_hooks = entry.get("hooks", [])
-            inner_filtered = [
-                h for h in inner_hooks
-                if ".cc-manager" not in h.get("command", "")
-            ]
-            if inner_filtered:
-                filtered.append({**entry, "hooks": inner_filtered})
+            inner = [h for h in entry.get("hooks", [])
+                     if ".cc-manager" not in h.get("command", "")]
+            if inner:
+                filtered.append({**entry, "hooks": inner})
         if filtered:
             hooks[event_name] = filtered
         else:
-            keys_to_delete.append(event_name)
-    for k in keys_to_delete:
+            to_delete.append(event_name)
+    for k in to_delete:
         del hooks[k]
     data["hooks"] = hooks
     write(data, backup=False)
 
 
 def merge_mcp(name: str, config: dict) -> None:
-    """Add or update an MCP server entry in settings['mcpServers']."""
+    """Add or update an MCP server entry."""
     data = read()
-    servers = data.setdefault("mcpServers", {})
-    servers[name] = config
+    data.setdefault("mcpServers", {})[name] = config
     write(data, backup=False)
 
 
 def remove_mcp(name: str) -> None:
-    """Remove an MCP server entry from settings['mcpServers']."""
+    """Remove an MCP server entry."""
     data = read()
-    servers = data.get("mcpServers", {})
-    servers.pop(name, None)
-    if "mcpServers" in data:
-        data["mcpServers"] = servers
+    data.get("mcpServers", {}).pop(name, None)
     write(data, backup=False)
