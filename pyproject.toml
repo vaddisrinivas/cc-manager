@@ -1,6 +1,6 @@
 [project]
 name = "cc-manager"
-version = "2.0.0"
+version = "3.0.0"
 description = "nvm for Claude Code — install tools, wire hooks, manage your setup"
 readme = "README.md"
 requires-python = ">=3.11"
